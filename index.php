@@ -83,7 +83,7 @@ if ($VARS['progress'] == "1") {
 
                                 if ($multiauth != true) {
                                     ?>
-                                    <input type="text" class="form-control" name="username" placeholder="<?php lang("username"); ?>" required="required" /><br />
+                                    <input type="text" class="form-control" name="username" placeholder="<?php lang("username"); ?>" required="required" autofocus /><br />
                                     <input type="password" class="form-control" name="password" placeholder="<?php lang("password"); ?>" required="required" /><br />
                                     <input type="hidden" name="progress" value="1" />
                                     <?php
@@ -92,7 +92,7 @@ if ($VARS['progress'] == "1") {
                                     <div class="alert alert-info">
                                         <?php lang("2fa prompt"); ?>
                                     </div>
-                                    <input type="text" class="form-control" name="authcode" placeholder="<?php lang("authcode"); ?>" required="required" /><br />
+                                    <input type="text" class="form-control" name="authcode" placeholder="<?php lang("authcode"); ?>" required="required" autofocus /><br />
                                     <input type="hidden" name="progress" value="2" />
                                     <input type="hidden" name="username" value="<?php echo $VARS['username']; ?>" />
                                     <?php
