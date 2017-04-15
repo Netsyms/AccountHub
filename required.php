@@ -13,6 +13,8 @@ require __DIR__ . '/vendor/autoload.php';
 // Settings file
 require __DIR__ . '/settings.php';
 
+require __DIR__ . '/lang/' . LANGUAGE . ".php";
+
 function sendError($error) {
     die("<!DOCTYPE html><html><head><title>Error</title></head><body><h1 style='color: red; font-family: sans-serif; font-size:100%;'>" . htmlspecialchars($error) . "</h1></body></html>");
 }
@@ -65,6 +67,20 @@ function is_empty($str) {
     return (is_null($str) || !isset($str) || $str == '');
 }
 
+function lang($key, $echo = true) {
+    if (array_key_exists($key, STRINGS)) {
+        $str = STRINGS[$key];
+    } else {
+        $str = $key;
+    }
+    
+    if ($echo) {
+        echo $str;
+    } else {
+        return $str;
+    }
+}
+
 /**
  * Add a user to the system.  /!\ Assumes input is OK /!\
  * @param string $username Username, saved in lowercase.
@@ -111,6 +127,41 @@ function email_exists($email) {
 function user_exists($username) {
     global $database;
     return $database->has('accounts', ['username' => $username, "LIMIT" => QUERY_LIMIT]);
+}
+
+/**
+ * Checks the given credentials against the database.
+ * @param string $username
+ * @param string $password
+ * @return boolean True if OK, else false
+ */
+function authenticate_user($username, $password) {
+    global $database;
+    if (is_empty($username) || is_empty($password)) {
+        return false;
+    }
+    if (!user_exists($username)) {
+        return false;
+    }
+    $hash = $database->select('accounts', ['password'], ['username' => $username, "LIMIT" => 1])[0]['password'];
+    return (comparePassword($password, $hash));
+}
+
+function get_account_status($username) {
+    global $database;
+    $statuscode = $database->select('accounts', [
+                '[>]acctstatus' => [
+                    'acctstatus' => 'statusid'
+                ]
+                    ], [
+                'accounts.acctstatus',
+                'acctstatus.statuscode'
+                    ], [
+                'username' => $username,
+                "LIMIT" => 1
+                    ]
+            )[0]['statuscode'];
+    return $statuscode;
 }
 
 /**

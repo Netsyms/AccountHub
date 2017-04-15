@@ -18,6 +18,9 @@ define("LDAP_BASEDN", "ou=users,dc=example,dc=com");
 
 define("SITE_TITLE", "Netsyms Business Apps :: Single Sign On");
 
+// Used to identify the system in OTP and other places
+define("SYSTEM_NAME", "Netsyms SSO Demo");
+
 define("COPYRIGHT_NAME", "Netsyms Technologies");
 
 // For supported values, see http://php.net/manual/en/timezones.php
@@ -25,6 +28,9 @@ define("TIMEZONE", "America/Denver");
 
 // Base URL for site links.
 define('URL', 'http://localhost:8000/');
+
+// See lang folder for language options
+define('LANGUAGE', "en_us");
 
 // Maximum number of rows to get in a query.
 define("QUERY_LIMIT", 1000);
