@@ -1,0 +1,16 @@
+{
+    "name": "netsyms/business-sso",
+    "description": "Single-sign-on system and accounts database for Netsyms small business apps",
+    "type": "project",
+    "require": {
+        "catfan/medoo": "^1.2",
+        "spomky-labs/otphp": "^8.3",
+        "endroid/qrcode": "^1.9"
+    },
+    "authors": [
+        {
+            "name": "Skylar Ittner",
+            "email": "admin@netsyms.com"
+        }
+    ]
+}
