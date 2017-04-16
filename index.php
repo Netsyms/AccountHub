@@ -106,6 +106,10 @@ if ($VARS['progress'] == "1") {
                     </div>
                 </div>
             </div>
+            <div class="footer">
+                <?php echo LICENSE_TEXT; ?><br />
+                Copyright &copy; <?php echo date('Y'); ?> <?php echo COPYRIGHT_NAME; ?>
+            </div>
         </div>
         <script src="static/js/jquery-3.2.1.min.js"></script>
         <script src="static/js/bootstrap.min.js"></script>

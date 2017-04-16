@@ -43,7 +43,7 @@ function userHasTOTP($username) {
 }
 
 /**
- * Generate and store a TOTP secret for the given user.
+ * Generate a TOTP secret for the given user.
  * @param string $username
  * @return string OTP provisioning URI (for generating a QR code)
  */
@@ -54,8 +54,18 @@ function newTOTP($username) {
     $userdata = $database->select('accounts', ['email', 'authsecret'], ['username' => $username])[0];
     $totp = new TOTP($userdata['email'], $encoded_secret);
     $totp->setIssuer(SYSTEM_NAME);
-    $database->update('accounts', ['authsecret' => $encoded_secret], ['username' => $username]);
     return $totp->getProvisioningUri();
+}
+
+/**
+ * Save a TOTP secret for the user.
+ * @global $database $database
+ * @param string $username
+ * @param string $secret
+ */
+function saveTOTP($username, $secret) {
+    global $database;
+    $database->update('accounts', ['authsecret' => $secret], ['username' => $username]);
 }
 
 /**
@@ -72,6 +82,5 @@ function verifyTOTP($username, $code) {
         return false;
     }
     $totp = new TOTP(null, $userdata['authsecret']);
-    echo $userdata['authsecret'] . ", " . $totp->now() . ", " . $code;
     return $totp->verify($code);
 }

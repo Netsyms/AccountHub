@@ -13,6 +13,8 @@ require __DIR__ . '/vendor/autoload.php';
 // Settings file
 require __DIR__ . '/settings.php';
 
+require __DIR__ . '/lang/messages.php';
+
 require __DIR__ . '/lang/' . LANGUAGE . ".php";
 
 function sendError($error) {
@@ -67,13 +69,44 @@ function is_empty($str) {
     return (is_null($str) || !isset($str) || $str == '');
 }
 
+/**
+ * I18N string getter.  If the key doesn't exist, outputs the key itself.
+ * @param string $key I18N string key
+ * @param boolean $echo whether to echo the result or return it (default echo)
+ */
 function lang($key, $echo = true) {
     if (array_key_exists($key, STRINGS)) {
         $str = STRINGS[$key];
     } else {
         $str = $key;
     }
-    
+
+    if ($echo) {
+        echo $str;
+    } else {
+        return $str;
+    }
+}
+
+/**
+ * I18N string getter (with builder).    If the key doesn't exist, outputs the key itself.
+ * @param string $key I18N string key
+ * @param array $replace key-value array of replacements.
+ * If the string value is "hello {abc}" and you give ["abc" => "123"], the
+ * result will be "hello 123".
+ * @param boolean $echo whether to echo the result or return it (default echo)
+ */
+function lang2($key, $replace, $echo = true) {
+    if (array_key_exists($key, STRINGS)) {
+        $str = STRINGS[$key];
+    } else {
+        $str = $key;
+    }
+
+    foreach ($replace as $find => $repl) {
+        $str = str_replace("{" . $find . "}", $repl, $str);
+    }
+
     if ($echo) {
         echo $str;
     } else {
