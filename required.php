@@ -3,18 +3,27 @@
 /**
  * This file contains global settings and utility functions.
  */
-ob_start();
-session_start();
-
+ob_start(); // allow sending headers after content
+// Unicode, solves almost all stupid encoding problems
 header('Content-Type: text/html; charset=utf-8');
+
+// l33t $ecurity h4x
+header('X-Content-Type-Options: nosniff');
+header('X-XSS-Protection: 1; mode=block');
+header('X-Powered-By: Late-night coding frenzies (plz send caffeine, thx)');
+header('X-Hacker: Why are you looking at HTTP headers? Get a life! </sarcasm>');
+$session_length = 60 * 60; // 1 hour
+session_set_cookie_params($session_length, "/", null, false, true);
+
+session_start(); // stick some cookies in it
 
 // Composer
 require __DIR__ . '/vendor/autoload.php';
 // Settings file
 require __DIR__ . '/settings.php';
-
+// List of alert messages
 require __DIR__ . '/lang/messages.php';
-
+// text strings (i18n)
 require __DIR__ . '/lang/' . LANGUAGE . ".php";
 
 function sendError($error) {

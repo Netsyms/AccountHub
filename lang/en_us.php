@@ -19,6 +19,7 @@ define("STRINGS", [
     "account security" => "Account security",
     "sign out" => "Sign out",
     "settings" => "Settings",
+    "options" => "Options",
     "404 error" => "404 Error",
     "page not found" => "Page not found.",
     "current password incorrect" => "The current password is incorrect.  Try again.",

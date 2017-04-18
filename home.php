@@ -75,11 +75,11 @@ if (!is_empty($_GET['page'])) {
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-gears"></i> <?php lang("settings"); ?> <span class="caret"></span></a>
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-gears fa-fw"></i> <?php lang("options") ?> <span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><a href="home.php?page=security"><i class="fa fa-lock"></i> <?php lang("account security"); ?></a></li>
+                                    <li><a href="home.php?page=security"><i class="fa fa-lock fa-fw"></i> <?php lang("account security") ?></a></li>
                                     <li class="divider"></li>
-                                    <li><a href="action.php?action=signout"><?php lang("sign out"); ?></a></li>
+                                    <li><a href="action.php?action=signout"><i class="fa fa-sign-out fa-fw"></i> <?php lang("sign out") ?></a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -145,7 +145,7 @@ END;
                     if (file_exists(__DIR__ . "/apps/" . $app . ".php")) {
                         include_once __DIR__ . "/apps/" . $app . ".php";
                         $apptitle = $APPS[$app]['title'];
-                        $appicon = (is_empty($APPS[$app]['icon']) ? "" : "fa fa-" . $APPS[$app]['icon']);
+                        $appicon = (is_empty($APPS[$app]['icon']) ? "" : "fa fa-fw fa-" . $APPS[$app]['icon']);
                         $apptype = (is_empty($APPS[$app]['type']) ? "default" : $APPS[$app]['type']);
                         $appcontent = $APPS[$app]['content'];
                         echo <<<END
