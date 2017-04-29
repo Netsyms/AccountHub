@@ -34,7 +34,7 @@ if (!is_empty($_GET['page'])) {
         <div class="container">
             <div class="row">
                 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-sm-offset-3 col-md-offset-4 col-lg-offset-4">
-                    <img class="img-responsive banner-image" src="static/img/banner.png" />
+                    <img class="img-responsive banner-image" src="static/img/logo.svg" />
                 </div>
             </div>
             <nav class="navbar navbar-inverse">
@@ -130,17 +130,18 @@ END;
                 if ($appcount == 1) {
                     ?>
                     <div class="hidden-xs col-sm-3 col-md-4 col-lg-4">
-                        <!-- Placeholder column for nice center-align -->
+                        <!-- Empty placeholder column for nice center-align -->
                     </div>
                     <?php
                 } else if ($appcount == 2) {
                     ?>
                     <div class="hidden-xs hidden-sm col-md-2 col-lg-2">
-                        <!-- Placeholder column for nice center-align -->
+                        <!-- Empty placeholder column for nice center-align -->
                     </div>
                     <?php
                 }
 
+                // Load app widgets
                 foreach (APPS[$pageid] as $app) {
                     if (file_exists(__DIR__ . "/apps/" . $app . ".php")) {
                         include_once __DIR__ . "/apps/" . $app . ".php";

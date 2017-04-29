@@ -32,5 +32,13 @@ define("MESSAGES", [
     "password_500" => [
         "string" => "password on 500 list",
         "type" => "danger"
+    ],
+    "account_state_error" => [
+        "string" => "account state error",
+        "type" => "danger"
+    ],
+    "ldap_error" => [
+        "string" => "ldap server error",
+        "type" => "danger"
     ]
 ]);

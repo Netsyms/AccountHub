@@ -16,9 +16,10 @@ $session_length = 60 * 60; // 1 hour
 session_set_cookie_params($session_length, "/", null, false, true);
 
 session_start(); // stick some cookies in it
-
+//
 // Composer
 require __DIR__ . '/vendor/autoload.php';
+
 // Settings file
 require __DIR__ . '/settings.php';
 // List of alert messages
@@ -124,27 +125,6 @@ function lang2($key, $replace, $echo = true) {
 }
 
 /**
- * Add a user to the system.  /!\ Assumes input is OK /!\
- * @param string $username Username, saved in lowercase.
- * @param string $password Password, will be hashed before saving.
- * @param string $realname User's real legal name
- * @param string $email User's email address.
- * @return int The new user's ID number in the database.
- */
-function adduser($username, $password, $realname, $email = "NOEMAIL@EXAMPLE.COM", $phone1 = "", $phone2 = "") {
-    global $database;
-    $database->insert('accounts', [
-        'username' => strtolower($username),
-        'password' => encryptPassword($password),
-        'realname' => $realname,
-        'email' => $email,
-        'phone1' => $phone1,
-        'phone2' => $phone2
-    ]);
-    return $database->id();
-}
-
-/**
  * Checks if an email address is valid.
  * @param string $email Email to check
  * @return boolean True if email passes validation, else false.
@@ -153,87 +133,6 @@ function isValidEmail($email) {
     return filter_var($email, FILTER_VALIDATE_EMAIL);
 }
 
-/**
- * Check if an email exists in the database.
- * @param String $email
- */
-function email_exists($email) {
-    global $database;
-    return $database->has('accounts', ['email' => $email, "LIMIT" => QUERY_LIMIT]);
-}
-
-/**
- * Check if a username exists in the database.
- * @param String $username
- */
-function user_exists($username) {
-    global $database;
-    return $database->has('accounts', ['username' => $username, "LIMIT" => QUERY_LIMIT]);
-}
-
-/**
- * Checks the given credentials against the database.
- * @param string $username
- * @param string $password
- * @return boolean True if OK, else false
- */
-function authenticate_user($username, $password) {
-    global $database;
-    if (is_empty($username) || is_empty($password)) {
-        return false;
-    }
-    if (!user_exists($username)) {
-        return false;
-    }
-    $hash = $database->select('accounts', ['password'], ['username' => $username, "LIMIT" => 1])[0]['password'];
-    return (comparePassword($password, $hash));
-}
-
-function get_account_status($username) {
-    global $database;
-    $statuscode = $database->select('accounts', [
-                '[>]acctstatus' => [
-                    'acctstatus' => 'statusid'
-                ]
-                    ], [
-                'accounts.acctstatus',
-                'acctstatus.statuscode'
-                    ], [
-                'username' => $username,
-                "LIMIT" => 1
-                    ]
-            )[0]['statuscode'];
-    return $statuscode;
-}
-
-/**
- * Checks the given credentials to see if they're legit.
- * @param string $username
- * @param string $password
- * @return boolean True if OK, else false
- */
-function authenticate_user_ldap($username, $password) {
-    $ds = ldap_connect(LDAP_SERVER);
-    if ($ds) {
-        $sr = ldap_search($ds, LDAP_BASEDN, "(|(uid=" . $username . ")(mail=" . $username . "))", ['cn', 'uid', 'mail']);
-        if (ldap_count_entries($ds, $sr) == 1) {
-            $info = ldap_get_entries($ds, $sr);
-            $name = $info[0]["cn"][0];
-            $uid = $info[0]["uid"][0];
-            $mail = $info[0]["mail"][0];
-            $_SESSION['uid'] = $uid;
-            $_SESSION['name'] = $name;
-            $_SESSION['mail'] = $mail;
-            return true;
-        } else if (ldap_count_entries($ds, $sr) > 1) {
-            sendError("Multiple users matched search criteria.  Unsure which one you are.");
-        } else {
-            return false;
-        }
-    } else {
-        sendError("Login server offline.");
-    }
-}
 
 /**
  * Hashes the given plaintext password

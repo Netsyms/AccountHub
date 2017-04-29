@@ -5,7 +5,9 @@
     "require": {
         "catfan/medoo": "^1.2",
         "spomky-labs/otphp": "^8.3",
-        "endroid/qrcode": "^1.9"
+        "endroid/qrcode": "^1.9",
+        "ldaptools/ldaptools": "^0.24.0",
+        "guzzlehttp/guzzle": "^6.2"
     },
     "authors": [
         {
