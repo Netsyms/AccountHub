@@ -49,11 +49,23 @@ switch ($VARS['action']) {
         }
         break;
     case "userinfo":
-        if (user_exists($VARS['username'])) {
-            $data = $database->select("accounts", ["uid", "realname (name)", "email", "phone" => ["phone1 (1)", "phone2 (2)"]], ["username" => $VARS['username']])[0];
-            exit(json_encode(["status" => "OK", "data" => $data]));
+        if (!is_empty($VARS['username'])) {
+            if (user_exists($VARS['username'])) {
+                $data = $database->select("accounts", ["uid", "username", "realname (name)", "email", "phone" => ["phone1 (1)", "phone2 (2)"]], ["username" => $VARS['username']])[0];
+                exit(json_encode(["status" => "OK", "data" => $data]));
+            } else {
+                exit(json_encode(["status" => "ERROR", "msg" => lang("login incorrect", false)]));
+            }
+        } else if (!is_empty($VARS['uid'])) {
+            if ($database->has('accounts', ['uid' => $VARS['uid']])) {
+                $data = $database->select("accounts", ["uid", "username", "realname (name)", "email", "phone" => ["phone1 (1)", "phone2 (2)"]], ["uid" => $VARS['uid']])[0];
+                exit(json_encode(["status" => "OK", "data" => $data]));
+            } else {
+                exit(json_encode(["status" => "ERROR", "msg" => lang("login incorrect", false)]));
+            }
         } else {
-            exit(json_encode(["status" => "ERROR", "msg" => lang("login incorrect", false)]));
+            header("HTTP/1.1 400 Bad Request");
+            die("\"400 Bad Request\"");
         }
         break;
     case "userexists":
