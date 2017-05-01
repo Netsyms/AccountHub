@@ -183,8 +183,9 @@ function sendLoginAlertEmail($username) {
     // TODO: add email code
 }
 
-function insertAuthLog($type, $uid = null) {
+function insertAuthLog($type, $uid = null, $data = "") {
     global $database;
+    // find IP address
     $ip = "";
     if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) {
         $ip = $_SERVER["HTTP_CF_CONNECTING_IP"];
@@ -203,7 +204,7 @@ function insertAuthLog($type, $uid = null) {
     } else {
         $ip = "NOT FOUND";
     }
-    $database->insert("authlog", ['#logtime' => 'NOW()', 'logtype' => $type, 'uid' => $uid, 'ip' => $ip]);
+    $database->insert("authlog", ['#logtime' => 'NOW()', 'logtype' => $type, 'uid' => $uid, 'ip' => $ip, 'otherdata' => $data]);
 }
 
 function verifyReCaptcha($response) {

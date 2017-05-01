@@ -38,11 +38,11 @@ if ($VARS['progress'] == "1") {
             }
         } else {
             $alert = lang("login incorrect", false);
-            insertAuthLog(2);
+            insertAuthLog(2, null, "Username: ".$VARS['username']);
         }
     } else {
         $alert = lang("captcha error", false);
-        insertAuthLog(8);
+        insertAuthLog(8, null, "Username: ".$VARS['username']);
     }
 } else if ($VARS['progress'] == "2") {
     if (verifyTOTP($VARS['username'], $VARS['authcode'])) {
@@ -52,7 +52,7 @@ if ($VARS['progress'] == "1") {
         die("Logged in, go to home.php");
     } else {
         $alert = lang("2fa incorrect", false);
-        insertAuthLog(6);
+        insertAuthLog(6, null, "Username: ".$VARS['username']);
     }
 }
 ?>

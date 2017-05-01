@@ -15,7 +15,24 @@ header("Content-Type: application/json");
 $key = $VARS['key'];
 if ($database->has('apikeys', ['key' => $key]) !== TRUE) {
     header("HTTP/1.1 403 Unauthorized");
+    insertAuthLog(14, null, "Key: " . $key);
     die("\"403 Unauthorized\"");
+}
+
+/**
+ * Get the API key with most of the characters replaced with *s.
+ * @global string $key
+ * @return string
+ */
+function getCensoredKey() {
+    global $key;
+    $resp = $key;
+    if (strlen($key) > 5) {
+        for ($i = 2; $i < strlen($key) - 2; $i++) {
+            $resp[$i] = "*";
+        }
+    }
+    return $resp;
 }
 
 switch ($VARS['action']) {
@@ -24,10 +41,10 @@ switch ($VARS['action']) {
         break;
     case "auth":
         if (authenticate_user($VARS['username'], $VARS['password'])) {
-            insertAuthLog(12);
+            insertAuthLog(12, null, "Username: " . $VARS['username'] . ", Key: " . getCensoredKey());
             exit(json_encode(["status" => "OK", "msg" => lang("login successful", false)]));
         } else {
-            insertAuthLog(13);
+            insertAuthLog(13, null, "Username: " . $VARS['username'] . ", Key: " . getCensoredKey());
             exit(json_encode(["status" => "ERROR", "msg" => lang("login incorrect", false)]));
         }
         break;
@@ -57,7 +74,7 @@ switch ($VARS['action']) {
         if (verifyTOTP($VARS['username'], $VARS['code'])) {
             exit(json_encode(["status" => "OK", "valid" => true]));
         } else {
-            insertAuthLog(7);
+            insertAuthLog(7, null, "Username: " . $VARS['username'] . ", Key: " . getCensoredKey());
             exit(json_encode(["status" => "ERROR", "msg" => lang("2fa incorrect", false), "valid" => false]));
         }
         break;
@@ -66,29 +83,30 @@ switch ($VARS['action']) {
     case "login":
         // simulate a login, checking account status and alerts
         if (authenticate_user($VARS['username'], $VARS['password'])) {
+            $uid = $database->select('accounts', 'uid', ['username' => $VARS['username']])[0];
             switch (get_account_status($VARS['username'])) {
                 case "LOCKED_OR_DISABLED":
-                    insertAuthLog(5);
+                    insertAuthLog(5, $uid, "Username: " . $VARS['username'] . ", Key: " . getCensoredKey());
                     exit(json_encode(["status" => "ERROR", "msg" => lang("account locked", false)]));
                 case "TERMINATED":
-                    insertAuthLog(5);
+                    insertAuthLog(5, $uid, "Username: " . $VARS['username'] . ", Key: " . getCensoredKey());
                     exit(json_encode(["status" => "ERROR", "msg" => lang("account terminated", false)]));
                 case "CHANGE_PASSWORD":
-                    insertAuthLog(5);
+                    insertAuthLog(5, $uid, "Username: " . $VARS['username'] . ", Key: " . getCensoredKey());
                     exit(json_encode(["status" => "ERROR", "msg" => lang("password expired", false)]));
                 case "NORMAL":
-                    insertAuthLog(4);
+                    insertAuthLog(4, $uid, "Username: " . $VARS['username'] . ", Key: " . getCensoredKey());
                     exit(json_encode(["status" => "OK"]));
                 case "ALERT_ON_ACCESS":
                     sendLoginAlertEmail($VARS['username']);
-                    insertAuthLog(4);
+                    insertAuthLog(4, $uid, "Username: " . $VARS['username'] . ", Key: " . getCensoredKey());
                     exit(json_encode(["status" => "OK", "alert" => true]));
                 default:
-                    insertAuthLog(5);
+                    insertAuthLog(5, $uid, "Username: " . $VARS['username'] . ", Key: " . getCensoredKey());
                     exit(json_encode(["status" => "ERROR", "msg" => lang("account state error", false)]));
             }
         } else {
-            insertAuthLog(5);
+            insertAuthLog(5, null, "Username: " . $VARS['username'] . ", Key: " . getCensoredKey());
             exit(json_encode(["status" => "ERROR", "msg" => lang("login incorrect", false)]));
         }
         break;
