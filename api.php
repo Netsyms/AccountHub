@@ -123,21 +123,41 @@ switch ($VARS['action']) {
         }
         break;
     case "ismanagerof":
-        if (user_exists($VARS['manager'])) {
-            if (user_exists($VARS['employee'])) {
-                $managerid = $database->select('accounts', 'uid', ['username' => $VARS['manager']]);
-                $employeeid = $database->select('accounts', 'uid', ['username' => $VARS['employee']]);
-                if ($database->has('managers', ['AND' => ['managerid' => $managerid, 'employeeid' => $employeeid]])) {
-                    exit(json_encode(["status" => "OK", "managerof" => true]));
+        if ($VARS['uid'] === 1) {
+            if ($database->has("accounts", ['uid' => $VARS['manager']])) {
+                if ($database->has("accounts", ['uid' => $VARS['employee']])) {
+                    $managerid = $VARS['manager'];
+                    $employeeid = $VARS['employee'];
                 } else {
-                    exit(json_encode(["status" => "OK", "managerof" => false]));
+                    exit(json_encode(["status" => "ERROR", "msg" => lang("user does not exist", false), "user" => $VARS['employee']]));
                 }
             } else {
-                exit(json_encode(["status" => "ERROR", "msg" => lang("user does not exist", false), "user" => $VARS['employee']]));
+                exit(json_encode(["status" => "ERROR", "msg" => lang("user does not exist", false), "user" => $VARS['manager']]));
             }
         } else {
-            exit(json_encode(["status" => "ERROR", "msg" => lang("user does not exist", false), "user" => $VARS['manager']]));
+            if (user_exists($VARS['manager'])) {
+                if (user_exists($VARS['employee'])) {
+                    $managerid = $database->select('accounts', 'uid', ['username' => $VARS['manager']]);
+                    $employeeid = $database->select('accounts', 'uid', ['username' => $VARS['employee']]);
+                } else {
+                    exit(json_encode(["status" => "ERROR", "msg" => lang("user does not exist", false), "user" => $VARS['employee']]));
+                }
+            } else {
+                exit(json_encode(["status" => "ERROR", "msg" => lang("user does not exist", false), "user" => $VARS['manager']]));
+            }
         }
+        if ($database->has('managers', ['AND' => ['managerid' => $managerid, 'employeeid' => $employeeid]])) {
+            exit(json_encode(["status" => "OK", "managerof" => true]));
+        } else {
+            exit(json_encode(["status" => "OK", "managerof" => false]));
+        }
+        break;
+    case "usersearch":
+        if (is_empty($VARS['search']) || strlen($VARS['search']) < 3) {
+            exit(json_encode(["status" => "OK", "result" => []]));
+        }
+        $data = $database->select('accounts', ['uid', 'username', 'realname (name)'], ["OR" => ['username[~]' => $VARS['search'], 'realname[~]' => $VARS['search']], "LIMIT" => QUERY_LIMIT]);
+        exit(json_encode(["status" => "OK", "result" => $data]));
         break;
     default:
         header("HTTP/1.1 400 Bad Request");
