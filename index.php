@@ -27,6 +27,7 @@ if ($VARS['progress'] == "1") {
                     break;
             }
             if ($userpass_ok) {
+                $_SESSION['passok'] = true; // stop logins using only username and authcode
                 if (userHasTOTP($VARS['username'])) {
                     $multiauth = true;
                 } else {
@@ -38,13 +39,17 @@ if ($VARS['progress'] == "1") {
             }
         } else {
             $alert = lang("login incorrect", false);
-            insertAuthLog(2, null, "Username: ".$VARS['username']);
+            insertAuthLog(2, null, "Username: " . $VARS['username']);
         }
     } else {
         $alert = lang("captcha error", false);
-        insertAuthLog(8, null, "Username: ".$VARS['username']);
+        insertAuthLog(8, null, "Username: " . $VARS['username']);
     }
 } else if ($VARS['progress'] == "2") {
+    if ($_SESSION['passok'] !== true) {
+        // stop logins using only username and authcode
+        sendError("Password integrity check failed!");
+    }
     if (verifyTOTP($VARS['username'], $VARS['authcode'])) {
         doLoginUser($VARS['username'], $VARS['password']);
         insertAuthLog(1, $_SESSION['uid']);
@@ -52,7 +57,7 @@ if ($VARS['progress'] == "1") {
         die("Logged in, go to home.php");
     } else {
         $alert = lang("2fa incorrect", false);
-        insertAuthLog(6, null, "Username: ".$VARS['username']);
+        insertAuthLog(6, null, "Username: " . $VARS['username']);
     }
 }
 ?>
