@@ -152,6 +152,46 @@ switch ($VARS['action']) {
             exit(json_encode(["status" => "OK", "managerof" => false]));
         }
         break;
+    case "getmanaged":
+        if ($VARS['uid']) {
+            if ($database->has("accounts", ['uid' => $VARS['uid']])) {
+                $managerid = $VARS['uid'];
+            } else {
+                exit(json_encode(["status" => "ERROR", "msg" => lang("user does not exist", false)]));
+            }
+        } else if ($VARS['username']) {
+            if ($database->has("accounts", ['username' => $VARS['username']])) {
+                $managerid = $database->select('accounts', 'uid', ['username' => $VARS['username']]);
+            } else {
+                exit(json_encode(["status" => "ERROR", "msg" => lang("user does not exist", false)]));
+            }
+        } else {
+            header("HTTP/1.1 400 Bad Request");
+            die("\"400 Bad Request\"");
+        }
+        $managed = $database->select('managers', 'employeeid', ['managerid' => $managerid]);
+        exit(json_encode(["status" => "OK", "employees" => $managed]));
+        break;
+    case "getmanagers":
+        if ($VARS['uid']) {
+            if ($database->has("accounts", ['uid' => $VARS['uid']])) {
+                $empid = $VARS['uid'];
+            } else {
+                exit(json_encode(["status" => "ERROR", "msg" => lang("user does not exist", false)]));
+            }
+        } else if ($VARS['username']) {
+            if ($database->has("accounts", ['username' => $VARS['username']])) {
+                $empid = $database->select('accounts', 'uid', ['username' => $VARS['username']]);
+            } else {
+                exit(json_encode(["status" => "ERROR", "msg" => lang("user does not exist", false)]));
+            }
+        } else {
+            header("HTTP/1.1 400 Bad Request");
+            die("\"400 Bad Request\"");
+        }
+        $managers = $database->select('managers', 'managerid', ['employeeid' => $empid]);
+        exit(json_encode(["status" => "OK", "managers" => $managers]));
+        break;
     case "usersearch":
         if (is_empty($VARS['search']) || strlen($VARS['search']) < 3) {
             exit(json_encode(["status" => "OK", "result" => []]));
