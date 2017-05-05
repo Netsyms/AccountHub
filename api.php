@@ -69,6 +69,13 @@ switch ($VARS['action']) {
         }
         break;
     case "userexists":
+        if (!is_empty($VARS['uid'])) {
+            if ($database->has('accounts', ['uid' => $VARS['uid']])) {
+                exit(json_encode(["status" => "OK", "exists" => true]));
+            } else {
+                exit(json_encode(["status" => "OK", "exists" => false]));
+            }
+        }
         if (user_exists($VARS['username'])) {
             exit(json_encode(["status" => "OK", "exists" => true]));
         } else {
@@ -196,7 +203,7 @@ switch ($VARS['action']) {
         if (is_empty($VARS['search']) || strlen($VARS['search']) < 3) {
             exit(json_encode(["status" => "OK", "result" => []]));
         }
-        $data = $database->select('accounts', ['uid', 'username', 'realname (name)'], ["OR" => ['username[~]' => $VARS['search'], 'realname[~]' => $VARS['search']], "LIMIT" => QUERY_LIMIT]);
+        $data = $database->select('accounts', ['uid', 'username', 'realname (name)'], ["OR" => ['username[~]' => $VARS['search'], 'realname[~]' => $VARS['search']], "LIMIT" => 10]);
         exit(json_encode(["status" => "OK", "result" => $data]));
         break;
     default:
