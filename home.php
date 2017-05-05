@@ -22,7 +22,7 @@ if (!is_empty($_GET['page'])) {
     <head>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" contgreent="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title><?php echo SITE_TITLE; ?></title>
 
