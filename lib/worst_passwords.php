@@ -513,7 +513,7 @@ function checkWorst500List($search) {
         "albert"
     ];
     
-    $index = array_search($search, $worst_password_list);
+    $index = array_search(strtolower($search), $worst_password_list);
     if ($index === FALSE) {
         return false;
     } else {
