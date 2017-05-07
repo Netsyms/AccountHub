@@ -40,5 +40,9 @@ define("MESSAGES", [
     "ldap_error" => [
         "string" => "ldap server error",
         "type" => "danger"
+    ],
+    "passwords_same" => [
+        "string" => "old and new passwords match",
+        "type" => "danger"
     ]
 ]);

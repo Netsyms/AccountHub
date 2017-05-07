@@ -6,7 +6,10 @@
 use Base32\Base32;
 use OTPHP\TOTP;
 use LdapTools\LdapManager;
+use LdapTools\Object\LdapObjectType;
 use LdapTools\Connection\ADResponseCodes;
+
+$ldap = new LdapManager($ldap_config);
 
 ////////////////////////////////////////////////////////////////////////////////
 //                           Account handling                                 //
@@ -35,7 +38,7 @@ function adduser($username, $password, $realname, $email = null, $phone1 = "", $
         'acctstatus' => 1,
         'accttype' => $type
     ]);
-    var_dump($database->error());
+    //var_dump($database->error());
     return $database->id();
 }
 
@@ -44,10 +47,10 @@ function adduser($username, $password, $realname, $email = null, $phone1 = "", $
  * @param string $username
  * @return string "LDAP", "LOCAL", "LDAP_ONLY", or "NONE".
  */
-function account_location($username, $password) {
+function account_location($username) {
     global $database;
     $username = strtolower($username);
-    $user_exists = user_exists($username);
+    $user_exists = user_exists_local($username);
     if (!$user_exists && !LDAP_ENABLED) {
         return false;
     }
@@ -62,7 +65,7 @@ function account_location($username, $password) {
             return "LOCAL";
         }
     } else {
-        if (user_exists_ldap($username, $password)) {
+        if (user_exists_ldap($username)) {
             return "LDAP_ONLY";
         } else {
             return "NONE";
@@ -76,9 +79,9 @@ function account_location($username, $password) {
  * @param string $password
  * @return boolean True if OK, else false
  */
-function authenticate_user($username, $password) {
+function authenticate_user($username, $password, &$errormsg) {
     global $database;
-    global $ldap_config;
+    global $ldap;
     $username = strtolower($username);
     if (is_empty($username) || is_empty($password)) {
         return false;
@@ -90,11 +93,11 @@ function authenticate_user($username, $password) {
         $hash = $database->select('accounts', ['password'], ['username' => $username, "LIMIT" => 1])[0]['password'];
         return (comparePassword($password, $hash));
     } else if ($loc == "LDAP") {
-        return authenticate_user_ldap($username, $password) === TRUE;
+        return authenticate_user_ldap($username, $password, $errormsg) === TRUE;
     } else if ($loc == "LDAP_ONLY") {
         try {
             if (authenticate_user_ldap($username, $password) === TRUE) {
-                $user = (new LdapManager($ldap_config))->getRepository('user')->findOneByUsername($username);
+                $user = $ldap->getRepository('user')->findOneByUsername($username);
                 //var_dump($user);
                 adduser($user->getUsername(), null, $user->getName(), ($user->hasEmailAddress() ? $user->getEmailAddress() : null), "", "", 2);
                 return true;
@@ -109,11 +112,15 @@ function authenticate_user($username, $password) {
     }
 }
 
+function user_exists($username) {
+    return account_location($username) !== "NONE";
+}
+
 /**
  * Check if a username exists in the local database.
  * @param String $username
  */
-function user_exists($username) {
+function user_exists_local($username) {
     global $database;
     $username = strtolower($username);
     return $database->has('accounts', ['username' => $username, "LIMIT" => QUERY_LIMIT]);
@@ -121,9 +128,10 @@ function user_exists($username) {
 
 /**
  * Get the account status: NORMAL, TERMINATED, LOCKED_OR_DISABLED,
- * CHANGE_PASSWORD, or ALERT_ON_ACCESS
+ * CHANGE_PASSWORD, ALERT_ON_ACCESS, or OTHER
  * @global $database $database
  * @param string $username
+ * @param string $password
  * @return string
  */
 function get_account_status($username) {
@@ -144,12 +152,11 @@ function get_account_status($username) {
                         ]
                 )[0]['statuscode'];
         return $statuscode;
-    } else if ($loc == "LDAP") {
-        // TODO: Read actual account status from AD servers
-        return "NORMAL";
+    } else if ($loc == "LDAP" || $loc == "LDAP_ONLY") {
+        return get_account_status_ldap($username);
     } else {
         // account isn't setup properly
-        return "LOCKED_OR_DISABLED";
+        return "OTHER";
     }
 }
 
@@ -244,20 +251,21 @@ function verifyReCaptcha($response) {
  * @param string $password
  * @return mixed True if OK, else false or the error code from the server
  */
-function authenticate_user_ldap($username, $password) {
-    global $ldap_config;
+function authenticate_user_ldap($username, $password, &$errormsg) {
+    global $ldap;
     if (is_empty($username) || is_empty($password)) {
         return false;
     }
     $username = strtolower($username);
     try {
-        $ldapManager = new LdapManager($ldap_config);
         $msg = "";
         $code = 0;
-        if ($ldapManager->authenticate($username, $password, $msg, $code) === TRUE) {
+        if ($ldap->authenticate($username, $password, $msg, $code) === TRUE) {
+            $errormsg = $msg;
             return true;
         } else {
-            return $code;
+            $errormsg = $msg;
+            return $msg;
         }
     } catch (Exception $e) {
         sendError("LDAP error: " . $e->getMessage());
@@ -270,40 +278,67 @@ function authenticate_user_ldap($username, $password) {
  * @param type $username
  * @return boolean true if yes, else false
  */
-function user_exists_ldap($username, $password) {
-    global $ldap_config;
+function user_exists_ldap($username) {
+    global $ldap;
     try {
-        $ldap = new LdapManager($ldap_config);
         $username = strtolower($username);
-        if (!$ldap->authenticate($username, $password, $message, $code)) {
-            switch ($code) {
-                case ADResponseCodes::ACCOUNT_INVALID:
-                    return false;
-                case ADResponseCodes::ACCOUNT_CREDENTIALS_INVALID:
-                    return true;
-                case ADResponseCodes::ACCOUNT_RESTRICTIONS:
-                    return true;
-                case ADResponseCodes::ACCOUNT_RESTRICTIONS_TIME:
-                    return true;
-                case ADResponseCodes::ACCOUNT_RESTRICTIONS_DEVICE:
-                    return true;
-                case ADResponseCodes::ACCOUNT_PASSWORD_EXPIRED:
-                    return true;
-                case ADResponseCodes::ACCOUNT_DISABLED:
-                    return true;
-                case ADResponseCodes::ACCOUNT_CONTEXT_IDS:
-                    return true;
-                case ADResponseCodes::ACCOUNT_EXPIRED:
-                    return false;
-                case ADResponseCodes::ACCOUNT_PASSWORD_MUST_CHANGE:
-                    return true;
-                case ADResponseCodes::ACCOUNT_LOCKED:
-                    return true;
-                default:
-                    return false;
-            }
+        $lqb = $ldap->buildLdapQuery();
+        $result = $lqb->fromUsers()
+                ->where(['username' => $username])
+                ->getLdapQuery()
+                ->getResult();
+        if (count($result) > 0) {
+            return true;
         }
-        return true;
+        return false;
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
+function get_account_status_ldap($username) {
+    global $ldap;
+    try {
+        $username = strtolower($username);
+        $normal = $ldap->buildLdapQuery()
+                ->fromUsers()
+                ->where(['enabled' => true, 'passwordMustChange' => false, 'locked' => false, 'disabled' => false, 'username' => $username])
+                ->getLdapQuery()
+                ->getResult();
+        if (count($normal) == 1) {
+            return "NORMAL";
+        }
+        $disabled = $ldap->buildLdapQuery()
+                ->fromUsers()
+                ->where(['disabled' => true, 'username' => $username])
+                ->getLdapQuery()
+                ->getResult();
+        $locked = $ldap->buildLdapQuery()
+                ->fromUsers()
+                ->where(['locked' => true, 'username' => $username])
+                ->getLdapQuery()
+                ->getResult();
+        if (count($disabled) == 1 || count($locked) == 1) {
+            return "LOCKED_OR_DISABLED";
+        }
+        $passwordExpired = $ldap->buildLdapQuery()
+                ->fromUsers()
+                ->where(['passwordMustChange' => true, 'username' => $username])
+                ->getLdapQuery()
+                ->getResult();
+        if (count($passwordExpired) == 1) {
+            return "CHANGE_PASSWORD";
+        }
+        $other = $ldap->buildLdapQuery()
+                ->fromUsers()
+                ->where(['username' => $username])
+                ->getLdapQuery()
+                ->getResult();
+        if (count($other) == 0) {
+            return false;
+        } else {
+            return "OTHER";
+        }
     } catch (Exception $e) {
         sendError("LDAP error: " . $e->getMessage());
     }

@@ -3,12 +3,18 @@ require_once __DIR__ . "/required.php";
 
 require_once __DIR__ . "/lib/login.php";
 
+// if we're logged in, we don't need to be here.
+if ($_SESSION['loggedin']) {
+    header('Location: home.php');
+}
+
 /* Authenticate user */
 $userpass_ok = false;
 $multiauth = false;
 if ($VARS['progress'] == "1") {
     if (!RECAPTCHA_ENABLED || (RECAPTCHA_ENABLED && verifyReCaptcha($VARS['g-recaptcha-response']))) {
-        if (authenticate_user($VARS['username'], $VARS['password'])) {
+        $autherror = "";
+        if (user_exists($VARS['username'])) {
             switch (get_account_status($VARS['username'])) {
                 case "LOCKED_OR_DISABLED":
                     $alert = lang("account locked", false);
@@ -18,6 +24,7 @@ if ($VARS['progress'] == "1") {
                     break;
                 case "CHANGE_PASSWORD":
                     $alert = lang("password expired", false);
+                    break;
                 case "NORMAL":
                     $userpass_ok = true;
                     break;
@@ -27,17 +34,27 @@ if ($VARS['progress'] == "1") {
                     break;
             }
             if ($userpass_ok) {
-                $_SESSION['passok'] = true; // stop logins using only username and authcode
-                if (userHasTOTP($VARS['username'])) {
-                    $multiauth = true;
+                if (authenticate_user($VARS['username'], $VARS['password'], $autherror)) {
+                    $_SESSION['passok'] = true; // stop logins using only username and authcode
+                    if (userHasTOTP($VARS['username'])) {
+                        $multiauth = true;
+                    } else {
+                        doLoginUser($VARS['username'], $VARS['password']);
+                        insertAuthLog(1, $_SESSION['uid']);
+                        header('Location: home.php');
+                        die("Logged in, go to home.php");
+                    }
                 } else {
-                    doLoginUser($VARS['username'], $VARS['password']);
-                    insertAuthLog(1, $_SESSION['uid']);
-                    header('Location: home.php');
-                    die("Logged in, go to home.php");
+                    if (!is_empty($autherror)) {
+                        $alert = $autherror;
+                        insertAuthLog(2, null, "Username: " . $VARS['username']);
+                    } else {
+                        $alert = lang("login incorrect", false);
+                        insertAuthLog(2, null, "Username: " . $VARS['username']);
+                    }
                 }
             }
-        } else {
+        } else { // User does not exist anywhere
             $alert = lang("login incorrect", false);
             insertAuthLog(2, null, "Username: " . $VARS['username']);
         }
@@ -71,6 +88,7 @@ if ($VARS['progress'] == "1") {
         <title><?php echo SITE_TITLE; ?></title>
 
         <link href="static/css/bootstrap.min.css" rel="stylesheet">
+        <link href="static/css/font-awesome.min.css" rel="stylesheet">
         <link href="static/css/app.css" rel="stylesheet">
         <?php if (RECAPTCHA_ENABLED) { ?>
             <script src='https://www.google.com/recaptcha/api.js'></script>
@@ -93,7 +111,7 @@ if ($VARS['progress'] == "1") {
                                 if (!is_empty($alert)) {
                                     ?>
                                     <div class="alert alert-danger">
-                                        <?php echo $alert; ?>
+                                        <i class="fa fa-fw fa-exclamation-triangle"></i> <?php echo $alert; ?>
                                     </div>
                                     <?php
                                 }

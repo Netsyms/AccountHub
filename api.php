@@ -40,17 +40,33 @@ switch ($VARS['action']) {
         exit(json_encode(["status" => "OK"]));
         break;
     case "auth":
-        if (authenticate_user($VARS['username'], $VARS['password'])) {
+        $errmsg = "";
+        if (authenticate_user($VARS['username'], $VARS['password'], $errmsg)) {
             insertAuthLog(12, null, "Username: " . $VARS['username'] . ", Key: " . getCensoredKey());
             exit(json_encode(["status" => "OK", "msg" => lang("login successful", false)]));
         } else {
-            insertAuthLog(13, null, "Username: " . $VARS['username'] . ", Key: " . getCensoredKey());
+            insertAuthLog(13, $uid, "Username: " . $VARS['username'] . ", Key: " . getCensoredKey());
+            if (!is_empty($errmsg)) {
+                exit(json_encode(["status" => "ERROR", "msg" => lang2("ldap error", ['error' => $errmsg], false)]));
+            }
+            if (user_exists($VARS['username'])) {
+                switch (get_account_status($VARS['username'])) {
+                    case "LOCKED_OR_DISABLED":
+                        exit(json_encode(["status" => "ERROR", "msg" => lang("account locked", false)]));
+                    case "TERMINATED":
+                        exit(json_encode(["status" => "ERROR", "msg" => lang("account terminated", false)]));
+                    case "CHANGE_PASSWORD":
+                        exit(json_encode(["status" => "ERROR", "msg" => lang("password expired", false)]));
+                    default:
+                        exit(json_encode(["status" => "ERROR", "msg" => lang("account state error", false)]));
+                }
+            }
             exit(json_encode(["status" => "ERROR", "msg" => lang("login incorrect", false)]));
         }
         break;
     case "userinfo":
         if (!is_empty($VARS['username'])) {
-            if (user_exists($VARS['username'])) {
+            if (user_exists_local($VARS['username'])) {
                 $data = $database->select("accounts", ["uid", "username", "realname (name)", "email", "phone" => ["phone1 (1)", "phone2 (2)"]], ["username" => $VARS['username']])[0];
                 exit(json_encode(["status" => "OK", "data" => $data]));
             } else {
@@ -76,7 +92,7 @@ switch ($VARS['action']) {
                 exit(json_encode(["status" => "OK", "exists" => false]));
             }
         }
-        if (user_exists($VARS['username'])) {
+        if (user_exists_local($VARS['username'])) {
             exit(json_encode(["status" => "OK", "exists" => true]));
         } else {
             exit(json_encode(["status" => "OK", "exists" => false]));
@@ -101,7 +117,8 @@ switch ($VARS['action']) {
         exit(json_encode(["status" => "OK", "account" => get_account_status($VARS['username'])]));
     case "login":
         // simulate a login, checking account status and alerts
-        if (authenticate_user($VARS['username'], $VARS['password'])) {
+        $errmsg = "";
+        if (authenticate_user($VARS['username'], $VARS['password'], $errmsg)) {
             $uid = $database->select('accounts', 'uid', ['username' => $VARS['username']])[0];
             switch (get_account_status($VARS['username'])) {
                 case "LOCKED_OR_DISABLED":
@@ -126,6 +143,9 @@ switch ($VARS['action']) {
             }
         } else {
             insertAuthLog(5, null, "Username: " . $VARS['username'] . ", Key: " . getCensoredKey());
+            if (!is_empty($errmsg)) {
+                exit(json_encode(["status" => "ERROR", "msg" => lang2("ldap error", ['error' => $errmsg], false)]));
+            }
             exit(json_encode(["status" => "ERROR", "msg" => lang("login incorrect", false)]));
         }
         break;
@@ -142,8 +162,8 @@ switch ($VARS['action']) {
                 exit(json_encode(["status" => "ERROR", "msg" => lang("user does not exist", false), "user" => $VARS['manager']]));
             }
         } else {
-            if (user_exists($VARS['manager'])) {
-                if (user_exists($VARS['employee'])) {
+            if (user_exists_local($VARS['manager'])) {
+                if (user_exists_local($VARS['employee'])) {
                     $managerid = $database->select('accounts', 'uid', ['username' => $VARS['manager']]);
                     $employeeid = $database->select('accounts', 'uid', ['username' => $VARS['employee']]);
                 } else {

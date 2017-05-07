@@ -42,4 +42,6 @@ define("STRINGS", [
     "user does not exist" => "User does not exist.",
     "captcha error" => "There was a problem with the CAPTCHA (robot test).  Try again.",
     "home" => "Home",
+    "ldap error" => "LDAP error: {error}",
+    "old and new passwords match" => "Your current and new passwords are the same."
 ]);
