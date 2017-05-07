@@ -10,6 +10,7 @@ define("STRINGS", [
     "2fa incorrect" => "Authentication code incorrect.",
     "login incorrect" => "Login incorrect.",
     "login successful" => "Login successful.",
+    "login error" => "There was a server problem.  Try again later.",
     "account locked" => "This account has been disabled. Contact technical support.",
     "password expired" => "You must change your password before continuing.",
     "account terminated" => "Account terminated.  Access denied.",

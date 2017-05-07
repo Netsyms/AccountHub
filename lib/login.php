@@ -96,16 +96,16 @@ function authenticate_user($username, $password, &$errormsg) {
         return authenticate_user_ldap($username, $password, $errormsg) === TRUE;
     } else if ($loc == "LDAP_ONLY") {
         try {
-            if (authenticate_user_ldap($username, $password) === TRUE) {
+            if (authenticate_user_ldap($username, $password, $errormsg) === TRUE) {
                 $user = $ldap->getRepository('user')->findOneByUsername($username);
                 //var_dump($user);
                 adduser($user->getUsername(), null, $user->getName(), ($user->hasEmailAddress() ? $user->getEmailAddress() : null), "", "", 2);
                 return true;
-            } else {
-                return false;
             }
+            return false;
         } catch (Exception $e) {
-            sendError("LDAP error: " . $e->getMessage());
+            $errormsg = $e->getMessage();
+            return false;
         }
     } else {
         return false;
@@ -134,7 +134,7 @@ function user_exists_local($username) {
  * @param string $password
  * @return string
  */
-function get_account_status($username) {
+function get_account_status($username, &$error) {
     global $database;
     $username = strtolower($username);
     $loc = account_location($username);
@@ -153,7 +153,7 @@ function get_account_status($username) {
                 )[0]['statuscode'];
         return $statuscode;
     } else if ($loc == "LDAP" || $loc == "LDAP_ONLY") {
-        return get_account_status_ldap($username);
+        return get_account_status_ldap($username, $error);
     } else {
         // account isn't setup properly
         return "OTHER";
@@ -268,7 +268,8 @@ function authenticate_user_ldap($username, $password, &$errormsg) {
             return $msg;
         }
     } catch (Exception $e) {
-        sendError("LDAP error: " . $e->getMessage());
+        $errormsg = $e->getMessage();
+        return $e->getMessage();
     }
 }
 
@@ -296,7 +297,7 @@ function user_exists_ldap($username) {
     }
 }
 
-function get_account_status_ldap($username) {
+function get_account_status_ldap($username, &$error) {
     global $ldap;
     try {
         $username = strtolower($username);
@@ -340,7 +341,8 @@ function get_account_status_ldap($username) {
             return "OTHER";
         }
     } catch (Exception $e) {
-        sendError("LDAP error: " . $e->getMessage());
+        $error = $e->getMessage();
+        return false;
     }
 }
 

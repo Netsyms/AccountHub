@@ -15,7 +15,8 @@ if ($VARS['progress'] == "1") {
     if (!RECAPTCHA_ENABLED || (RECAPTCHA_ENABLED && verifyReCaptcha($VARS['g-recaptcha-response']))) {
         $autherror = "";
         if (user_exists($VARS['username'])) {
-            switch (get_account_status($VARS['username'])) {
+            $status = get_account_status($VARS['username'], $error);
+            switch ($status) {
                 case "LOCKED_OR_DISABLED":
                     $alert = lang("account locked", false);
                     break;
@@ -31,6 +32,13 @@ if ($VARS['progress'] == "1") {
                 case "ALERT_ON_ACCESS":
                     sendLoginAlertEmail($VARS['username']);
                     $userpass_ok = true;
+                    break;
+                default:
+                    if (!is_empty($error)) {
+                        $alert = $error;
+                        break;
+                    }
+                    $alert = lang("login error", false);
                     break;
             }
             if ($userpass_ok) {
