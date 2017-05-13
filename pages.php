@@ -17,6 +17,7 @@ define("PAGES", [
 define("APPS", [
     "home" => [
         "taskfloor_tasks",
+        "taskfloor_messages",
         "sample_app"
     ],
     "security" => [
