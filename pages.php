@@ -18,7 +18,7 @@ define("APPS", [
     "home" => [
         "taskfloor_tasks",
         "taskfloor_messages",
-        "sample_app"
+        "account_security"
     ],
     "security" => [
         "change_password",
