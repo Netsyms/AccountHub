@@ -1,6 +1,6 @@
 <?php
 
-define("STRINGS", [
+$STRINGS = [
     "sign in" => "Sign In",
     "username" => "Username",
     "password" => "Password",
@@ -44,5 +44,10 @@ define("STRINGS", [
     "captcha error" => "There was a problem with the CAPTCHA (robot test).  Try again.",
     "home" => "Home",
     "ldap error" => "LDAP error: {error}",
-    "old and new passwords match" => "Your current and new passwords are the same."
-]);
+    "old and new passwords match" => "Your current and new passwords are the same.",
+    "generic op error" => "An unknown error occurred.  Try again later.",
+    "password complexity insufficent" => "The new password does not meet the minumum requirements defined by your system administrator.",
+    "error loading widget" => "There was a problem loading this app.",
+    "open app" => "Open App",
+    "sign in again" => "Please sign in again to continue."
+];

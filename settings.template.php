@@ -28,7 +28,7 @@ $ldap_config_domain = (new DomainConfiguration('example'))
         ->setDomainName("example.com")
         ->setServers(['192.168.25.131'])
         ->setLazyBind(TRUE)
-        ->setUsername("readonly-bind")
+        ->setUsername("admin-account")
         ->setPassword("password")
         ->setUseTls(TRUE);
 $ldap_config->addDomain($ldap_config_domain);
@@ -36,7 +36,7 @@ $ldap_config->addDomain($ldap_config_domain);
  * End LDAP Configuration
  */
 
-define("SITE_TITLE", "Netsyms Business Apps :: Single Sign On");
+define("SITE_TITLE", "Portal");
 
 // Used to identify the system in OTP and other places
 define("SYSTEM_NAME", "Netsyms SSO Demo");
@@ -52,6 +52,10 @@ define('URL', 'http://localhost:8000/');
 define("RECAPTCHA_ENABLED", FALSE);
 define('RECAPTCHA_SITE_KEY', '');
 define('RECAPTCHA_SECRET_KEY', '');
+
+// API URL and index URL for TaskFloor
+define('TASKFLOOR_API', '');
+define('TASKFLOOR_HOME', '');
 
 // See lang folder for language options
 define('LANGUAGE', "en_us");

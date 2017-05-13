@@ -7,7 +7,6 @@ use Base32\Base32;
 use OTPHP\TOTP;
 use LdapTools\LdapManager;
 use LdapTools\Object\LdapObjectType;
-use LdapTools\Connection\ADResponseCodes;
 
 $ldap = new LdapManager($ldap_config);
 
@@ -40,6 +39,83 @@ function adduser($username, $password, $realname, $email = null, $phone1 = "", $
     ]);
     //var_dump($database->error());
     return $database->id();
+}
+
+/**
+ * Change the password for the current user.
+ * @global $database $database
+ * @global LdapManager $ldap
+ * @param string $old The current password
+ * @param string $new The new password
+ * @param string $new2 New password again
+ * @param [string] $error If the function returns false, this will have an array 
+ * with a message ID from `lang/messages.php` and (depending on the message) an 
+ * extra string for that message.
+ * @return boolean true if the password is changed, else false
+ */
+function change_password($old, $new, $new2, &$error) {
+    global $database, $ldap;
+    // make sure the new password isn't the same as the current one
+    if ($old == $new) {
+        $error = ["passwords_same"];
+        return false;
+    }
+    // Make sure the new passwords are the same
+    if ($new != $new2) {
+        $error = ["new_password_mismatch"];
+        return false;
+    }
+    // check the current password
+    $login_ok = authenticate_user($_SESSION['username'], $old, $errmsg, $errcode);
+    // Allow login if the error is due to expired password
+    if (!$login_ok && ($errcode == LdapTools\Connection\ADResponseCodes::ACCOUNT_PASSWORD_EXPIRED || $errcode == LdapTools\Connection\ADResponseCodes::ACCOUNT_PASSWORD_MUST_CHANGE)) {
+        $login_ok = true;
+    }
+    if ($login_ok) {
+        // Check the new password and make sure it's not stupid
+        require_once __DIR__ . "/worst_passwords.php";
+        $passrank = checkWorst500List($new);
+        if ($passrank !== FALSE) {
+            $error = ["password_500", $passrank];
+            return false;
+        }
+        if (strlen($new) < MIN_PASSWORD_LENGTH) {
+            $error = ["weak_password"];
+            return false;
+        }
+
+        // Figure out how to change the password, then do it
+        $acctloc = account_location($_SESSION['username']);
+        if ($acctloc == "LOCAL") {
+            $database->update('accounts', ['password' => encryptPassword($VARS['newpass'])], ['uid' => $_SESSION['uid']]);
+            $_SESSION['password'] = $VARS['newpass'];
+            insertAuthLog(3, $_SESSION['uid']);
+            return true;
+        } else if ($acctloc == "LDAP") {
+            try {
+                $repository = $ldap->getRepository(LdapObjectType::USER);
+                $user = $repository->findOneByUsername($_SESSION['username']);
+                $user->setPassword($VARS['newpass']);
+                $user->setpasswordMustChange(false);
+                $ldap->persist($user);
+                insertAuthLog(3, $_SESSION['uid']);
+                $_SESSION['password'] = $VARS['newpass'];
+                return true;
+            } catch (\Exception $e) {
+                // Stupid password complexity BS error
+                if (strpos($e->getMessage(), "DSID-031A11E5") !== FALSE) {
+                    $error = ["password_complexity"];
+                    return false;
+                }
+                $error = ["ldap_error", $e->getMessage()];
+                return false;
+            }
+        }
+        $error = ["account_state_error"];
+        return false;
+    }
+    $error = ["old_password_mismatch"];
+    return false;
 }
 
 /**
@@ -79,7 +155,7 @@ function account_location($username) {
  * @param string $password
  * @return boolean True if OK, else false
  */
-function authenticate_user($username, $password, &$errormsg) {
+function authenticate_user($username, $password, &$errormsg, &$errorcode) {
     global $database;
     global $ldap;
     $username = strtolower($username);
@@ -87,28 +163,28 @@ function authenticate_user($username, $password, &$errormsg) {
         return false;
     }
     $loc = account_location($username, $password);
-    if ($loc == "NONE") {
-        return false;
-    } else if ($loc == "LOCAL") {
-        $hash = $database->select('accounts', ['password'], ['username' => $username, "LIMIT" => 1])[0]['password'];
-        return (comparePassword($password, $hash));
-    } else if ($loc == "LDAP") {
-        return authenticate_user_ldap($username, $password, $errormsg) === TRUE;
-    } else if ($loc == "LDAP_ONLY") {
-        try {
-            if (authenticate_user_ldap($username, $password, $errormsg) === TRUE) {
-                $user = $ldap->getRepository('user')->findOneByUsername($username);
-                //var_dump($user);
-                adduser($user->getUsername(), null, $user->getName(), ($user->hasEmailAddress() ? $user->getEmailAddress() : null), "", "", 2);
-                return true;
+    switch ($loc) {
+        case "LOCAL":
+            $hash = $database->select('accounts', ['password'], ['username' => $username, "LIMIT" => 1])[0]['password'];
+            return (comparePassword($password, $hash));
+        case "LDAP":
+            return authenticate_user_ldap($username, $password, $errormsg, $errorcode) === TRUE;
+        case "LDAP_ONLY":
+            // Authenticate with LDAP and create database account
+            try {
+                if (authenticate_user_ldap($username, $password, $errormsg, $errorcode) === TRUE) {
+                    $user = $ldap->getRepository('user')->findOneByUsername($username);
+
+                    adduser($user->getUsername(), null, $user->getName(), ($user->hasEmailAddress() ? $user->getEmailAddress() : null), "", "", 2);
+                    return true;
+                }
+                return false;
+            } catch (Exception $e) {
+                $errormsg = $e->getMessage();
+                return false;
             }
+        default:
             return false;
-        } catch (Exception $e) {
-            $errormsg = $e->getMessage();
-            return false;
-        }
-    } else {
-        return false;
     }
 }
 
@@ -176,7 +252,7 @@ function doLoginUser($username, $password) {
     $_SESSION['uid'] = $userinfo['uid'];
     $_SESSION['email'] = $userinfo['email'];
     $_SESSION['realname'] = $userinfo['realname'];
-    $_SESSION['password'] = $password; // needed for things like EWS
+    $_SESSION['password'] = $password; // needed for accessing data in other apps
     $_SESSION['loggedin'] = true;
 }
 
@@ -251,7 +327,7 @@ function verifyReCaptcha($response) {
  * @param string $password
  * @return mixed True if OK, else false or the error code from the server
  */
-function authenticate_user_ldap($username, $password, &$errormsg) {
+function authenticate_user_ldap($username, $password, &$errormsg, &$errorcode) {
     global $ldap;
     if (is_empty($username) || is_empty($password)) {
         return false;
@@ -262,9 +338,11 @@ function authenticate_user_ldap($username, $password, &$errormsg) {
         $code = 0;
         if ($ldap->authenticate($username, $password, $msg, $code) === TRUE) {
             $errormsg = $msg;
+            $errorcode = $code;
             return true;
         } else {
             $errormsg = $msg;
+            $errorcode = $code;
             return $msg;
         }
     } catch (Exception $e) {

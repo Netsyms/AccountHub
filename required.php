@@ -11,7 +11,7 @@ header('Content-Type: text/html; charset=utf-8');
 header('X-Content-Type-Options: nosniff');
 header('X-XSS-Protection: 1; mode=block');
 header('X-Powered-By: Late-night coding frenzies (plz send caffeine, thx)');
-header('X-Hacker: Why are you looking at HTTP headers? Get a life! </sarcasm>');
+
 $session_length = 60 * 60; // 1 hour
 session_set_cookie_params($session_length, "/", null, false, true);
 
@@ -87,8 +87,8 @@ function is_empty($str) {
  * @param boolean $echo whether to echo the result or return it (default echo)
  */
 function lang($key, $echo = true) {
-    if (array_key_exists($key, STRINGS)) {
-        $str = STRINGS[$key];
+    if (array_key_exists($key, $GLOBALS['STRINGS'])) {
+        $str = $GLOBALS['STRINGS'][$key];
     } else {
         $str = $key;
     }
@@ -109,8 +109,8 @@ function lang($key, $echo = true) {
  * @param boolean $echo whether to echo the result or return it (default echo)
  */
 function lang2($key, $replace, $echo = true) {
-    if (array_key_exists($key, STRINGS)) {
-        $str = STRINGS[$key];
+    if (array_key_exists($key, $GLOBALS['STRINGS'])) {
+        $str = $GLOBALS['STRINGS'][$key];
     } else {
         $str = $key;
     }
@@ -123,6 +123,25 @@ function lang2($key, $replace, $echo = true) {
         echo $str;
     } else {
         return $str;
+    }
+}
+
+/**
+ * Add strings to the i18n global array.
+ * @param array $strings ['key' => 'value']
+ */
+function addLangStrings($strings) {
+    $GLOBALS['STRINGS'] = array_merge($GLOBALS['STRINGS'], $strings);
+}
+
+/**
+ * Add strings to the i18n global array.  Accepts an array of language code 
+ * keys, with the values a key-value array of strings.
+ * @param array $strings ['en_us' => ['key' => 'value']]
+ */
+function addMultiLangStrings($strings) {
+    if (!is_empty($strings[LANGUAGE])) {
+        $GLOBALS['STRINGS'] = array_merge($GLOBALS['STRINGS'], $strings[LANGUAGE]);
     }
 }
 

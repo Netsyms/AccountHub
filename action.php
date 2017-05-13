@@ -19,7 +19,6 @@ if ($VARS['action'] == 'signout' && $_SESSION['loggedin'] != true) {
 dieifnotloggedin();
 
 require_once __DIR__ . "/lib/login.php";
-require_once __DIR__ . "/lib/worst_passwords.php";
 
 function returnToSender($msg, $arg = "") {
     global $VARS;
@@ -38,57 +37,18 @@ switch ($VARS['action']) {
         header('Location: index.php');
         die("Logged out.");
     case "chpasswd":
-        if ($VARS['oldpass'] == $VARS['newpass']) {
-            returnToSender("passwords_same");
+        $error = [];
+        $result = change_password($VARS['oldpass'], $VARS['newpass'], $VARS['conpass'], $error);
+        if ($result === TRUE) {
+            returnToSender("password_updated");
         }
-        if (authenticate_user($_SESSION['username'], $VARS['oldpass'])) {
-            if ($VARS['newpass'] == $VARS['conpass']) {
-                $passrank = checkWorst500List($VARS['newpass']);
-                if ($passrank !== FALSE) {
-                    returnToSender("password_500", $passrank);
-                }
-                if (strlen($VARS['newpass']) < MIN_PASSWORD_LENGTH) {
-                    returnToSender("weak_password");
-                }
-
-                $acctloc = account_location($_SESSION['username'], $_SESSION['password']);
-
-                if ($acctloc == "LOCAL") {
-                    $database->update('accounts', ['password' => encryptPassword($VARS['newpass'])], ['uid' => $_SESSION['uid']]);
-                    $_SESSION['password'] = $VARS['newpass'];
-                    insertAuthLog(3, $_SESSION['uid']);
-                    returnToSender("password_updated");
-                } else if ($acctloc == "LDAP") {
-                    /* $ldap_config_domain
-                      ->setUsername($_SESSION['username'])
-                      ->setPassword($VARS['oldpass']); */
-                    try {
-                        //echo "0";
-                        $ldapManager = new LdapManager($ldap_config);
-                        //echo "1";
-                        $repository = $ldapManager->getRepository(LdapObjectType::USER);
-                        //echo "2";
-                        $user = $repository->findOneByUsername($_SESSION['username']);
-                        //echo "3";
-                        $user->setPassword($VARS['newpass']);
-                        //echo "4";
-                        $ldapManager->persist($user);
-                        //echo "5";
-                        insertAuthLog(3, $_SESSION['uid']);
-                        $_SESSION['password'] = $VARS['newpass'];
-                        returnToSender("password_updated");
-                    } catch (\Exception $e) {
-                        echo $e->getMessage();
-                        returnToSender("ldap_error", $e->getMessage());
-                    }
-                } else {
-                    returnToSender("account_state_error");
-                }
-            } else {
-                returnToSender("new_password_mismatch");
-            }
-        } else {
-            returnToSender("old_password_mismatch");
+        switch (count($error)) {
+            case 1:
+                returnToSender($error[0]);
+            case 2:
+                returnToSender($error[0], $error[1]);
+            default:
+                returnToSender("generic_op_error");
         }
         break;
     case "add2fa":

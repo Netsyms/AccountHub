@@ -16,6 +16,7 @@ define("PAGES", [
 // Which apps to load on a given page
 define("APPS", [
     "home" => [
+        "taskfloor_tasks",
         "sample_app"
     ],
     "security" => [

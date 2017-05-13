@@ -3,14 +3,19 @@ require_once __DIR__ . "/required.php";
 
 require_once __DIR__ . "/lib/login.php";
 
-// if we're logged in, we don't need to be here.
-if ($_SESSION['loggedin']) {
+// If we're logged in, we don't need to be here.
+if ($_SESSION['loggedin'] && !is_empty($_SESSION['password'])) {
     header('Location: home.php');
+// This branch will likely run if the user signed in from a different app.
+} else if ($_SESSION['loggedin'] && is_empty($_SESSION['password'])) {
+    $alert = lang("sign in again", false);
+    $alerttype = "info";
 }
 
 /* Authenticate user */
-$userpass_ok = false;
+$username_ok = false;
 $multiauth = false;
+$change_password = false;
 if ($VARS['progress'] == "1") {
     if (!RECAPTCHA_ENABLED || (RECAPTCHA_ENABLED && verifyReCaptcha($VARS['g-recaptcha-response']))) {
         $autherror = "";
@@ -25,13 +30,16 @@ if ($VARS['progress'] == "1") {
                     break;
                 case "CHANGE_PASSWORD":
                     $alert = lang("password expired", false);
+                    $alerttype = "info";
+                    $_SESSION['username'] = strtolower($VARS['username']);
+                    $change_password = true;
                     break;
                 case "NORMAL":
-                    $userpass_ok = true;
+                    $username_ok = true;
                     break;
                 case "ALERT_ON_ACCESS":
                     sendLoginAlertEmail($VARS['username']);
-                    $userpass_ok = true;
+                    $username_ok = true;
                     break;
                 default:
                     if (!is_empty($error)) {
@@ -41,7 +49,7 @@ if ($VARS['progress'] == "1") {
                     $alert = lang("login error", false);
                     break;
             }
-            if ($userpass_ok) {
+            if ($username_ok) {
                 if (authenticate_user($VARS['username'], $VARS['password'], $autherror)) {
                     $_SESSION['passok'] = true; // stop logins using only username and authcode
                     if (userHasTOTP($VARS['username'])) {
@@ -84,6 +92,32 @@ if ($VARS['progress'] == "1") {
         $alert = lang("2fa incorrect", false);
         insertAuthLog(6, null, "Username: " . $VARS['username']);
     }
+} else if ($VARS['progress'] == "chpasswd") {
+    if (!is_empty($_SESSION['username'])) {
+        $error = [];
+        $result = change_password($VARS['oldpass'], $VARS['newpass'], $VARS['conpass'], $error);
+        if ($result === TRUE) {
+            $alert = lang(MESSAGES["password_updated"]["string"], false);
+            $alerttype = MESSAGES["password_updated"]["type"];
+        }
+        switch (count($error)) {
+            case 1:
+                $alert = lang(MESSAGES[$error[0]]["string"], false);
+                $alerttype = MESSAGES[$error[0]]["type"];
+                break;
+            case 2:
+                $alert = lang2(MESSAGES[$error[0]]["string"], ["arg" => $error[1]], false);
+                $alerttype = MESSAGES[$error[0]]["type"];
+                break;
+            default:
+                $alert = lang(MESSAGES["generic_op_error"]["string"], false);
+                $alerttype = MESSAGES["generic_op_error"]["type"];
+        }
+    } else {
+        session_destroy();
+        header('Location: index.php');
+        die();
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -117,14 +151,33 @@ if ($VARS['progress'] == "1") {
                             <form action="" method="POST">
                                 <?php
                                 if (!is_empty($alert)) {
+                                    $alerttype = isset($alerttype) ? $alerttype : "danger";
                                     ?>
-                                    <div class="alert alert-danger">
-                                        <i class="fa fa-fw fa-exclamation-triangle"></i> <?php echo $alert; ?>
+                                    <div class="alert alert-<?php echo $alerttype ?>">
+                                        <?php
+                                        switch ($alerttype) {
+                                            case "danger":
+                                                $alerticon = "times";
+                                                break;
+                                            case "warning":
+                                                $alerticon = "exclamation-triangle";
+                                                break;
+                                            case "info":
+                                                $alerticon = "info-circle";
+                                                break;
+                                            case "success":
+                                                $alerticon = "check";
+                                                break;
+                                            default:
+                                                $alerticon = "square-o";
+                                        }
+                                        ?>
+                                        <i class="fa fa-fw fa-<?php echo $alerticon ?>"></i> <?php echo $alert ?> 
                                     </div>
                                     <?php
                                 }
 
-                                if ($multiauth != true) {
+                                if (!$multiauth && !$change_password) {
                                     ?>
                                     <input type="text" class="form-control" name="username" placeholder="<?php lang("username"); ?>" required="required" autofocus /><br />
                                     <input type="password" class="form-control" name="password" placeholder="<?php lang("password"); ?>" required="required" /><br />
@@ -142,6 +195,13 @@ if ($VARS['progress'] == "1") {
                                     <input type="text" class="form-control" name="authcode" placeholder="<?php lang("authcode"); ?>" required="required" autocomplete="off" autofocus /><br />
                                     <input type="hidden" name="progress" value="2" />
                                     <input type="hidden" name="username" value="<?php echo $VARS['username']; ?>" />
+                                    <?php
+                                } else if ($change_password) {
+                                    ?>
+                                    <input type="password" class="form-control" name="oldpass" placeholder="Current password" required="required" autocomplete="new-password" autofocus /><br />
+                                    <input type="password" class="form-control" name="newpass" placeholder="New password" required="required" autocomplete="off" /><br />
+                                    <input type="password" class="form-control" name="conpass" placeholder="New password (again)" required="required" autocomplete="off" /><br />
+                                    <input type="hidden" name="progress" value="chpasswd" />
                                     <?php
                                 }
                                 ?>

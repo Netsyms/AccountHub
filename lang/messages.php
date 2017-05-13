@@ -44,5 +44,13 @@ define("MESSAGES", [
     "passwords_same" => [
         "string" => "old and new passwords match",
         "type" => "danger"
+    ],
+    "password_complexity" => [
+        "string" => "password complexity insufficent",
+        "type" => "danger"
+    ],
+    "generic_op_error" => [
+        "string" => "generic op error",
+        "type" => "danger"
     ]
 ]);

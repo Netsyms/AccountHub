@@ -4,6 +4,9 @@ require_once __DIR__ . "/required.php";
 if ($_SESSION['loggedin'] != true) {
     header('Location: index.php');
     die("Session expired.  Log in again to continue.");
+} else if (is_empty($_SESSION['password'])) {
+    header('Location: index.php');
+    die("You need to log in again.");
 }
 
 require_once __DIR__ . "/pages.php";
@@ -145,7 +148,7 @@ END;
                 foreach (APPS[$pageid] as $app) {
                     if (file_exists(__DIR__ . "/apps/" . $app . ".php")) {
                         include_once __DIR__ . "/apps/" . $app . ".php";
-                        $apptitle = $APPS[$app]['title'];
+                        $apptitle = ($APPS[$app]['i18n'] === TRUE ? lang($APPS[$app]['title'], false) : $APPS[$app]['title']);
                         $appicon = (is_empty($APPS[$app]['icon']) ? "" : "fa fa-fw fa-" . $APPS[$app]['icon']);
                         $apptype = (is_empty($APPS[$app]['type']) ? "default" : $APPS[$app]['type']);
                         $appcontent = $APPS[$app]['content'];

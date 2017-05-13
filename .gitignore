@@ -2,3 +2,4 @@
 /vendor
 /database.mwb.bak
 /nbproject/private
+*.sync-conflict*
