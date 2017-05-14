@@ -57,6 +57,8 @@ switch ($VARS['action']) {
                         exit(json_encode(["status" => "ERROR", "msg" => lang("account terminated", false)]));
                     case "CHANGE_PASSWORD":
                         exit(json_encode(["status" => "ERROR", "msg" => lang("password expired", false)]));
+                    case "NORMAL":
+                        break;
                     default:
                         exit(json_encode(["status" => "ERROR", "msg" => lang("account state error", false)]));
                 }
