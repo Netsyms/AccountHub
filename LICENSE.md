@@ -2,7 +2,7 @@ Copyright (C) 2017 Netsyms Technologies.  All rights reserved.
 
 **Definitions:**  
 * "the code", "the software", or "code" refers to the application (or any portion 
-thereof) this license is included with, excluding third-party libraries.  
+thereof, in any form) this license is included with, excluding third-party libraries.  
 * "any form" means source code, binaries, or any other representation of the code.  
 * "explicit written permission" refers to a written, signed, non-transferable 
 statement from Netsyms Technologies granting you additional rights to the code.
