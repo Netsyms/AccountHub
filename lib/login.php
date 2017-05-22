@@ -287,7 +287,7 @@ function insertAuthLog($type, $uid = null, $data = "") {
     } else {
         $ip = "NOT FOUND";
     }
-    $database->insert("authlog", ['#logtime' => 'NOW()', 'logtype' => $type, 'uid' => $uid, 'ip' => $ip, 'otherdata' => $data]);
+    $database->insert("authlog", ['logtime' => date("Y-m-d H:i:s"), 'logtype' => $type, 'uid' => $uid, 'ip' => $ip, 'otherdata' => $data]);
 }
 
 function verifyReCaptcha($response) {
