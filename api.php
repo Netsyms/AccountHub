@@ -228,6 +228,31 @@ switch ($VARS['action']) {
         $data = $database->select('accounts', ['uid', 'username', 'realname (name)'], ["OR" => ['username[~]' => $VARS['search'], 'realname[~]' => $VARS['search']], "LIMIT" => 10]);
         exit(json_encode(["status" => "OK", "result" => $data]));
         break;
+    case "permission":
+        if (is_empty($VARS['code'])) {
+            header("HTTP/1.1 400 Bad Request");
+            die("\"400 Bad Request\"");
+        }
+        $perm = $VARS['code'];
+        if ($VARS['uid']) {
+            if ($database->has("accounts", ['uid' => $VARS['uid']])) {
+                $user = $database->select('accounts', ['username'], ['uid' => $VARS['uid']])[0]['username'];
+            } else {
+                exit(json_encode(["status" => "ERROR", "msg" => lang("user does not exist", false)]));
+            }
+        } else if ($VARS['username']) {
+            if ($database->has("accounts", ['username' => $VARS['username']])) {
+                $user = $VARS['username'];
+            } else {
+                exit(json_encode(["status" => "ERROR", "msg" => lang("user does not exist", false)]));
+            }
+        } else {
+            header("HTTP/1.1 400 Bad Request");
+            die("\"400 Bad Request\"");
+        }
+        $hasperm = account_has_permission($user, $perm);
+        exit(json_encode(["status" => "OK", "has_permission" => $hasperm]));
+        break;
     default:
         header("HTTP/1.1 400 Bad Request");
         die("\"400 Bad Request\"");

@@ -236,6 +236,25 @@ function get_account_status($username, &$error) {
     }
 }
 
+/**
+ * Check if the given username has the given permission (or admin access)
+ * @global $database $database
+ * @param string $username
+ * @param string $permcode
+ * @return boolean TRUE if the user has the permission (or admin access), else FALSE
+ */
+function account_has_permission($username, $permcode) {
+    global $database;
+    return $database->has('assigned_permissions', [
+                '[>]accounts' => [
+                    'uid' => 'uid'
+                ],
+                '[>]permissions' => [
+                    'permid' => 'permid'
+                ]
+                    ], ['AND' => ['OR' => ['permcode' => $permcode, 'permcode' => 'ADMIN'], 'username' => $username]]) === TRUE;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 //                              Login handling                                //
 ////////////////////////////////////////////////////////////////////////////////
