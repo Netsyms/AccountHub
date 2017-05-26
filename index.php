@@ -6,6 +6,7 @@ require_once __DIR__ . "/lib/login.php";
 // If we're logged in, we don't need to be here.
 if ($_SESSION['loggedin'] && !is_empty($_SESSION['password'])) {
     header('Location: home.php');
+    die();
 // This branch will likely run if the user signed in from a different app.
 } else if ($_SESSION['loggedin'] && is_empty($_SESSION['password'])) {
     $alert = lang("sign in again", false);
@@ -54,6 +55,7 @@ if ($VARS['progress'] == "1") {
                     $_SESSION['passok'] = true; // stop logins using only username and authcode
                     if (userHasTOTP($VARS['username'])) {
                         $multiauth = true;
+                        $_SESSION['password'] = $VARS['password'];
                     } else {
                         doLoginUser($VARS['username'], $VARS['password']);
                         insertAuthLog(1, $_SESSION['uid']);
