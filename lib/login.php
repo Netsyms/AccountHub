@@ -252,7 +252,7 @@ function account_has_permission($username, $permcode) {
                 '[>]permissions' => [
                     'permid' => 'permid'
                 ]
-                    ], ['AND' => ['OR' => ['permcode' => $permcode, 'permcode' => 'ADMIN'], 'username' => $username]]) === TRUE;
+                    ], ['AND' => ['OR' => ['permcode #code' => $permcode, 'permcode #admin' => 'ADMIN'], 'username' => $username]]) === TRUE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
