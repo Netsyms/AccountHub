@@ -54,8 +54,10 @@ define('RECAPTCHA_SITE_KEY', '');
 define('RECAPTCHA_SECRET_KEY', '');
 
 // API URL and index URL for TaskFloor
-define('TASKFLOOR_API', '');
-define('TASKFLOOR_HOME', '');
+define('TASKFLOOR_API', 'http://localhost/taskfloor/api.php');
+define('TASKFLOOR_HOME', '/taskfloor/app.php');
+
+define('INVENTORY_HOME', '/inventory/app.php');
 
 // See lang folder for language options
 define('LANGUAGE', "en_us");

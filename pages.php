@@ -18,6 +18,7 @@ define("APPS", [
     "home" => [
         "taskfloor_tasks",
         "taskfloor_messages",
+        "inventory_link",
         "account_security"
     ],
     "security" => [
