@@ -44,6 +44,9 @@ define("SYSTEM_NAME", "Netsyms SSO Demo");
 // For supported values, see http://php.net/manual/en/timezones.php
 define("TIMEZONE", "America/Denver");
 
+// Allow or prevent users from logging in via the mobile app.
+define("MOBILE_ENABLED", TRUE);
+
 // Base URL for site links.
 define('URL', 'http://localhost:8000/');
 

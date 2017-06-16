@@ -49,5 +49,7 @@ $STRINGS = [
     "password complexity insufficent" => "The new password does not meet the minumum requirements defined by your system administrator.",
     "error loading widget" => "There was a problem loading this app.",
     "open app" => "Open App",
-    "sign in again" => "Please sign in again to continue."
+    "sign in again" => "Please sign in again to continue.",
+    "login failed try on web" => "There is a problem with your account. Visit Portal via a web browser for more information.",
+    "mobile login disabled" => "Mobile login has been disabled by your system administrator.  Contact technical support for more information."
 ];

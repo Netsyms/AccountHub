@@ -22,6 +22,7 @@ define("APPS", [
         "account_security"
     ],
     "security" => [
+        "sync_mobile",
         "change_password",
         "setup_2fa"
     ],
