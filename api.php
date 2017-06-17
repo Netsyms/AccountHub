@@ -255,9 +255,18 @@ switch ($VARS['action']) {
         $hasperm = account_has_permission($user, $perm);
         exit(json_encode(["status" => "OK", "has_permission" => $hasperm]));
         break;
+    case "mobileenabled":
+        exit(json_encode(["status" => "OK", "mobile" => MOBILE_ENABLED]));
+    case "mobilevalid":
+        if (is_empty($VARS['username']) || is_empty($VARS['code'])) {
+            http_response_code(400);
+            die("\"400 Bad Request\"");
+        }
+        $user_key_valid = $database->has('mobile_codes', ['[>]accounts' => ['uid' => 'uid']], ["AND" => ['mobile_codes.code' => $VARS['code'], 'accounts.username' => $VARS['username']]]);
+        exit(json_encode(["status" => "OK", "valid" => $user_key_valid]));
     default:
         http_response_code(404);
-        die(json_encode(["status" => "ERROR", "msg" => "The requested action is not available."]));
+        die(json_encode("404 Not Found: the requested action is not available."));
 }
     /* } catch (Exception $e) {
       header("HTTP/1.1 500 Internal Server Error");
