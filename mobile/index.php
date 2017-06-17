@@ -41,6 +41,7 @@ switch ($VARS['action']) {
         // If we get this far, it is, so return success.
         exit(json_encode(["status" => "OK"]));
     case "check_password":
+        // Check if the user-supplied password is valid.
         engageRateLimit();
         if (get_account_status($VARS['username']) != "NORMAL") {
             insertAuthLog(20, null, "Username: " . $VARS['username'] . ", Key: " . $VARS['key']);
@@ -59,6 +60,18 @@ switch ($VARS['action']) {
                 exit(json_encode(["status" => "ERROR", "msg" => lang("login incorrect", false)]));
             }
         }
+    case "start_session":
+        // Do a web login.
+        engageRateLimit();
+        if (user_exists($VARS['username'])) {
+            if (get_account_status($VARS['username']) == "NORMAL") {
+                if (authenticate_user($VARS['username'], $VARS['password'], $autherror)) {
+                    doLoginUser($VARS['username'], $VARS['password']);
+                    exit(json_encode(["status" => "OK"]));
+                }
+            }
+        }
+        exit(json_encode(["status" => "ERROR", "msg" => lang("login incorrect", false)]));
     default:
         http_response_code(404);
         die(json_encode(["status" => "ERROR", "msg" => "The requested action is not available."]));
