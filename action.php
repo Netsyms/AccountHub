@@ -3,8 +3,6 @@
 /**
  * Make things happen when buttons are pressed and forms submitted.
  */
-use LdapTools\LdapManager;
-use LdapTools\Object\LdapObjectType;
 
 require_once __DIR__ . "/required.php";
 
@@ -17,6 +15,8 @@ if ($VARS['action'] == 'signout' && $_SESSION['loggedin'] != true) {
 }
 
 dieifnotloggedin();
+
+engageRateLimit();
 
 require_once __DIR__ . "/lib/login.php";
 

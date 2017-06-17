@@ -14,7 +14,8 @@ header("Content-Type: application/json");
 //try {
 $key = $VARS['key'];
 if ($database->has('apikeys', ['key' => $key]) !== TRUE) {
-    header("HTTP/1.1 403 Unauthorized");
+    engageRateLimit();
+    http_response_code(403);
     insertAuthLog(14, null, "Key: " . $key);
     die("\"403 Unauthorized\"");
 }
@@ -82,7 +83,7 @@ switch ($VARS['action']) {
                 exit(json_encode(["status" => "ERROR", "msg" => lang("login incorrect", false)]));
             }
         } else {
-            header("HTTP/1.1 400 Bad Request");
+            http_response_code(400);
             die("\"400 Bad Request\"");
         }
         break;
@@ -118,6 +119,7 @@ switch ($VARS['action']) {
     case "acctstatus":
         exit(json_encode(["status" => "OK", "account" => get_account_status($VARS['username'])]));
     case "login":
+        engageRateLimit();
         // simulate a login, checking account status and alerts
         $errmsg = "";
         if (authenticate_user($VARS['username'], $VARS['password'], $errmsg)) {
@@ -195,7 +197,7 @@ switch ($VARS['action']) {
                 exit(json_encode(["status" => "ERROR", "msg" => lang("user does not exist", false)]));
             }
         } else {
-            header("HTTP/1.1 400 Bad Request");
+            http_response_code(400);
             die("\"400 Bad Request\"");
         }
         $managed = $database->select('managers', 'employeeid', ['managerid' => $managerid]);
@@ -215,7 +217,7 @@ switch ($VARS['action']) {
                 exit(json_encode(["status" => "ERROR", "msg" => lang("user does not exist", false)]));
             }
         } else {
-            header("HTTP/1.1 400 Bad Request");
+            http_response_code(400);
             die("\"400 Bad Request\"");
         }
         $managers = $database->select('managers', 'managerid', ['employeeid' => $empid]);
@@ -230,7 +232,7 @@ switch ($VARS['action']) {
         break;
     case "permission":
         if (is_empty($VARS['code'])) {
-            header("HTTP/1.1 400 Bad Request");
+            http_response_code(400);
             die("\"400 Bad Request\"");
         }
         $perm = $VARS['code'];
@@ -247,15 +249,15 @@ switch ($VARS['action']) {
                 exit(json_encode(["status" => "ERROR", "msg" => lang("user does not exist", false)]));
             }
         } else {
-            header("HTTP/1.1 400 Bad Request");
+            http_response_code(400);
             die("\"400 Bad Request\"");
         }
         $hasperm = account_has_permission($user, $perm);
         exit(json_encode(["status" => "OK", "has_permission" => $hasperm]));
         break;
     default:
-        header("HTTP/1.1 400 Bad Request");
-        die("\"400 Bad Request\"");
+        http_response_code(404);
+        die(json_encode(["status" => "ERROR", "msg" => "The requested action is not available."]));
 }
     /* } catch (Exception $e) {
       header("HTTP/1.1 500 Internal Server Error");

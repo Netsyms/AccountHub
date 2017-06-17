@@ -28,6 +28,7 @@ if (is_empty($VARS['username']) || is_empty($VARS['key'])) {
 // Make sure the username and key are actually legit
 $user_key_valid = $database->has('mobile_codes', ['[>]accounts' => ['uid' => 'uid']], ["AND" => ['mobile_codes.code' => $VARS['key'], 'accounts.username' => $VARS['username']]]);
 if ($user_key_valid !== TRUE) {
+    engageRateLimit();
     http_response_code(401);
     insertAuthLog(21, null, "Username: " . $VARS['username'] . ", Key: " . $VARS['key']);
     die(json_encode(["status" => "ERROR", "msg" => "Invalid username and/or access key."]));
@@ -40,6 +41,7 @@ switch ($VARS['action']) {
         // If we get this far, it is, so return success.
         exit(json_encode(["status" => "OK"]));
     case "check_password":
+        engageRateLimit();
         if (get_account_status($VARS['username']) != "NORMAL") {
             insertAuthLog(20, null, "Username: " . $VARS['username'] . ", Key: " . $VARS['key']);
             exit(json_encode(["status" => "ERROR", "msg" => lang("login failed try on web", false)]));

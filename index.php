@@ -18,6 +18,7 @@ $username_ok = false;
 $multiauth = false;
 $change_password = false;
 if ($VARS['progress'] == "1") {
+    engageRateLimit();
     if (!RECAPTCHA_ENABLED || (RECAPTCHA_ENABLED && verifyReCaptcha($VARS['g-recaptcha-response']))) {
         $autherror = "";
         if (user_exists($VARS['username'])) {
@@ -81,6 +82,7 @@ if ($VARS['progress'] == "1") {
         insertAuthLog(8, null, "Username: " . $VARS['username']);
     }
 } else if ($VARS['progress'] == "2") {
+    engageRateLimit();
     if ($_SESSION['passok'] !== true) {
         // stop logins using only username and authcode
         sendError("Password integrity check failed!");
@@ -95,6 +97,7 @@ if ($VARS['progress'] == "1") {
         insertAuthLog(6, null, "Username: " . $VARS['username']);
     }
 } else if ($VARS['progress'] == "chpasswd") {
+    engageRateLimit();
     if (!is_empty($_SESSION['username'])) {
         $error = [];
         $result = change_password($VARS['oldpass'], $VARS['newpass'], $VARS['conpass'], $error);
