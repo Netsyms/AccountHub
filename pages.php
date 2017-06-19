@@ -18,6 +18,7 @@ define("APPS", [
     "home" => [
         "taskfloor_tasks",
         "taskfloor_messages",
+        "qwikclock_inout",
         "inventory_link",
         "account_security"
     ],
