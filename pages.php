@@ -17,8 +17,8 @@ define("PAGES", [
 define("APPS", [
     "home" => [
         "taskfloor_tasks",
-        "taskfloor_messages",
         "qwikclock_inout",
+        "taskfloor_messages",
         "inventory_link",
         "account_security"
     ],

@@ -9,6 +9,7 @@ addMultiLangStrings(["en_us" => [
 $APPS["account_security"]["i18n"] = TRUE;
 $APPS["account_security"]["title"] = "account security";
 $APPS["account_security"]["icon"] = "lock";
+$APPS["account_security"]["type"] = "brown";
 $content = "<p>"
         . lang("manage security description", false)
         . '</p> '

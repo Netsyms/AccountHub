@@ -63,6 +63,7 @@ define('TASKFLOOR_HOME', '/taskfloor/app.php');
 define('INVENTORY_HOME', '/inventory/app.php');
 
 define('QWIKCLOCK_API', 'http://localhost/qwikclock/api.php');
+define('QWIKCLOCK_HOME', '/qwikclock/app.php');
 
 // See lang folder for language options
 define('LANGUAGE', "en_us");

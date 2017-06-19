@@ -40,3 +40,7 @@
 .navbar-inverse .navbar-link {
     color: white;
 }
+
+.apppanel {
+    min-height: 250px;
+}

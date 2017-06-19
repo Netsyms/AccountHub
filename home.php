@@ -31,6 +31,7 @@ if (!is_empty($_GET['page'])) {
 
         <link href="static/css/bootstrap.min.css" rel="stylesheet">
         <link href="static/css/font-awesome.min.css" rel="stylesheet">
+        <link href="static/css/material-color.min.css" rel="stylesheet">
         <link href="static/css/app.css" rel="stylesheet">
     </head>
     <body>
@@ -154,7 +155,7 @@ END;
                         $appcontent = $APPS[$app]['content'];
                         echo <<<END
                         <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
-                            <div class="panel panel-$apptype">
+                            <div class="panel panel-$apptype apppanel">
                                 <div class="panel-heading">
                                     <h3 class="panel-title"><i class="$appicon"></i> $apptitle </h3>
                                 </div>

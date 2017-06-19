@@ -10,6 +10,7 @@ addMultiLangStrings(["en_us" => [
 $APPS["qwikclock_inout"]["i18n"] = TRUE;
 $APPS["qwikclock_inout"]["title"] = "qwikclock";
 $APPS["qwikclock_inout"]["icon"] = "clock-o";
+$APPS["qwikclock_inout"]["type"] = "blue";
 $content = "";
 if (!is_empty($_GET['qwikclock']) && ($_GET['qwikclock'] === "punchin" || $_GET['qwikclock'] === "punchout")) {
     try {
@@ -23,20 +24,20 @@ if (!is_empty($_GET['qwikclock']) && ($_GET['qwikclock'] === "punchin" || $_GET[
 
         $resp = json_decode($response->getBody(), TRUE);
         if ($resp['status'] == "OK") {
-            $content = "<div class=\"alert alert-success\">" . $resp['msg'] . "</div>";
+            $content = "<div class=\"alert alert-success alert-dismissable\"><button type=\"button\" class=\"close\">&times;</button>" . $resp['msg'] . "</div>";
         } else {
-            $content = "<div class=\"alert alert-danger\">" . $resp['msg'] . "</div>";
+            $content = "<div class=\"alert alert-danger alert-dismissable\"><button type=\"button\" class=\"close\">&times;</button>" . $resp['msg'] . "</div>";
         }
     } catch (Exception $e) {
-        $content = "<div class=\"alert alert-danger\">" . lang("error loading widget", false) . "  " . $e->getMessage() . "</div>";
+        $content = "<div class=\"alert alert-danger alert-dismissable\"><button type=\"button\" class=\"close\">&times;</button>" . lang("error loading widget", false) . "  " . $e->getMessage() . "</div>";
     }
 }
 $lang_punchin = lang("punch in", false);
 $lang_punchout = lang("punch out", false);
 $content .= <<<END
                 <a href="home.php?&qwikclock=punchin" class="btn btn-block btn-success btn-lg"><i class="fa fa-play"></i> $lang_punchin</a>
-                <br />
                 <a href="home.php?qwikclock=punchout" class="btn btn-block btn-danger btn-lg"><i class="fa fa-stop"></i> $lang_punchout</a>        
 END;
+$content .= '<br /><a href="' . QWIKCLOCK_HOME . '" class="btn btn-primary btn-block">' . lang("open app", false) . ' &nbsp;<i class="fa fa-external-link-square"></i></a>';
 $APPS["qwikclock_inout"]["content"] = $content;
 ?>

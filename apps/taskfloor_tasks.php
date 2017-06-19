@@ -9,6 +9,7 @@ addMultiLangStrings(["en_us" => [
 $APPS["taskfloor_tasks"]["i18n"] = TRUE;
 $APPS["taskfloor_tasks"]["title"] = "tasks";
 $APPS["taskfloor_tasks"]["icon"] = "tasks";
+$APPS["taskfloor_tasks"]["type"] = "blue-grey";
 try {
     $client = new GuzzleHttp\Client();
 
