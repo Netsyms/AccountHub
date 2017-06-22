@@ -40,7 +40,10 @@ if ($VARS['progress'] == "1") {
                     $username_ok = true;
                     break;
                 case "ALERT_ON_ACCESS":
-                    sendLoginAlertEmail($VARS['username']);
+                    $mail_resp = sendLoginAlertEmail($VARS['username']);
+                    if (DEBUG) {
+                        var_dump($mail_resp);
+                    }
                     $username_ok = true;
                     break;
                 default:

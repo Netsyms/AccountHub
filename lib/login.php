@@ -280,9 +280,51 @@ function doLoginUser($username, $password) {
  * 
  * Used when an account with the status ALERT_ON_ACCESS logs in
  * @param String $username the account username
+ * @return Mixed TRUE if successful, error string if not
  */
 function sendLoginAlertEmail($username) {
-    // TODO: add email code
+    if (is_empty(ADMIN_EMAIL) || filter_var(ADMIN_EMAIL, FILTER_VALIDATE_EMAIL) === FALSE) {
+        return "false";
+    }
+    if (is_empty(FROM_EMAIL) || filter_var(FROM_EMAIL, FILTER_VALIDATE_EMAIL) === FALSE) {
+        return "false";
+    }
+
+    $mail = new PHPMailer;
+
+    if (DEBUG) {
+        $mail->SMTPDebug = 2;
+    }
+
+    if (USE_SMTP) {
+        $mail->isSMTP();
+        $mail->Host = SMTP_HOST;
+        $mail->SMTPAuth = SMTP_AUTH;
+        $mail->Username = SMTP_USER;
+        $mail->Password = SMTP_PASS;
+        $mail->SMTPSecure = SMTP_SECURE;
+        $mail->Port = SMTP_PORT;
+        if (SMTP_ALLOW_INVALID_CERTIFICATE) {
+            $mail->SMTPOptions = array(
+                'ssl' => array(
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed' => true
+                )
+            );
+        }
+    }
+
+    $mail->setFrom(FROM_EMAIL, 'Account Alerts');
+    $mail->addAddress(ADMIN_EMAIL, "System Admin");
+    $mail->isHTML(false);
+    $mail->Subject = lang("admin alert email subject", false);
+    $mail->Body = lang2("admin alert email message", ["username" => $username, "datetime" => date("Y-m-d H:i:s"), "ipaddr" => getClientIP()], false);
+
+    if (!$mail->send()) {
+        return $mail->ErrorInfo;
+    }
+    return TRUE;
 }
 
 function insertAuthLog($type, $uid = null, $data = "") {

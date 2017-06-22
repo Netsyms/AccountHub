@@ -68,6 +68,18 @@ define('QWIKCLOCK_HOME', '/qwikclock/app.php');
 // See lang folder for language options
 define('LANGUAGE', "en_us");
 
+// Email settings for receiving admin alerts.
+define("USE_SMTP", TRUE); // if FALSE, will use PHP's mail() instead
+define("ADMIN_EMAIL", "");
+define("FROM_EMAIL", "portal-noreply@apps.biz.netsyms.com");
+define("SMTP_HOST", "");
+define("SMTP_AUTH", true);
+define("SMTP_PORT", 587);
+define("SMTP_SECURE", 'tls');
+define("SMTP_USER", "");
+define("SMTP_PASS", "");
+define("SMTP_ALLOW_INVALID_CERTIFICATE", TRUE);
+
 // Minimum length for new passwords
 // The system checks new passwords against the 500 worst passwords and rejects
 // any matches.
