@@ -127,7 +127,7 @@ if (!is_empty($_GET['page'])) {
 END;
             }
             ?>
-            <div class="row">
+            <div class="row widget-box">
                 <?php
                 // Center the widgets horizontally on the screen
                 $appcount = count(APPS[$pageid]);

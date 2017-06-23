@@ -44,3 +44,7 @@
 .apppanel {
     min-height: 250px;
 }
+
+.row.widget-box > .col-md-4:nth-child(3n+4) {
+    clear: both;
+}
