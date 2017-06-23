@@ -282,7 +282,7 @@ function doLoginUser($username, $password) {
  * @param String $username the account username
  * @return Mixed TRUE if successful, error string if not
  */
-function sendLoginAlertEmail($username, $appname = "Portal") {
+function sendLoginAlertEmail($username, $appname = SITE_TITLE) {
     if (is_empty(ADMIN_EMAIL) || filter_var(ADMIN_EMAIL, FILTER_VALIDATE_EMAIL) === FALSE) {
         return "false";
     }
