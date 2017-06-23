@@ -264,6 +264,21 @@ switch ($VARS['action']) {
         }
         $user_key_valid = $database->has('mobile_codes', ['[>]accounts' => ['uid' => 'uid']], ["AND" => ['mobile_codes.code' => $VARS['code'], 'accounts.username' => $VARS['username']]]);
         exit(json_encode(["status" => "OK", "valid" => $user_key_valid]));
+    case "alertemail":
+        engageRateLimit();
+        if (is_empty($VARS['username']) || !user_exists($VARS['username'])) {
+            http_response_code(400);
+            die("\"400 Bad Request\"");
+        }
+        $appname = "???";
+        if (!is_empty($VARS['appname'])) {
+            $appname = $VARS['appname'];
+        }
+        $result = sendLoginAlertEmail($VARS['username'], $appname);
+        if ($result === TRUE) {
+            exit(json_encode(["status" => "OK"]));
+        }
+        exit(json_encode(["status" => "ERROR", "msg" => $result]));
     default:
         http_response_code(404);
         die(json_encode("404 Not Found: the requested action is not available."));

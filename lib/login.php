@@ -282,7 +282,7 @@ function doLoginUser($username, $password) {
  * @param String $username the account username
  * @return Mixed TRUE if successful, error string if not
  */
-function sendLoginAlertEmail($username) {
+function sendLoginAlertEmail($username, $appname = "Portal") {
     if (is_empty(ADMIN_EMAIL) || filter_var(ADMIN_EMAIL, FILTER_VALIDATE_EMAIL) === FALSE) {
         return "false";
     }
@@ -319,7 +319,7 @@ function sendLoginAlertEmail($username) {
     $mail->addAddress(ADMIN_EMAIL, "System Admin");
     $mail->isHTML(false);
     $mail->Subject = lang("admin alert email subject", false);
-    $mail->Body = lang2("admin alert email message", ["username" => $username, "datetime" => date("Y-m-d H:i:s"), "ipaddr" => getClientIP()], false);
+    $mail->Body = lang2("admin alert email message", ["username" => $username, "datetime" => date("Y-m-d H:i:s"), "ipaddr" => getClientIP(), "appname" => $appname], false);
 
     if (!$mail->send()) {
         return $mail->ErrorInfo;

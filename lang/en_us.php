@@ -53,5 +53,5 @@ $STRINGS = [
     "login failed try on web" => "There is a problem with your account. Visit Portal via a web browser for more information.",
     "mobile login disabled" => "Mobile login has been disabled by your system administrator.  Contact technical support for more information.",
     "admin alert email subject" => "Alert: User login notification",
-    "admin alert email message" => "You (or another administrator) requested to be notified when user \"{username}\" logged in, an event which happened just now.\r\n\r\nUsername: {username}\r\nDate/Time: {datetime}\r\nIP address: {ipaddr}",
+    "admin alert email message" => "You (or another administrator) requested to be notified when user \"{username}\" logged in, an event which happened just now.\r\n\r\nUsername: \t{username}\r\nApplication: \t{appname}\r\nDate/Time: \t{datetime}\r\nIP address: \t{ipaddr}",
 ];
