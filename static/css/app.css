@@ -45,6 +45,16 @@
     min-height: 250px;
 }
 
-.row.widget-box > .col-md-4:nth-child(3n+4) {
-    clear: both;
+/* Small Devices, Tablets */
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+    .row.widget-box > .col-sm-6:nth-child(2n+3) {
+        clear: both;
+    }
+}
+
+/* Medium Devices, Desktops */
+@media only screen and (min-width: 992px) {
+    .row.widget-box > .col-md-4:nth-child(3n+4) {
+        clear: both;
+    }
 }
