@@ -6,7 +6,7 @@ define("PAGES", [
         "title" => "{DEFAULT}"
     ],
     "security" => [
-        "title" => "security options"
+        "title" => "account options"
     ],
     "404" => [
         "title" => "404 error"

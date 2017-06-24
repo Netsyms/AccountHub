@@ -53,11 +53,20 @@ END;
     $content .= "<div class='list-group'>";
     if (count($activecodes) > 0) {
         foreach ($activecodes as $c) {
-            $content .= "<div class='list-group-item'><span style='font-family: Ubuntu Mono,monospace;'>" . trim(chunk_split($c['code'], 5, ' ')) . "</span> <span class='pull-right'><a class='btn btn-primary btn-sm' href='home.php?page=security&mobilecode=generate&showsynccode=" . $c['codeid'] . "'><i class='fa fa-qrcode'></i></a> <a class='btn btn-danger btn-sm' href='home.php?page=security&delsynccode=" . $c['codeid'] . "'><i class='fa fa-trash'></i></a></span></div>";
+            $content .= "<div class='list-group-item mobilekey'><span style='font-family: Ubuntu Mono,monospace; flex-shrink: 0'>" . trim(chunk_split($c['code'], 5, ' ')) . "</span> <span class='tinybuttons'><a class='btn btn-primary btn-sm' href='home.php?page=security&mobilecode=generate&showsynccode=" . $c['codeid'] . "'><i class='fa fa-qrcode'></i></a> <a class='btn btn-danger btn-sm' href='home.php?page=security&delsynccode=" . $c['codeid'] . "'><i class='fa fa-trash'></i></a></span></div>";
         }
     } else {
         $content .= "<div class='list-group-item'>" . lang("no active codes", false) . "</div>";
     }
     $content .= "</div>";
+    $content .= <<<END
+            <style>
+                .mobilekey {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: space-between;
+                }
+            </style>
+END;
     $APPS["sync_mobile"]["content"] = $content;
 }

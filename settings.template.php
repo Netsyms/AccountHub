@@ -68,6 +68,35 @@ define('QWIKCLOCK_HOME', '/qwikclock/app.php');
 // See lang folder for language options
 define('LANGUAGE', "en_us");
 
+// List of available applications, icons, and other info.
+// Used in the mobile app and in the "dock" in Portal.
+define('EXTERNAL_APPS', [
+    "portal" => [
+        "url" => "http://localhost/portal",
+        "mobileapi" => "/mobile",
+        "icon" => "/static/img/logo.svg",
+        "title" => SITE_TITLE
+    ],
+    "taskfloor" => [
+        "url" => "http://localhost/taskfloor",
+        "mobileapi" => "/mobile",
+        "icon" => "/static/img/logo.svg",
+        "title" => "TaskFloor"
+    ],
+    "qwikclock" => [
+        "url" => "http://localhost/qwikclock",
+        "mobileapi" => "/mobile",
+        "icon" => "/static/img/logo.svg",
+        "title" => "QwikClock"
+    ],
+    "inventory" => [
+        "url" => "http://localhost/inventory",
+        "mobileapi" => "/mobile",
+        "icon" => "/static/img/logo.svg",
+        "title" => "Inventory"
+    ]
+]);
+
 // Email settings for receiving admin alerts.
 define("USE_SMTP", TRUE); // if FALSE, will use PHP's mail() instead
 define("ADMIN_EMAIL", "");
@@ -100,6 +129,6 @@ define("QUERY_LIMIT", 1000);
 //  /!\       Warning: Changing these values may       /!\  //
 //  /!\  violate the terms of your license agreement!  /!\  //
 //////////////////////////////////////////////////////////////
-define("LICENSE_TEXT", "<b>Unlicensed Demo: For Trial Use Only</b>");
+define("LICENSE_TEXT", "<b>Personal, Non-commercial Use Only</b>");
 define("COPYRIGHT_NAME", "Netsyms Technologies");
 //////////////////////////////////////////////////////////////
