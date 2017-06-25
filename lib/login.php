@@ -87,19 +87,20 @@ function change_password($old, $new, $new2, &$error) {
         // Figure out how to change the password, then do it
         $acctloc = account_location($_SESSION['username']);
         if ($acctloc == "LOCAL") {
-            $database->update('accounts', ['password' => encryptPassword($VARS['newpass'])], ['uid' => $_SESSION['uid']]);
-            $_SESSION['password'] = $VARS['newpass'];
+            $database->update('accounts', ['password' => encryptPassword($new), 'acctstatus' => 1], ['uid' => $_SESSION['uid']]);
+            $_SESSION['password'] = $new;
             insertAuthLog(3, $_SESSION['uid']);
             return true;
         } else if ($acctloc == "LDAP") {
             try {
                 $repository = $ldap->getRepository(LdapObjectType::USER);
                 $user = $repository->findOneByUsername($_SESSION['username']);
-                $user->setPassword($VARS['newpass']);
+                $user->setPassword($new);
                 $user->setpasswordMustChange(false);
                 $ldap->persist($user);
+                $database->update('accounts', ['acctstatus' => 1], ['uid' => $_SESSION['uid']]);
                 insertAuthLog(3, $_SESSION['uid']);
-                $_SESSION['password'] = $VARS['newpass'];
+                $_SESSION['password'] = $new;
                 return true;
             } catch (\Exception $e) {
                 // Stupid password complexity BS error

@@ -34,6 +34,7 @@ if ($VARS['progress'] == "1") {
                     $alert = lang("password expired", false);
                     $alerttype = "info";
                     $_SESSION['username'] = strtolower($VARS['username']);
+                    $_SESSION['uid'] = $database->get('accounts', 'uid', ['username' => strtolower($VARS['username'])]);
                     $change_password = true;
                     break;
                 case "NORMAL":
@@ -109,6 +110,8 @@ if ($VARS['progress'] == "1") {
             $alerttype = MESSAGES["password_updated"]["type"];
         }
         switch (count($error)) {
+            case 0:
+                break;
             case 1:
                 $alert = lang(MESSAGES[$error[0]]["string"], false);
                 $alerttype = MESSAGES[$error[0]]["type"];
