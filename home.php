@@ -91,27 +91,29 @@ if (!is_empty($_GET['page'])) {
                 </div>
             </nav>
 
-            <div class="app-dock">
-                <?php
-                foreach (EXTERNAL_APPS as $a) {
-                    ?>
-                    <div class="app-dock-item">
-                        <p>
-                            <a href="<?php echo $a['url']; ?>">
-                                <img class="img-responsive app-icon" src="<?php
-                                if (strpos($a['icon'], "http") !== 0) {
-                                    echo $a['url'] . $a['icon'];
-                                } else {
-                                    echo $a['icon'];
-                                }
-                                ?>"/>
-                                <span><?php echo $a['title']; ?></span>
-                            </a>
-                        </p>
-                    </div>
+            <div class="app-dock-container">
+                <div class="app-dock">
                     <?php
-                }
-                ?>
+                    foreach (EXTERNAL_APPS as $a) {
+                        ?>
+                        <div class="app-dock-item">
+                            <p>
+                                <a href="<?php echo $a['url']; ?>">
+                                    <img class="img-responsive app-icon" src="<?php
+                                    if (strpos($a['icon'], "http") !== 0) {
+                                        echo $a['url'] . $a['icon'];
+                                    } else {
+                                        echo $a['icon'];
+                                    }
+                                    ?>"/>
+                                    <span><?php echo $a['title']; ?></span>
+                                </a>
+                            </p>
+                        </div>
+                        <?php
+                    }
+                    ?>
+                </div>
             </div>
 
             <?php
