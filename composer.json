@@ -1,6 +1,6 @@
 {
-    "name": "netsyms/business-sso",
-    "description": "Single-sign-on system and accounts database for Netsyms small business apps",
+    "name": "netsyms/business-portal",
+    "description": "Single-sign-on system and dashboard for Netsyms Business Apps",
     "type": "project",
     "require": {
         "catfan/medoo": "^1.2",
