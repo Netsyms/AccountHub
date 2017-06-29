@@ -31,7 +31,7 @@ if ($_GET['mobilecode'] == "generate") {
         $code = strtoupper(substr(md5(mt_rand() . uniqid("", true)), 0, 20));
         $database->insert('mobile_codes', ['uid' => $_SESSION['uid'], 'code' => $code]);
     }
-    $url = str_replace("/", "\\", URL);
+    $url = str_replace("/", "\\", URL . "mobile/index.php");
     $codeuri = "bizsync://" . $url . "/" . $_SESSION['username'] . "/" . $code;
     $qrCode = new QrCode($codeuri);
     $qrCode->setSize(200);

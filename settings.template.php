@@ -73,25 +73,25 @@ define('LANGUAGE', "en_us");
 define('EXTERNAL_APPS', [
     "portal" => [
         "url" => "http://localhost/portal",
-        "mobileapi" => "/mobile",
+        "mobileapi" => "/mobile/index.php",
         "icon" => "/static/img/logo.svg",
         "title" => SITE_TITLE
     ],
     "taskfloor" => [
         "url" => "http://localhost/taskfloor",
-        "mobileapi" => "/mobile",
+        "mobileapi" => "/mobile/index.php",
         "icon" => "/static/img/logo.svg",
         "title" => "TaskFloor"
     ],
     "qwikclock" => [
         "url" => "http://localhost/qwikclock",
-        "mobileapi" => "/mobile",
+        "mobileapi" => "/mobile/index.php",
         "icon" => "/static/img/logo.svg",
         "title" => "QwikClock"
     ],
     "inventory" => [
         "url" => "http://localhost/inventory",
-        "mobileapi" => "/mobile",
+        "mobileapi" => "/mobile/index.php",
         "icon" => "/static/img/logo.svg",
         "title" => "Inventory"
     ]

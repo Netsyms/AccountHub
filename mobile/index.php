@@ -9,6 +9,7 @@ require __DIR__ . "/../required.php";
 require __DIR__ . "/../lib/login.php";
 
 header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
 
 // Allow ping check without authentication
 if ($VARS['action'] == "ping") {
@@ -60,6 +61,25 @@ switch ($VARS['action']) {
                 exit(json_encode(["status" => "ERROR", "msg" => lang("login incorrect", false)]));
             }
         }
+    case "user_info":
+        engageRateLimit();
+        if (get_account_status($VARS['username']) != "NORMAL") {
+            insertAuthLog(20, null, "Username: " . $VARS['username'] . ", Key: " . $VARS['key']);
+            exit(json_encode(["status" => "ERROR", "msg" => lang("login failed try on web", false)]));
+        }
+        if (authenticate_user($VARS['username'], $VARS['password'], $autherror)) {
+            $userinfo = $database->get("accounts", ["uid", "username", "realname", "email"], ["username" => $VARS['username']]);
+            insertAuthLog(19, $userinfo['uid'], "Key: " . $VARS['key']);
+            exit(json_encode(["status" => "OK", "info" => $userinfo]));
+        } else {
+            if (!is_empty($autherror)) {
+                insertAuthLog(20, null, "Username: " . $VARS['username'] . ", Key: " . $VARS['key']);
+                exit(json_encode(["status" => "ERROR", "msg" => $autherror]));
+            } else {
+                insertAuthLog(20, null, "Username: " . $VARS['username'] . ", Key: " . $VARS['key']);
+                exit(json_encode(["status" => "ERROR", "msg" => lang("login incorrect", false)]));
+            }
+        }
     case "start_session":
         // Do a web login.
         engageRateLimit();
@@ -72,6 +92,8 @@ switch ($VARS['action']) {
             }
         }
         exit(json_encode(["status" => "ERROR", "msg" => lang("login incorrect", false)]));
+    case "listapps":
+        exit(json_encode(["status" => "OK", "apps" => EXTERNAL_APPS]));
     default:
         http_response_code(404);
         die(json_encode(["status" => "ERROR", "msg" => "The requested action is not available."]));
