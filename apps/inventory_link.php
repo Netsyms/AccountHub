@@ -12,4 +12,9 @@ $APPS["inventory_link"]["icon"] = "cubes";
 $APPS["inventory_link"]["type"] = "teal";
 $content = "<p class='mobile-app-hide'>" . lang("open inventory system", false) . '</p><a href="' . INVENTORY_HOME . '" class="btn btn-primary btn-block mobile-app-hide">' . lang("open app", false) . ' &nbsp;<i class="fa fa-external-link-square"></i></a>';
 $APPS["inventory_link"]["content"] = $content;
+
+require_once __DIR__ . "/../lib/login.php";
+if (account_has_permission($_SESSION['username'], "INV_VIEW") !== true) {
+    unset($APPS['inventory_link']);
+}
 ?>

@@ -156,7 +156,15 @@ END;
             <div class="row widget-box">
                 <?php
                 // Center the widgets horizontally on the screen
-                $appcount = count(APPS[$pageid]);
+                $appcount = 0;
+                foreach (APPS[$pageid] as $app) {
+                    if (file_exists(__DIR__ . "/apps/" . $app . ".php")) {
+                        include_once __DIR__ . "/apps/" . $app . ".php";
+                        if (isset($APPS[$app])) {
+                            $appcount++;
+                        }
+                    }
+                }
                 if ($appcount == 1) {
                     ?>
                     <div class="hidden-xs col-sm-3 col-md-4 col-lg-4">
@@ -175,6 +183,9 @@ END;
                 foreach (APPS[$pageid] as $app) {
                     if (file_exists(__DIR__ . "/apps/" . $app . ".php")) {
                         include_once __DIR__ . "/apps/" . $app . ".php";
+                        if (!isset($APPS[$app])) {
+                            continue;
+                        }
                         $apptitle = ($APPS[$app]['i18n'] === TRUE ? lang($APPS[$app]['title'], false) : $APPS[$app]['title']);
                         $appicon = (is_empty($APPS[$app]['icon']) ? "" : "fa fa-fw fa-" . $APPS[$app]['icon']);
                         $apptype = (is_empty($APPS[$app]['type']) ? "default" : $APPS[$app]['type']);

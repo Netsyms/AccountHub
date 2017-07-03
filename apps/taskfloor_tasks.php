@@ -10,6 +10,9 @@ $APPS["taskfloor_tasks"]["i18n"] = TRUE;
 $APPS["taskfloor_tasks"]["title"] = "tasks";
 $APPS["taskfloor_tasks"]["icon"] = "tasks";
 $APPS["taskfloor_tasks"]["type"] = "blue-grey";
+
+use GuzzleHttp\Exception\ClientException;
+
 try {
     $client = new GuzzleHttp\Client();
 
@@ -34,9 +37,15 @@ try {
             $content = "<div class=\"alert alert-success\">" . lang("no tasks found", false) . "</div>";
         }
     }
+    $content .= '<a href="' . TASKFLOOR_HOME . '" class="btn btn-primary btn-block mobile-app-hide">' . lang("open app", false) . ' &nbsp;<i class="fa fa-external-link-square"></i></a>';
+    $APPS["taskfloor_tasks"]["content"] = $content;
+} catch (ClientException $e) {
+    if ($e->getResponse()->getStatusCode() == 403) {
+        unset($APPS['taskfloor_tasks']);
+    }
 } catch (Exception $e) {
     $content = "<div class=\"alert alert-danger\">" . lang("error loading widget", false) . "  " . $e->getMessage() . "</div>";
+    $content .= '<a href="' . TASKFLOOR_HOME . '" class="btn btn-primary btn-block mobile-app-hide">' . lang("open app", false) . ' &nbsp;<i class="fa fa-external-link-square"></i></a>';
+    $APPS["taskfloor_tasks"]["content"] = $content;
 }
-$content .= '<a href="' . TASKFLOOR_HOME . '" class="btn btn-primary btn-block mobile-app-hide">' . lang("open app", false) . ' &nbsp;<i class="fa fa-external-link-square"></i></a>';
-$APPS["taskfloor_tasks"]["content"] = $content;
 ?>
