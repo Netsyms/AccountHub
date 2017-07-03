@@ -190,7 +190,7 @@ function authenticate_user($username, $password, &$errormsg, &$errorcode) {
 }
 
 function user_exists($username) {
-    return account_location($username) !== "NONE";
+    return account_location(strtolower($username)) !== "NONE";
 }
 
 /**
@@ -285,12 +285,14 @@ function doLoginUser($username, $password) {
  */
 function sendLoginAlertEmail($username, $appname = SITE_TITLE) {
     if (is_empty(ADMIN_EMAIL) || filter_var(ADMIN_EMAIL, FILTER_VALIDATE_EMAIL) === FALSE) {
-        return "false";
+        return "invalid_to_email";
     }
     if (is_empty(FROM_EMAIL) || filter_var(FROM_EMAIL, FILTER_VALIDATE_EMAIL) === FALSE) {
-        return "false";
+        return "invalid_from_email";
     }
 
+    $username = strtolower($username);
+    
     $mail = new PHPMailer;
 
     if (DEBUG) {

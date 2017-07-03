@@ -83,7 +83,7 @@ if (!is_empty($_GET['page'])) {
                                 <ul class="dropdown-menu" role="menu">
                                     <li><a href="home.php?page=security"><i class="fa fa-gears fa-fw"></i> <?php lang("options") ?></a></li>
                                     <li class="divider"></li>
-                                    <li><a href="action.php?action=signout"><i class="fa fa-sign-out fa-fw"></i> <?php lang("sign out") ?></a></li>
+                                    <li class="mobile-app-hide"><a href="action.php?action=signout"><i class="fa fa-sign-out fa-fw"></i> <?php lang("sign out") ?></a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -91,7 +91,7 @@ if (!is_empty($_GET['page'])) {
                 </div>
             </nav>
 
-            <div class="app-dock-container">
+            <div class="app-dock-container mobile-app-hide">
                 <div class="app-dock">
                     <?php
                     foreach (EXTERNAL_APPS as $a) {

@@ -38,6 +38,6 @@ $content .= <<<END
                 <a href="home.php?&qwikclock=punchin" class="btn btn-block btn-success btn-lg"><i class="fa fa-play"></i> $lang_punchin</a>
                 <a href="home.php?qwikclock=punchout" class="btn btn-block btn-danger btn-lg"><i class="fa fa-stop"></i> $lang_punchout</a>        
 END;
-$content .= '<br /><a href="' . QWIKCLOCK_HOME . '" class="btn btn-primary btn-block">' . lang("open app", false) . ' &nbsp;<i class="fa fa-external-link-square"></i></a>';
+$content .= '<br /><a href="' . QWIKCLOCK_HOME . '" class="btn btn-primary btn-block mobile-app-hide">' . lang("open app", false) . ' &nbsp;<i class="fa fa-external-link-square"></i></a>';
 $APPS["qwikclock_inout"]["content"] = $content;
 ?>

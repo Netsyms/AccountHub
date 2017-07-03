@@ -49,6 +49,6 @@ END;
 } catch (Exception $e) {
     $content = "<div class=\"alert alert-danger\">" . lang("error loading widget", false) . "  " . $e->getMessage() . "</div>";
 }
-$content .= '<a href="' . TASKFLOOR_HOME . '" class="btn btn-primary btn-block">' . lang("open app", false) . ' &nbsp;<i class="fa fa-external-link-square"></i></a>';
+$content .= '<a href="' . TASKFLOOR_HOME . '" class="btn btn-primary btn-block mobile-app-hide">' . lang("open app", false) . ' &nbsp;<i class="fa fa-external-link-square"></i></a>';
 $APPS["taskfloor_messages"]["content"] = $content;
 ?>

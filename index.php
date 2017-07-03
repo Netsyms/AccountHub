@@ -190,8 +190,8 @@ if ($VARS['progress'] == "1") {
 
                                 if (!$multiauth && !$change_password) {
                                     ?>
-                                    <input type="text" class="form-control" name="username" placeholder="<?php lang("username"); ?>" required="required" autofocus /><br />
-                                    <input type="password" class="form-control" name="password" placeholder="<?php lang("password"); ?>" required="required" /><br />
+                                    <input type="text" class="form-control" name="username" placeholder="<?php lang("username"); ?>" required="required" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autofocus /><br />
+                                    <input type="password" class="form-control" name="password" placeholder="<?php lang("password"); ?>" required="required" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" /><br />
                                     <?php if (RECAPTCHA_ENABLED) { ?>
                                         <div class="g-recaptcha" data-sitekey="<?php echo RECAPTCHA_SITE_KEY; ?>"></div>
                                         <br />
@@ -203,15 +203,15 @@ if ($VARS['progress'] == "1") {
                                     <div class="alert alert-info">
                                         <?php lang("2fa prompt"); ?>
                                     </div>
-                                    <input type="text" class="form-control" name="authcode" placeholder="<?php lang("authcode"); ?>" required="required" autocomplete="off" autofocus /><br />
+                                    <input type="text" class="form-control" name="authcode" placeholder="<?php lang("authcode"); ?>" required="required" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autofocus /><br />
                                     <input type="hidden" name="progress" value="2" />
                                     <input type="hidden" name="username" value="<?php echo $VARS['username']; ?>" />
                                     <?php
                                 } else if ($change_password) {
                                     ?>
-                                    <input type="password" class="form-control" name="oldpass" placeholder="Current password" required="required" autocomplete="new-password" autofocus /><br />
-                                    <input type="password" class="form-control" name="newpass" placeholder="New password" required="required" autocomplete="off" /><br />
-                                    <input type="password" class="form-control" name="conpass" placeholder="New password (again)" required="required" autocomplete="off" /><br />
+                                    <input type="password" class="form-control" name="oldpass" placeholder="Current password" required="required" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autofocus /><br />
+                                    <input type="password" class="form-control" name="newpass" placeholder="New password" required="required" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false" /><br />
+                                    <input type="password" class="form-control" name="conpass" placeholder="New password (again)" required="required" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false" /><br />
                                     <input type="hidden" name="progress" value="chpasswd" />
                                     <?php
                                 }

@@ -31,8 +31,9 @@ if ($_GET['mobilecode'] == "generate") {
         $code = strtoupper(substr(md5(mt_rand() . uniqid("", true)), 0, 20));
         $database->insert('mobile_codes', ['uid' => $_SESSION['uid'], 'code' => $code]);
     }
-    $url = str_replace("/", "\\", URL . "mobile/index.php");
-    $codeuri = "bizsync://" . $url . "/" . $_SESSION['username'] . "/" . $code;
+    $url = URL . "mobile/index.php";
+    $encodedurl = str_replace("/", "\\", $url);
+    $codeuri = "bizsync://" . $encodedurl . "/" . $_SESSION['username'] . "/" . $code;
     $qrCode = new QrCode($codeuri);
     $qrCode->setSize(200);
     $qrCode->setErrorCorrection("H");
@@ -42,6 +43,7 @@ if ($_GET['mobilecode'] == "generate") {
     $APPS["sync_mobile"]["content"] = '<div class="alert alert-info"><i class="fa fa-info-circle"></i> ' . lang("scan sync qrcode", false) . '</div>' . <<<END
 <img src="$qrcode" class="img-responsive qrcode" />
 <div class="well well-sm" style="text-align: center; font-size: 110%; font-family: monospace;">$chunk_code</div>
+<div class="well well-sm" style="text-align: center; font-size: 110%; font-family: monospace;">$url</div>
 <a class="btn btn-success btn-sm btn-block" href="home.php?page=security">$lang_done</a>
 END;
 } else {
