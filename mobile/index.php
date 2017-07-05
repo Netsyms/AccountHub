@@ -33,7 +33,7 @@ $key = strtoupper($VARS['key']);
 $user_key_valid = $database->has('mobile_codes', ['[>]accounts' => ['uid' => 'uid']], ["AND" => ['mobile_codes.code' => $key, 'accounts.username' => $username]]);
 if ($user_key_valid !== TRUE) {
     engageRateLimit();
-    http_response_code(401);
+    //http_response_code(401);
     insertAuthLog(21, null, "Username: " . $username . ", Key: " . $key);
     die(json_encode(["status" => "ERROR", "msg" => "Invalid username and/or access key."]));
 }
