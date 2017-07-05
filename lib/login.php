@@ -22,10 +22,10 @@ $ldap = new LdapManager($ldap_config);
  * @param string $email User's email address.
  * @param string $phone1 Phone number #1
  * @param string $phone2 Phone number #2
- * @param string $type Account type
+ * @param int $type Account type
  * @return int The new user's ID number in the database.
  */
-function adduser($username, $password, $realname, $email = null, $phone1 = "", $phone2 = "", $type) {
+function adduser($username, $password, $realname, $email = null, $phone1 = "", $phone2 = "", $type = 1) {
     global $database;
     $database->insert('accounts', [
         'username' => strtolower($username),
