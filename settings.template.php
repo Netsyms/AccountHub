@@ -38,6 +38,15 @@ $ldap_config->addDomain($ldap_config_domain);
 
 define("SITE_TITLE", "AccountHub");
 
+// Which pages to show the app icon on:
+// index, app, both, none
+define("SHOW_ICON", "both");
+// Where to put the icon: top or menu
+// Overridden to 'menu' if MENU_BAR_STYLE is 'fixed'.
+define("ICON_POSITION", "menu");
+// App menu bar style: fixed or static
+define("MENU_BAR_STYLE", "fixed");
+
 // Used to identify the system in OTP and other places
 define("SYSTEM_NAME", "Netsyms SSO Demo");
 

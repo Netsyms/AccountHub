@@ -3,15 +3,21 @@
 // List of pages and metadata
 define("PAGES", [
     "home" => [
-        "title" => "{DEFAULT}"
+        "title" => "home",
+        "navbar" => true,
+        "icon" => "home"
     ],
     "security" => [
-        "title" => "account options"
+        "title" => "account options",
+        "navbar" => true,
+        "icon" => "cogs"
     ],
     "404" => [
-        "title" => "404 error"
+        "title" => "404 error",
+        "navbar" => false
     ]
 ]);
+
 
 // Which apps to load on a given page
 define("APPS", [
