@@ -36,7 +36,7 @@ $ldap_config->addDomain($ldap_config_domain);
  * End LDAP Configuration
  */
 
-define("SITE_TITLE", "Portal");
+define("SITE_TITLE", "AccountHub");
 
 // Used to identify the system in OTP and other places
 define("SYSTEM_NAME", "Netsyms SSO Demo");
@@ -48,7 +48,7 @@ define("TIMEZONE", "America/Denver");
 define("MOBILE_ENABLED", TRUE);
 
 // Base URL for site links.
-define('URL', 'http://localhost:8000/');
+define('URL', 'http://localhost/');
 
 // Use reCAPTCHA on login screen
 // https://www.google.com/recaptcha/
@@ -69,14 +69,8 @@ define('QWIKCLOCK_HOME', '/qwikclock/app.php');
 define('LANGUAGE', "en_us");
 
 // List of available applications, icons, and other info.
-// Used in the mobile app and in the "dock" in Portal.
+// Used in the mobile app and in the "dock" in AccountHub.
 define('EXTERNAL_APPS', [
-    "portal" => [
-        "url" => "http://localhost/portal",
-        "mobileapi" => "/mobile/index.php",
-        "icon" => "/static/img/logo.svg",
-        "title" => SITE_TITLE
-    ],
     "taskfloor" => [
         "url" => "http://localhost/taskfloor",
         "mobileapi" => "/mobile/index.php",
@@ -94,13 +88,19 @@ define('EXTERNAL_APPS', [
         "mobileapi" => "/mobile/index.php",
         "icon" => "/static/img/logo.svg",
         "title" => "Inventory"
+    ],
+    "managepanel" => [
+        "url" => "http://localhost/managepanel",
+        "mobileapi" => "/mobile/index.php",
+        "icon" => "/static/img/logo.svg",
+        "title" => "ManagePanel"
     ]
 ]);
 
 // Email settings for receiving admin alerts.
 define("USE_SMTP", TRUE); // if FALSE, will use PHP's mail() instead
 define("ADMIN_EMAIL", "");
-define("FROM_EMAIL", "portal-noreply@apps.biz.netsyms.com");
+define("FROM_EMAIL", "alert-noreply@apps.biz.netsyms.com");
 define("SMTP_HOST", "");
 define("SMTP_AUTH", true);
 define("SMTP_PORT", 587);
@@ -115,7 +115,7 @@ define("SMTP_ALLOW_INVALID_CERTIFICATE", TRUE);
 // If you want to have additional password requirements, go edit action.php.
 // However, all that does is encourage people to use the infamous 
 // "post-it password manager".  See also https://xkcd.com/936/ and
-// http://stackoverflow.com/a/34166252/2534036 for reasons why forcing passwords
+// http://stackoverflow.com/a/34166252 for reasons why forcing passwords
 // like CaPs45$% is not actually a great idea.
 // Encourage users to use 2-factor auth whenever possible.
 define("MIN_PASSWORD_LENGTH", 8);

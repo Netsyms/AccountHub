@@ -71,7 +71,7 @@ $STRINGS = [
     "open app" => "Open App",
     "sign in again" => "Please sign in again to continue.",
     "login failed try on web" => "There is a problem with your account. Visit "
-    . "Portal via a web browser for more information.",
+    . "AccountHub via a web browser for more information.",
     "mobile login disabled" => "Mobile login has been disabled by your system "
     . "administrator.  Contact technical support for more information.",
     "admin alert email subject" => "Alert: User login notification",

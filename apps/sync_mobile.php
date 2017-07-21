@@ -8,7 +8,7 @@ if (MOBILE_ENABLED) {
     addMultiLangStrings(["en_us" => [
             "sync mobile" => "Sync Mobile App",
             "scan sync qrcode" => "Scan this code with the mobile app or enter the code manually.",
-            "sync explained" => "Access your account and apps on the go.  Use a sync code to securely connect your phone or tablet to Portal with the Netsyms Business mobile app.",
+            "sync explained" => "Access your account and apps on the go.  Use a sync code to securely connect your phone or tablet to AccountHub with the Netsyms Business mobile app.",
             "generate sync" => "Create new sync code",
             "active sync codes" => "Active codes",
             "no active codes" => "No active codes.",

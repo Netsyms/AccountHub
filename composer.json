@@ -1,5 +1,5 @@
 {
-    "name": "netsyms/business-portal",
+    "name": "netsyms/accounthub",
     "description": "Single-sign-on system and dashboard for Netsyms Business Apps",
     "type": "project",
     "require": {

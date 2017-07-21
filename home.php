@@ -41,7 +41,7 @@ if (!is_empty($_GET['page'])) {
                     <a href="home.php"><img class="img-responsive banner-image" src="static/img/logo.svg" /></a>
                 </div>
             </div>
-            <nav class="navbar navbar-inverse">
+            <nav class="navbar navbar-default navbar-orange">
                 <div class="container-fluid">
                     <div class="navbar-header">
                         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">

@@ -197,7 +197,7 @@ function checkDBError($specials = []) {
 }
 
 /*
- * http://stackoverflow.com/a/20075147/2534036
+ * http://stackoverflow.com/a/20075147
  */
 if (!function_exists('base_url')) {
 
@@ -267,7 +267,7 @@ function ip4_in_cidr($ip, $cidr) {
  * @param string $ip IP to check in IPV6 format
  * @param string $cidr CIDR netmask
  * @return boolean true if the IP is in this range, false otherwise.
- * @author MW. <https://stackoverflow.com/a/7952169/2534036>
+ * @author MW. <https://stackoverflow.com/a/7952169>
  */
 function ip6_in_cidr($ip, $cidr) {
     $address = inet_pton($ip);
