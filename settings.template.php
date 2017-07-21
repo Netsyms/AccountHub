@@ -57,7 +57,7 @@ define("TIMEZONE", "America/Denver");
 define("MOBILE_ENABLED", TRUE);
 
 // Base URL for site links.
-define('URL', 'http://localhost/');
+define('URL', 'http://localhost/accounthub');
 
 // Use reCAPTCHA on login screen
 // https://www.google.com/recaptcha/
@@ -80,6 +80,12 @@ define('LANGUAGE', "en_us");
 // List of available applications, icons, and other info.
 // Used in the mobile app and in the "dock" in AccountHub.
 define('EXTERNAL_APPS', [
+    "accounthub" => [
+        "url" => "http://localhost/accounthub",
+        "mobileapi" => "/mobile/index.php",
+        "icon" => "/static/img/logo.svg",
+        "title" => SITE_TITLE
+    ],
     "taskfloor" => [
         "url" => "http://localhost/taskfloor",
         "mobileapi" => "/mobile/index.php",
@@ -92,11 +98,11 @@ define('EXTERNAL_APPS', [
         "icon" => "/static/img/logo.svg",
         "title" => "QwikClock"
     ],
-    "inventory" => [
+    "binstack" => [
         "url" => "http://localhost/inventory",
         "mobileapi" => "/mobile/index.php",
         "icon" => "/static/img/logo.svg",
-        "title" => "Inventory"
+        "title" => "BinStack"
     ],
     "managepanel" => [
         "url" => "http://localhost/managepanel",
