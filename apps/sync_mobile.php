@@ -12,7 +12,10 @@ if (MOBILE_ENABLED) {
             "generate sync" => "Create new sync code",
             "active sync codes" => "Active codes",
             "no active codes" => "No active codes.",
-            "done adding sync code" => "Done adding code"
+            "done adding sync code" => "Done adding code",
+            "manual setup" => "Manual Setup:",
+            "sync key" => "Sync key:",
+            "url" => "URL:",
         ]
     ]);
 
@@ -41,10 +44,25 @@ if (MOBILE_ENABLED) {
         $qrcode = $qrCode->getDataUri();
         $chunk_code = trim(chunk_split($code, 5, ' '));
         $lang_done = lang("done adding sync code", false);
-        $APPS["sync_mobile"]["content"] = '<div class="alert alert-info"><i class="fa fa-info-circle"></i> ' . lang("scan sync qrcode", false) . '</div>' . <<<END
+        $APPS["sync_mobile"]["content"] = '<div class="alert alert-info"><i class="fa fa-info-circle"></i> '
+                . lang("scan sync qrcode", false)
+                . '</div>'
+                . <<<END
 <img src="$qrcode" class="img-responsive qrcode" />
+<div class="panel panel-default" style="margin-top: 15px;">
+<div class="panel-body">
+END
+                . "<b>" . lang("manual setup", false) . "</b><br /><label>" . lang("username", false) . ":</label>"
+                . '<div class="well well-sm" style="text-align: center; font-size: 110%; font-family: monospace;">' . $_SESSION['username'] . '</div>'
+                . "<label>" . lang("sync key", false) . "</label>"
+                . <<<END
 <div class="well well-sm" style="text-align: center; font-size: 110%; font-family: monospace;">$chunk_code</div>
+END
+                . "<label>" . lang("url", false) . "</label>"
+                . <<<END
 <div class="well well-sm" style="text-align: center; font-size: 110%; font-family: monospace;">$url</div>
+</div>
+</div>
 <a class="btn btn-success btn-sm btn-block" href="home.php?page=security">$lang_done</a>
 END;
     } else {
