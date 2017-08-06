@@ -97,7 +97,14 @@ switch ($VARS['action']) {
         insertAuthLog(20, null, "Username: " . $username . ", Key: " . $key);
         exit(json_encode(["status" => "ERROR", "msg" => lang("login incorrect", false)]));
     case "listapps":
-        exit(json_encode(["status" => "OK", "apps" => EXTERNAL_APPS]));
+        $apps = EXTERNAL_APPS;
+        // Format paths as absolute URLs
+        foreach ($apps as $k => $v) {
+            if (strpos($apps[$k]['url'], "http") === FALSE) {
+                $apps[$k]['url'] = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'] . $apps[$k]['url'];
+            }
+        }
+        exit(json_encode(["status" => "OK", "apps" => $apps]));
     default:
         http_response_code(404);
         die(json_encode(["status" => "ERROR", "msg" => "The requested action is not available."]));
