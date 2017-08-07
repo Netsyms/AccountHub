@@ -35,7 +35,11 @@ if (MOBILE_ENABLED) {
             $code = strtoupper(substr(md5(mt_rand() . uniqid("", true)), 0, 20));
             $database->insert('mobile_codes', ['uid' => $_SESSION['uid'], 'code' => $code]);
         }
-        $url = URL . "mobile/index.php";
+        if (strpos(URL, "http") !== FALSE) {
+            $url = URL . "mobile/index.php";
+        } else {
+            $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'] . (($_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443) ? ":" . $_SERVER['SERVER_PORT'] : "") . URL . "mobile/index.php";
+        }
         $encodedurl = str_replace("/", "\\", $url);
         $codeuri = "bizsync://" . $encodedurl . "/" . $_SESSION['username'] . "/" . $code;
         $qrCode = new QrCode($codeuri);
