@@ -101,7 +101,7 @@ switch ($VARS['action']) {
         // Format paths as absolute URLs
         foreach ($apps as $k => $v) {
             if (strpos($apps[$k]['url'], "http") === FALSE) {
-                $apps[$k]['url'] = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'] . $apps[$k]['url'];
+                $apps[$k]['url'] = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'] . ($_SERVER['SERVER_PORT'] != 80 || $_SERVER['SERVER_PORT'] != 443 ? ":" . $_SERVER['SERVER_PORT'] : "") . $apps[$k]['url'];
             }
         }
         exit(json_encode(["status" => "OK", "apps" => $apps]));
