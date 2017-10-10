@@ -10,9 +10,9 @@ $APPS["taskfloor_messages"]["i18n"] = TRUE;
 $APPS["taskfloor_messages"]["title"] = "messages";
 $APPS["taskfloor_messages"]["icon"] = "comments";
 $APPS["taskfloor_messages"]["type"] = "deep-purple";
+$content = "";
 
 use GuzzleHttp\Exception\ClientException;
-
 try {
     $client = new GuzzleHttp\Client();
 
