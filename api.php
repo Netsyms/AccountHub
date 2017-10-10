@@ -200,7 +200,11 @@ switch ($VARS['action']) {
             http_response_code(400);
             die("\"400 Bad Request\"");
         }
-        $managed = $database->select('managers', 'employeeid', ['managerid' => $managerid]);
+        if ($VARS['get'] == "username") {
+            $managed = $database->select('managers', ['[>]accounts' => ['employeeid' => 'uid']], 'username', ['managerid' => $managerid]);
+        } else {
+            $managed = $database->select('managers', 'employeeid', ['managerid' => $managerid]);
+        }
         exit(json_encode(["status" => "OK", "employees" => $managed]));
         break;
     case "getmanagers":
