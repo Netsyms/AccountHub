@@ -38,6 +38,13 @@ if ($user_key_valid !== TRUE) {
     die(json_encode(["status" => "ERROR", "msg" => "Invalid username and/or access key."]));
 }
 
+// Obscure key
+if (strlen($key) > 7) {
+    for ($i = 3; $i < strlen($key) - 3; $i++) {
+        $key[$i] = "*";
+    }
+}
+
 // Process the action
 switch ($VARS['action']) {
     case "check_key":
