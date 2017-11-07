@@ -142,7 +142,7 @@ if ($VARS['progress'] == "1") {
 
         <link href="static/css/bootstrap.min.css" rel="stylesheet">
         <link href="static/css/font-awesome.min.css" rel="stylesheet">
-        <link href="static/css/material-color.min.css" rel="stylesheet">
+        <link href="static/css/material-color/material-color.min.css" rel="stylesheet">
         <link href="static/css/app.css" rel="stylesheet">
         <?php if (RECAPTCHA_ENABLED) { ?>
             <script src='https://www.google.com/recaptcha/api.js'></script>
