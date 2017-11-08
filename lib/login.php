@@ -156,7 +156,7 @@ function account_location($username) {
  * @param string $password
  * @return boolean True if OK, else false
  */
-function authenticate_user($username, $password, &$errormsg, &$errorcode) {
+function authenticate_user($username, $password, &$errormsg = null, &$errorcode = null) {
     global $database;
     global $ldap;
     $username = strtolower($username);
@@ -211,7 +211,7 @@ function user_exists_local($username) {
  * @param string $password
  * @return string
  */
-function get_account_status($username, &$error) {
+function get_account_status($username, &$error = null) {
     global $database;
     $username = strtolower($username);
     $loc = account_location($username);
@@ -374,7 +374,7 @@ function verifyReCaptcha($response) {
  * @param string $password
  * @return mixed True if OK, else false or the error code from the server
  */
-function authenticate_user_ldap($username, $password, &$errormsg, &$errorcode) {
+function authenticate_user_ldap($username, $password, &$errormsg = null, &$errorcode = null) {
     global $ldap;
     if (is_empty($username) || is_empty($password)) {
         return false;
@@ -422,7 +422,7 @@ function user_exists_ldap($username) {
     }
 }
 
-function get_account_status_ldap($username, &$error) {
+function get_account_status_ldap($username, &$error = null) {
     global $ldap;
     try {
         $username = strtolower($username);

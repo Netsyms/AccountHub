@@ -13,7 +13,7 @@ header('X-XSS-Protection: 1; mode=block');
 header('X-Powered-By: Late-night coding frenzies (plz send caffeine, thx)');
 
 $session_length = 60 * 60; // 1 hour
-session_set_cookie_params($session_length, "/", null, false, true);
+session_set_cookie_params($session_length, "/", null, false, false);
 
 session_start(); // stick some cookies in it
 //// renew session cookie
