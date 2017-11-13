@@ -52,19 +52,29 @@ if (MOBILE_ENABLED) {
                 . lang("scan sync qrcode", false)
                 . '</div>'
                 . <<<END
+<style nonce="$SECURE_NONCE">
+.margintop-15px {
+    margin-top: 15px;
+}
+.mono-chunk {
+    text-align: center;
+    font-size: 110%;
+    font-family: monospace;
+}
+</style>
 <img src="$qrcode" class="img-responsive qrcode" />
-<div class="panel panel-default" style="margin-top: 15px;">
+<div class="panel panel-default margintop-15px">
 <div class="panel-body">
 END
                 . "<b>" . lang("manual setup", false) . "</b><br /><label>" . lang("username", false) . ":</label>"
-                . '<div class="well well-sm" style="text-align: center; font-size: 110%; font-family: monospace;">' . $_SESSION['username'] . '</div>'
+                . '<div class="well well-sm mono-chunk">' . $_SESSION['username'] . '</div>'
                 . "<label>" . lang("sync key", false) . "</label>"
                 . <<<END
-<div class="well well-sm" style="text-align: center; font-size: 110%; font-family: monospace;">$chunk_code</div>
+<div class="well well-sm mono-chunk">$chunk_code</div>
 END
                 . "<label>" . lang("url", false) . "</label>"
                 . <<<END
-<div class="well well-sm" style="text-align: center; font-size: 110%; font-family: monospace;">$url</div>
+<div class="well well-sm mono-chunk">$url</div>
 </div>
 </div>
 <a class="btn btn-success btn-sm btn-block" href="home.php?page=security">$lang_done</a>
@@ -78,18 +88,22 @@ END;
         $content .= "<div class='list-group'>";
         if (count($activecodes) > 0) {
             foreach ($activecodes as $c) {
-                $content .= "<div class='list-group-item mobilekey'><span style='font-family: Ubuntu Mono,monospace; flex-shrink: 0'>" . trim(chunk_split($c['code'], 5, ' ')) . "</span> <span class='tinybuttons'><a class='btn btn-primary btn-sm' href='home.php?page=security&mobilecode=generate&showsynccode=" . $c['codeid'] . "'><i class='fa fa-qrcode'></i></a> <a class='btn btn-danger btn-sm' href='home.php?page=security&delsynccode=" . $c['codeid'] . "'><i class='fa fa-trash'></i></a></span></div>";
+                $content .= "<div class='list-group-item mobilekey'><span id=\"mobilecode\">" . trim(chunk_split($c['code'], 5, ' ')) . "</span> <span class='tinybuttons'><a class='btn btn-primary btn-sm' href='home.php?page=security&mobilecode=generate&showsynccode=" . $c['codeid'] . "'><i class='fa fa-qrcode'></i></a> <a class='btn btn-danger btn-sm' href='home.php?page=security&delsynccode=" . $c['codeid'] . "'><i class='fa fa-trash'></i></a></span></div>";
             }
         } else {
             $content .= "<div class='list-group-item'>" . lang("no active codes", false) . "</div>";
         }
         $content .= "</div>";
         $content .= <<<END
-            <style>
+            <style nonce="$SECURE_NONCE">
                 .mobilekey {
                     display: flex;
                     flex-wrap: wrap;
                     justify-content: space-between;
+                }
+                .mobilekey #mobilecode {
+                    font-family: Ubuntu Mono,monospace;
+                    flex-shrink: 0;
                 }
             </style>
 END;

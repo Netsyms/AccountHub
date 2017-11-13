@@ -24,8 +24,15 @@ if (userHasTOTP($_SESSION['username'])) {
     $codesecret = $totp->getSecret();
     $chunk_secret = trim(chunk_split($codesecret, 8, ' '));
     $APPS["setup_2fa"]["content"] = '<div class="alert alert-info"><i class="fa fa-info-circle"></i> ' . lang("scan 2fa qrcode", false) . '</div>' . <<<END
+<style nonce="$SECURE_NONCE">
+.mono-chunk {
+    text-align: center;
+    font-size: 110%;
+    font-family: monospace;
+}
+</style>
 <img src="$qrcode" class="img-responsive qrcode" />
-<div class="well well-sm" style="text-align: center; font-size: 110%; font-family: monospace;">$chunk_secret</div>
+<div class="well well-sm mono-chunk">$chunk_secret</div>
 <form action="action.php" method="POST">
     <input type="hidden" name="action" value="add2fa" />
     <input type="hidden" name="source" value="security" />

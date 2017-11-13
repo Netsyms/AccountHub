@@ -97,6 +97,7 @@ switch ($VARS['action']) {
             if (get_account_status($username) == "NORMAL") {
                 if (authenticate_user($username, $VARS['password'], $autherror)) {
                     doLoginUser($username, $VARS['password']);
+                    $_SESSION['mobile'] = true;
                     exit(json_encode(["status" => "OK"]));
                 }
             }
