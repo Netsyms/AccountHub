@@ -7,13 +7,13 @@ define("DEBUG", false);
 // Database connection settings
 // See http://medoo.in/api/new for info
 define("DB_TYPE", "mysql");
-define("DB_NAME", "sso");
+define("DB_NAME", "accounthub");
 define("DB_SERVER", "localhost");
-define("DB_USER", "sso");
+define("DB_USER", "accounthub");
 define("DB_PASS", "");
 define("DB_CHARSET", "utf8");
 
-define("LDAP_ENABLED", TRUE);
+define("LDAP_ENABLED", FALSE);
 
 // See https://github.com/ldaptools/ldaptools/blob/master/docs/en/reference/Main-Configuration.md
 // for info on the LDAP config
@@ -86,6 +86,12 @@ define('EXTERNAL_APPS', [
         "icon" => "/static/img/logo.svg",
         "title" => SITE_TITLE
     ],
+    "binstack" => [
+        "url" => "http://localhost/inventory",
+        "mobileapi" => "/mobile/index.php",
+        "icon" => "/static/img/logo.svg",
+        "title" => "BinStack"
+    ],
     "taskfloor" => [
         "url" => "http://localhost/taskfloor",
         "mobileapi" => "/mobile/index.php",
@@ -97,12 +103,6 @@ define('EXTERNAL_APPS', [
         "mobileapi" => "/mobile/index.php",
         "icon" => "/static/img/logo.svg",
         "title" => "QwikClock"
-    ],
-    "binstack" => [
-        "url" => "http://localhost/inventory",
-        "mobileapi" => "/mobile/index.php",
-        "icon" => "/static/img/logo.svg",
-        "title" => "BinStack"
     ],
     "managepanel" => [
         "url" => "http://localhost/managepanel",
@@ -140,10 +140,6 @@ define("QUERY_LIMIT", 1000);
 
 
 
-//////////////////////////////////////////////////////////////
-//  /!\       Warning: Changing these values may       /!\  //
-//  /!\  violate the terms of your license agreement!  /!\  //
-//////////////////////////////////////////////////////////////
-define("LICENSE_TEXT", "<b>Personal, Non-commercial Use Only</b>");
+define("LICENSE_TEXT", "");
 define("COPYRIGHT_NAME", "Netsyms Technologies");
 //////////////////////////////////////////////////////////////
