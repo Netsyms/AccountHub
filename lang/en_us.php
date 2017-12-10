@@ -41,7 +41,8 @@ $STRINGS = [
     "2fa enabled" => "2-factor authentication activated.",
     "remove 2fa" => "Disable 2-factor authentication",
     "2fa explained" => "2-factor authentication adds more security to your "
-    . "account. You'll need an app such as Google Authenticator on your "
+    . "account. You can use the Auth Keys (key icon) feature of the Netsyms "
+    . "Business Mobile app, or another TOTP-enabled app (Authy, FreeOTP, etc) on your "
     . "smartphone. When you have the app installed, you can enable 2-factor "
     . "authentication by clicking the button below and scanning a QR code with "
     . "the app. Whenever you sign in in the future, you'll need to input a "
@@ -53,7 +54,7 @@ $STRINGS = [
     . "security device, click the button below.",
     "enable 2fa" => "Enable 2-factor authentication",
     "scan 2fa qrcode" => "Scan the QR Code with the authenticator app, or enter"
-    . " the secret key manually.",
+    . " the information manually.  Then type in the six-digit code the app gives you and press Finish Setup.",
     "confirm 2fa" => "Finish setup",
     "invalid parameters" => "Invalid request parameters.",
     "ldap server error" => "The LDAP server returned an error: {arg}",
@@ -86,4 +87,8 @@ $STRINGS = [
     . "\r\n"
     . "\r\nThese notifications can be disabled by editing the user in "
     . "ManagePanel.",
+    "enter otp code" => "Enter 6-digit code",
+    "secret key" => "Secret key",
+    "label" => "Label",
+    "issuer" => "Issuer",
 ];

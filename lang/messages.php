@@ -25,6 +25,10 @@ define("MESSAGES", [
         "string" => "2fa enabled",
         "type" => "success"
     ],
+    "2fa_wrong_code" => [
+        "string" => "2fa incorrect",
+        "type" => "danger"
+    ],
     "invalid_parameters" => [
         "string" => "invalid parameters",
         "type" => "danger"

@@ -3,8 +3,9 @@
 /**
  * Make things happen when buttons are pressed and forms submitted.
  */
-
 require_once __DIR__ . "/required.php";
+
+use OTPHP\TOTP;
 
 // If the user presses Sign Out but we're not logged in anymore,
 // we don't want to show a nasty error.
@@ -54,6 +55,10 @@ switch ($VARS['action']) {
     case "add2fa":
         if (is_empty($VARS['secret'])) {
             returnToSender("invalid_parameters");
+        }
+        $totp = new TOTP(null, $VARS['secret']);
+        if (!$totp->verify($VARS["totpcode"])) {
+            returnToSender("2fa_wrong_code");
         }
         $database->update('accounts', ['authsecret' => $VARS['secret']], ['uid' => $_SESSION['uid']]);
         insertAuthLog(9, $_SESSION['uid']);
