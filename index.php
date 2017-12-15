@@ -50,9 +50,9 @@ if ($VARS['progress'] == "1") {
                 default:
                     if (!is_empty($error)) {
                         $alert = $error;
-                        break;
+                    } else {
+                        $alert = lang("login error", false);
                     }
-                    $alert = lang("login error", false);
                     break;
             }
             if ($username_ok) {

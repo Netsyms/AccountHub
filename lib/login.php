@@ -127,19 +127,19 @@ function change_password($old, $new, $new2, &$error) {
 function account_location($username) {
     global $database;
     $username = strtolower($username);
-    $user_exists = user_exists_local($username);
-    if (!$user_exists && !LDAP_ENABLED) {
-        return false;
+    $user_exists_local = user_exists_local($username);
+    if (!$user_exists_local && !LDAP_ENABLED) {
+        return "NONE";
     }
-    if ($user_exists) {
+    if ($user_exists_local) {
         $userinfo = $database->select('accounts', ['password'], ['username' => $username])[0];
         // if password empty, it's an LDAP user
-        if (is_empty($userinfo['password']) && LDAP_ENABLED) {
-            return "LDAP";
-        } else if (is_empty($userinfo['password']) && !LDAP_ENABLED) {
-            return "NONE";
-        } else {
+        if (!is_empty($userinfo['password'])) {
             return "LOCAL";
+        } else if (is_empty($userinfo['password']) && LDAP_ENABLED) {
+            return "LDAP";
+        } else {
+            return "NONE";
         }
     } else {
         if (user_exists_ldap($username)) {
@@ -161,7 +161,7 @@ function authenticate_user($username, $password, &$errormsg = null, &$errorcode 
     global $ldap;
     $username = strtolower($username);
     if (is_empty($username) || is_empty($password)) {
-        return false;
+        return "NONE";
     }
     $loc = account_location($username, $password);
     switch ($loc) {
@@ -200,7 +200,7 @@ function user_exists($username) {
 function user_exists_local($username) {
     global $database;
     $username = strtolower($username);
-    return $database->has('accounts', ['username' => $username, "LIMIT" => QUERY_LIMIT]);
+    return $database->has('accounts', ['username' => $username]) === TRUE;
 }
 
 /**
