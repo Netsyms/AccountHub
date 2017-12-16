@@ -2,6 +2,9 @@
 /*
  * 500 most common passwords, to be used in stopping idiots from having really bad passwords.
  * Source: https://github.com/danielmiessler/SecLists/blob/master/Passwords/500-worst-passwords.txt
+ * 
+ * This file is licensed under the Creative Commons Attribution ShareAlike 3.0 License.
+ * https://creativecommons.org/licenses/by-sa/3.0/
  */
 
 
