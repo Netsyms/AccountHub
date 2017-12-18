@@ -288,6 +288,14 @@ switch ($VARS['action']) {
             exit(json_encode(["status" => "OK"]));
         }
         exit(json_encode(["status" => "ERROR", "msg" => $result]));
+    case "codelogin":
+        $database->delete("onetimekeys", ["expires[<]" => date("Y-m-d H:i:s")]); // cleanup
+        if ($database->has("onetimekeys", ["key" => $VARS['code'], "expires[>]" => date("Y-m-d H:i:s")])) {
+            $user = $database->get("onetimekeys", ["[>]accounts" => ["uid" => "uid"]], ["username", "realname", "accounts.uid"], ["key" => $VARS['code']]);
+            exit(json_encode(["status" => "OK", "user" => $user]));
+        } else {
+            exit(json_encode(["status" => "ERROR", "msg" => lang("no such code or code expired", false)]));
+        }
     default:
         http_response_code(404);
         die(json_encode("404 Not Found: the requested action is not available."));

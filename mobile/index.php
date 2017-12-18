@@ -117,6 +117,18 @@ switch ($VARS['action']) {
             }
         }
         exit(json_encode(["status" => "OK", "apps" => $apps]));
+    case "gencode":
+        engageRateLimit();
+        $uid = $database->get("accounts", "uid", ["username" => $username]);
+        $code = "";
+        do {
+            $code = random_int(100000, 999999);
+        } while ($database->has("onetimekeys", ["key" => $code]));
+        
+        $database->insert("onetimekeys", ["key" => $code, "uid" => $uid, "expires" => date("Y-m-d H:i:s", strtotime("+1 minute"))]);
+        
+        $database->delete("onetimekeys", ["expires[<]" => date("Y-m-d H:i:s")]); // cleanup
+        exit(json_encode(["status" => "OK", "code" => $code]));
     default:
         http_response_code(404);
         die(json_encode(["status" => "ERROR", "msg" => "The requested action is not available."]));

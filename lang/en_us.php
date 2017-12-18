@@ -95,4 +95,5 @@ $STRINGS = [
     "secret key" => "Secret key",
     "label" => "Label",
     "issuer" => "Issuer",
+    "no such code or code expired" => "That code is incorrect or expired."
 ];
