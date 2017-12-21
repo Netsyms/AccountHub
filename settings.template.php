@@ -101,13 +101,21 @@ define('EXTERNAL_APPS', [
         "url" => "http://localhost/taskfloor",
         "mobileapi" => "/mobile/index.php",
         "icon" => "/static/img/logo.svg",
-        "title" => "TaskFloor"
+        "title" => "TaskFloor",
+        "station_features" => [
+            "taskfloor_viewtasks",
+            "taskfloor_viewmessages"
+        ]
     ],
     "qwikclock" => [
         "url" => "http://localhost/qwikclock",
         "mobileapi" => "/mobile/index.php",
         "icon" => "/static/img/logo.svg",
-        "title" => "QwikClock"
+        "title" => "QwikClock",
+        "station_features" => [
+            "qwikclock_punchinout",
+            "qwikclock_myshifts"
+        ]
     ],
     "managepanel" => [
         "url" => "http://localhost/managepanel",
