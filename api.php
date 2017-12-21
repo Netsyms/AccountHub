@@ -305,6 +305,55 @@ switch ($VARS['action']) {
             }
         }
         exit(json_encode(["status" => "OK", "apps" => $apps]));
+    case "getusersbygroup":
+        if ($VARS['gid']) {
+            if ($database->has("groups", ['groupid' => $VARS['gid']])) {
+                $groupid = $VARS['gid'];
+            } else {
+                exit(json_encode(["status" => "ERROR", "msg" => lang("group does not exist", false)]));
+            }
+        } else {
+            http_response_code(400);
+            die("\"400 Bad Request\"");
+        }
+        if ($VARS['get'] == "username") {
+            $users = $database->select('assigned_groups', ['[>]accounts' => ['uid' => 'uid']], 'username', ['groupid' => $groupid]);
+        } else {
+            $users = $database->select('assigned_groups', 'uid', ['groupid' => $groupid]);
+        }
+        exit(json_encode(["status" => "OK", "users" => $users]));
+        break;
+    case "getgroupsbyuser":
+        if ($VARS['uid']) {
+            if ($database->has("accounts", ['uid' => $VARS['uid']])) {
+                $empid = $VARS['uid'];
+            } else {
+                exit(json_encode(["status" => "ERROR", "msg" => lang("user does not exist", false)]));
+            }
+        } else if ($VARS['username']) {
+            if ($database->has("accounts", ['username' => strtolower($VARS['username'])])) {
+                $empid = $database->select('accounts', 'uid', ['username' => strtolower($VARS['username'])]);
+            } else {
+                exit(json_encode(["status" => "ERROR", "msg" => lang("user does not exist", false)]));
+            }
+        } else {
+            http_response_code(400);
+            die("\"400 Bad Request\"");
+        }
+        $groups = $database->select('assigned_groups', ["[>]groups" => ["groupid" => "groupid"]], ['groups.groupid (id)', 'groups.groupname (name)'], ['uid' => $empid]);
+        exit(json_encode(["status" => "OK", "groups" => $groups]));
+        break;
+    case "getgroups":
+        $groups = $database->select('groups', ['groupid (id)', 'groupname (name)']);
+        exit(json_encode(["status" => "OK", "groups" => $groups]));
+        break;
+    case "groupsearch":
+        if (is_empty($VARS['search']) || strlen($VARS['search']) < 2) {
+            exit(json_encode(["status" => "OK", "result" => []]));
+        }
+        $data = $database->select('groups', ['groupid (id)', 'groupname (name)'], ['groupname[~]' => $VARS['search'], "LIMIT" => 10]);
+        exit(json_encode(["status" => "OK", "result" => $data]));
+        break;
     default:
         http_response_code(404);
         die(json_encode("404 Not Found: the requested action is not available."));
