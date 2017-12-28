@@ -318,6 +318,8 @@ switch ($VARS['action']) {
         }
         if ($VARS['get'] == "username") {
             $users = $database->select('assigned_groups', ['[>]accounts' => ['uid' => 'uid']], 'username', ['groupid' => $groupid]);
+        } else if ($VARS['get'] == "detail") {
+            $users = $database->select('assigned_groups', ['[>]accounts' => ['uid' => 'uid']], ['username', 'realname (name)', 'accounts.uid'], ['groupid' => $groupid]);
         } else {
             $users = $database->select('assigned_groups', 'uid', ['groupid' => $groupid]);
         }
