@@ -74,14 +74,16 @@ switch ($VARS['action']) {
     case "userinfo":
         if (!is_empty($VARS['username'])) {
             if (user_exists_local($VARS['username'])) {
-                $data = $database->select("accounts", ["uid", "username", "realname (name)", "email", "phone" => ["phone1 (1)", "phone2 (2)"]], ["username" => strtolower($VARS['username'])])[0];
+                $data = $database->select("accounts", ["uid", "username", "realname (name)", "email", "phone" => ["phone1 (1)", "phone2 (2)"], 'pin'], ["username" => strtolower($VARS['username'])])[0];
+                $data['pin'] = (is_null($data['pin']) || $data['pin'] == "" ? false : true);
                 exit(json_encode(["status" => "OK", "data" => $data]));
             } else {
                 exit(json_encode(["status" => "ERROR", "msg" => lang("login incorrect", false)]));
             }
         } else if (!is_empty($VARS['uid'])) {
             if ($database->has('accounts', ['uid' => $VARS['uid']])) {
-                $data = $database->select("accounts", ["uid", "username", "realname (name)", "email", "phone" => ["phone1 (1)", "phone2 (2)"]], ["uid" => $VARS['uid']])[0];
+                $data = $database->select("accounts", ["uid", "username", "realname (name)", "email", "phone" => ["phone1 (1)", "phone2 (2)"], 'pin'], ["uid" => $VARS['uid']])[0];
+                $data['pin'] = (is_null($data['pin']) || $data['pin'] == "" ? false : true);
                 exit(json_encode(["status" => "OK", "data" => $data]));
             } else {
                 exit(json_encode(["status" => "ERROR", "msg" => lang("login incorrect", false)]));
@@ -319,7 +321,14 @@ switch ($VARS['action']) {
         if ($VARS['get'] == "username") {
             $users = $database->select('assigned_groups', ['[>]accounts' => ['uid' => 'uid']], 'username', ['groupid' => $groupid]);
         } else if ($VARS['get'] == "detail") {
-            $users = $database->select('assigned_groups', ['[>]accounts' => ['uid' => 'uid']], ['username', 'realname (name)', 'accounts.uid'], ['groupid' => $groupid]);
+            $users = $database->select('assigned_groups', ['[>]accounts' => ['uid' => 'uid']], ['username', 'realname (name)', 'accounts.uid', 'pin'], ['groupid' => $groupid]);
+            for ($i = 0; $i < count($users); $i++) {
+                if (is_null($users[$i]['pin']) || $users[$i]['pin'] == "") {
+                    $users[$i]['pin'] = false;
+                } else {
+                    $users[$i]['pin'] = true;
+                }
+            }
         } else {
             $users = $database->select('assigned_groups', 'uid', ['groupid' => $groupid]);
         }
@@ -355,6 +364,33 @@ switch ($VARS['action']) {
         }
         $data = $database->select('groups', ['groupid (id)', 'groupname (name)'], ['groupname[~]' => $VARS['search'], "LIMIT" => 10]);
         exit(json_encode(["status" => "OK", "result" => $data]));
+        break;
+    case "checkpin":
+        $pin = "";
+        if (is_empty($VARS['pin'])) {
+            http_response_code(400);
+            die("\"400 Bad Request\"");
+        }
+        if (!is_empty($VARS['username'])) {
+            if (user_exists_local($VARS['username'])) {
+                $pin = $database->get("accounts", "pin", ["username" => strtolower($VARS['username'])]);
+            } else {
+                exit(json_encode(["status" => "ERROR", "msg" => lang("login incorrect", false)]));
+            }
+        } else if (!is_empty($VARS['uid'])) {
+            if ($database->has('accounts', ['uid' => $VARS['uid']])) {
+                $pin = $database->get("accounts", "pin", ["uid" => strtolower($VARS['uid'])]);
+            } else {
+                exit(json_encode(["status" => "ERROR", "msg" => lang("login incorrect", false)]));
+            }
+        } else {
+            http_response_code(400);
+            die("\"400 Bad Request\"");
+        }
+        if (is_null($pin) || $pin == "") {
+            exit(json_encode(["status" => "ERROR", "pinvalid" => false, "nopinset" => true]));
+        }
+        exit(json_encode(["status" => "OK", "pinvalid" => ($pin == $VARS['pin'])]));
         break;
     default:
         http_response_code(404);
