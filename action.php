@@ -56,6 +56,17 @@ switch ($VARS['action']) {
                 returnToSender("generic_op_error");
         }
         break;
+    case "chpin":
+        $error = [];
+        if (!($VARS['newpin'] == "" || (is_numeric($VARS['newpin']) && strlen($VARS['newpin']) >= 1 && strlen($VARS['newpin']) <= 8))) {
+            returnToSender("invalid_pin_format");
+        }
+        if ($VARS['newpin'] == $VARS['conpin']) {
+            $database->update('accounts', ['pin' => ($VARS['newpin'] == "" ? null : $VARS['newpin'])], ['uid' => $_SESSION['uid']]);
+            returnToSender("pin_updated");
+        }
+        returnToSender("new_pin_mismatch");
+        break;
     case "add2fa":
         if (is_empty($VARS['secret'])) {
             returnToSender("invalid_parameters");

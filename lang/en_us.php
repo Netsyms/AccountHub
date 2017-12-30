@@ -98,5 +98,12 @@ $STRINGS = [
     "secret key" => "Secret key",
     "label" => "Label",
     "issuer" => "Issuer",
-    "no such code or code expired" => "That code is incorrect or expired."
+    "no such code or code expired" => "That code is incorrect or expired.",
+    "pin explanation" => "Change or set a login PIN for the Station kiosk Quick Access.  PIN codes must be between one and eight digits.",
+    "change pin" => "Change PIN",
+    "new pin" => "New PIN",
+    "confirm pin" => "New PIN (again)",
+    "pin updated" => "PIN updated.",
+    "new pin mismatch" => "The new PINs don't match each other.",
+    "invalid pin format" => "PIN codes must be numeric and between one and eight digits in length.",
 ];

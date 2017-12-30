@@ -35,7 +35,8 @@ define("APPS", [
     "security" => [
         "sync_mobile",
         "change_password",
-        "setup_2fa"
+        "setup_2fa",
+        "change_pin"
     ],
     "404" => [
         "404_error"

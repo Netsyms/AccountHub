@@ -60,5 +60,18 @@ define("MESSAGES", [
     "generic_op_error" => [
         "string" => "generic op error",
         "type" => "danger"
+    ],
+    "pin_updated" => [
+        "string" => "pin updated",
+        "type" => "success"
+    ],
+    "new_pin_mismatch" => [
+        "string" => "new pin mismatch",
+        "type" => "danger"
+    ],
+    "invalid_pin_format" => [
+        "string" => "invalid pin format",
+        "type" => "danger"
     ]
+    
 ]);
