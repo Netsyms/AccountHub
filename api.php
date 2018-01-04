@@ -6,7 +6,7 @@
 
 /**
  * Simple JSON API to allow other apps to access accounts in this system.
- * 
+ *
  * Requests can be sent via either GET or POST requests.  POST is recommended
  * as it has a lower chance of being logged on the server, exposing unencrypted
  * user passwords.
@@ -160,7 +160,7 @@ switch ($VARS['action']) {
         }
         break;
     case "ismanagerof":
-        if ($VARS['uid'] === 1) {
+        if ($VARS['uid'] == "1") {
             if ($database->has("accounts", ['uid' => $VARS['manager']])) {
                 if ($database->has("accounts", ['uid' => $VARS['employee']])) {
                     $managerid = $VARS['manager'];
@@ -399,4 +399,4 @@ switch ($VARS['action']) {
     /* } catch (Exception $e) {
       header("HTTP/1.1 500 Internal Server Error");
       die("\"500 Internal Server Error\"");
-      } */    
+      } */
