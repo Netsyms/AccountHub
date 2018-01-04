@@ -29,6 +29,7 @@ $STRINGS = [
     "account security" => "Account security",
     "security options" => "Security options",
     "account options" => "Account options",
+    "sync" => "Sync settings",
     "options" => "Options",
     "sign out" => "Sign out",
     "settings" => "Settings",

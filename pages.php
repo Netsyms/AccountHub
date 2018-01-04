@@ -12,9 +12,14 @@ define("PAGES", [
         "icon" => "home"
     ],
     "security" => [
-        "title" => "account options",
+        "title" => "account security",
         "navbar" => true,
-        "icon" => "cogs"
+        "icon" => "lock"
+    ],
+    "sync" => [
+        "title" => "sync",
+        "navbar" => true,
+        "icon" => "mobile"
     ],
     "404" => [
         "title" => "404 error",
@@ -33,10 +38,12 @@ define("APPS", [
         "account_security"
     ],
     "security" => [
-        "sync_mobile",
         "change_password",
+        "change_pin",
         "setup_2fa",
-        "change_pin"
+    ],
+    "sync" => [
+        "sync_mobile",
     ],
     "404" => [
         "404_error"
