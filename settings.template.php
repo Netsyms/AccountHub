@@ -114,7 +114,8 @@ define('EXTERNAL_APPS', [
         "title" => "QwikClock",
         "station_features" => [
             "qwikclock_punchinout",
-            "qwikclock_myshifts"
+            "qwikclock_myshifts",
+            "qwikclock_jobs"
         ]
     ],
     "managepanel" => [
@@ -141,7 +142,7 @@ define("SMTP_ALLOW_INVALID_CERTIFICATE", TRUE);
 // The system checks new passwords against the 500 worst passwords and rejects
 // any matches.
 // If you want to have additional password requirements, go edit action.php.
-// However, all that does is encourage people to use the infamous 
+// However, all that does is encourage people to use the infamous
 // "post-it password manager".  See also https://xkcd.com/936/ and
 // http://stackoverflow.com/a/34166252 for reasons why forcing passwords
 // like CaPs45$% is not actually a great idea.
