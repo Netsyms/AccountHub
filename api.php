@@ -319,9 +319,9 @@ switch ($VARS['action']) {
             die("\"400 Bad Request\"");
         }
         if ($VARS['get'] == "username") {
-            $users = $database->select('assigned_groups', ['[>]accounts' => ['uid' => 'uid']], 'username', ['groupid' => $groupid]);
+            $users = $database->select('assigned_groups', ['[>]accounts' => ['uid' => 'uid']], 'username', ['groupid' => $groupid, "ORDER" => "username"]);
         } else if ($VARS['get'] == "detail") {
-            $users = $database->select('assigned_groups', ['[>]accounts' => ['uid' => 'uid']], ['username', 'realname (name)', 'accounts.uid', 'pin'], ['groupid' => $groupid]);
+            $users = $database->select('assigned_groups', ['[>]accounts' => ['uid' => 'uid']], ['username', 'realname (name)', 'accounts.uid', 'pin'], ['groupid' => $groupid, "ORDER" => "realname"]);
             for ($i = 0; $i < count($users); $i++) {
                 if (is_null($users[$i]['pin']) || $users[$i]['pin'] == "") {
                     $users[$i]['pin'] = false;
