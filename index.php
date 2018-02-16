@@ -193,7 +193,7 @@ if ($VARS['progress'] == "1") {
                                                 $alerticon = "square-o";
                                         }
                                         ?>
-                                        <i class="fa fa-fw fa-<?php echo $alerticon ?>"></i> <?php echo $alert ?> 
+                                        <i class="fa fa-fw fa-<?php echo $alerticon ?>"></i> <?php echo $alert ?>
                                     </div>
                                     <?php
                                 }
