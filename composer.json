@@ -3,9 +3,9 @@
     "description": "Single-sign-on system and dashboard for Netsyms Business Apps",
     "type": "project",
     "require": {
-        "catfan/medoo": "^1.2",
+        "catfan/medoo": "^1.5",
         "spomky-labs/otphp": "^8.3",
-        "endroid/qrcode": "^1.9",
+        "endroid/qr-code": "^3.2",
         "ldaptools/ldaptools": "^0.24.0",
         "guzzlehttp/guzzle": "^6.2",
         "phpmailer/phpmailer": "^5.2",

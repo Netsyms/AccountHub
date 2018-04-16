@@ -6,6 +6,7 @@
 
 dieifnotloggedin();
 
+use Endroid\QrCode\ErrorCorrectionLevel;
 use Endroid\QrCode\QrCode;
 
 if (MOBILE_ENABLED) {
@@ -47,9 +48,10 @@ if (MOBILE_ENABLED) {
         $encodedurl = str_replace("/", "\\", $url);
         $codeuri = "bizsync://" . $encodedurl . "/" . $_SESSION['username'] . "/" . $code;
         $qrCode = new QrCode($codeuri);
-        $qrCode->setSize(200);
-        $qrCode->setErrorCorrection("H");
-        $qrcode = $qrCode->getDataUri();
+        $qrCode->setWriterByName('svg');
+        $qrCode->setSize(550);
+        $qrCode->setErrorCorrectionLevel(ErrorCorrectionLevel::HIGH);
+        $qrcode = $qrCode->writeDataUri();
         $chunk_code = trim(chunk_split($code, 5, ' '));
         $lang_done = lang("done adding sync code", false);
         $APPS["sync_mobile"]["content"] = '<div class="alert alert-info"><i class="fa fa-info-circle"></i> '

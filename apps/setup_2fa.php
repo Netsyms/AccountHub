@@ -7,6 +7,7 @@
 dieifnotloggedin();
 
 use OTPHP\Factory;
+use Endroid\QrCode\ErrorCorrectionLevel;
 use Endroid\QrCode\QrCode;
 
 // extra login utils
@@ -24,9 +25,10 @@ if (userHasTOTP($_SESSION['username'])) {
     $label = SYSTEM_NAME . ":" . is_null($userdata['email']) ? $userdata['realname'] : $userdata['email'];
     $issuer = SYSTEM_NAME;
     $qrCode = new QrCode($codeuri);
-    $qrCode->setSize(200);
-    $qrCode->setErrorCorrection("H");
-    $qrcode = $qrCode->getDataUri();
+    $qrCode->setWriterByName('svg');
+    $qrCode->setSize(550);
+    $qrCode->setErrorCorrectionLevel(ErrorCorrectionLevel::HIGH);
+    $qrcode = $qrCode->writeDataUri();
     $totp = Factory::loadFromProvisioningUri($codeuri);
     $codesecret = $totp->getSecret();
     $chunk_secret = trim(chunk_split($codesecret, 4, ' '));
