@@ -52,8 +52,8 @@ function adduser($username, $password, $realname, $email = null, $phone1 = "", $
  * @param string $old The current password
  * @param string $new The new password
  * @param string $new2 New password again
- * @param [string] $error If the function returns false, this will have an array 
- * with a message ID from `lang/messages.php` and (depending on the message) an 
+ * @param [string] $error If the function returns false, this will have an array
+ * with a message ID from `lang/messages.php` and (depending on the message) an
  * extra string for that message.
  * @return boolean true if the password is changed, else false
  */
@@ -282,7 +282,7 @@ function doLoginUser($username, $password) {
 
 /**
  * Send an alert email to the system admin
- * 
+ *
  * Used when an account with the status ALERT_ON_ACCESS logs in
  * @param String $username the account username
  * @return Mixed TRUE if successful, error string if not
@@ -296,7 +296,7 @@ function sendLoginAlertEmail($username, $appname = SITE_TITLE) {
     }
 
     $username = strtolower($username);
-    
+
     $mail = new PHPMailer;
 
     if (DEBUG) {
@@ -341,30 +341,26 @@ function insertAuthLog($type, $uid = null, $data = "") {
     $database->insert("authlog", ['logtime' => date("Y-m-d H:i:s"), 'logtype' => $type, 'uid' => $uid, 'ip' => $ip, 'otherdata' => $data]);
 }
 
-function verifyReCaptcha($response) {
-    try {
-        $client = new GuzzleHttp\Client();
-
-        $response = $client
-                ->request('POST', "https://www.google.com/recaptcha/api/siteverify", [
-            'form_params' => [
-                'secret' => RECAPTCHA_SECRET_KEY,
-                'response' => $response
-            ]
-        ]);
-
-        if ($response->getStatusCode() != 200) {
-            return false;
-        }
-
-        $resp = json_decode($response->getBody(), TRUE);
-        if ($resp['success'] === true) {
-            return true;
-        } else {
-            return false;
-        }
-    } catch (Exception $e) {
+function verifyCaptcheck($session, $answer, $url) {
+    $data = [
+        'session_id' => $session,
+        'answer_id' => $answer,
+        'action' => "verify"
+    ];
+    $options = [
+        'http' => [
+            'header' => "Content-type: application/x-www-form-urlencoded\r\n",
+            'method' => 'POST',
+            'content' => http_build_query($data)
+        ]
+    ];
+    $context = stream_context_create($options);
+    $result = file_get_contents($url, false, $context);
+    $resp = json_decode($result, TRUE);
+    if (!$resp['result']) {
         return false;
+    } else {
+        return true;
     }
 }
 

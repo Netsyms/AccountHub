@@ -8,6 +8,13 @@
  * This file contains global settings and utility functions.
  */
 ob_start(); // allow sending headers after content
+//
+// Composer
+require __DIR__ . '/vendor/autoload.php';
+
+// Settings file
+require __DIR__ . '/settings.php';
+
 // Unicode, solves almost all stupid encoding problems
 header('Content-Type: text/html; charset=utf-8');
 
@@ -27,6 +34,7 @@ session_start(); // stick some cookies in it
 //// renew session cookie
 setcookie(session_name(), session_id(), time() + $session_length);
 
+$captcha_server = (CAPTCHA_ENABLED === true ? preg_replace("/http(s)?:\/\//", "", CAPTCHA_SERVER) : "");
 if ($_SESSION['mobile'] === TRUE) {
     header("Content-Security-Policy: "
             . "default-src 'self';"
@@ -37,7 +45,7 @@ if ($_SESSION['mobile'] === TRUE) {
             . "font-src 'self'; "
             . "connect-src *; "
             . "style-src 'self' 'unsafe-inline'; "
-            . "script-src 'self' 'unsafe-inline'");
+            . "script-src 'self' 'unsafe-inline' $captcha_server");
 } else {
     header("Content-Security-Policy: "
             . "default-src 'self';"
@@ -48,14 +56,9 @@ if ($_SESSION['mobile'] === TRUE) {
             . "font-src 'self'; "
             . "connect-src *; "
             . "style-src 'self' 'nonce-$SECURE_NONCE'; "
-            . "script-src 'self' 'nonce-$SECURE_NONCE'");
+            . "script-src 'self' 'nonce-$SECURE_NONCE' $captcha_server");
 }
-//
-// Composer
-require __DIR__ . '/vendor/autoload.php';
 
-// Settings file
-require __DIR__ . '/settings.php';
 // List of alert messages
 require __DIR__ . '/lang/messages.php';
 // text strings (i18n)
@@ -76,7 +79,7 @@ function sendError($error) {
             . "<h1>A fatal application error has occurred.</h1>"
             . "<i>(This isn't your fault.)</i>"
             . "<h2>Details:</h2>"
-            . "<p>". htmlspecialchars($error) . "</p>");
+            . "<p>" . htmlspecialchars($error) . "</p>");
 }
 
 date_default_timezone_set(TIMEZONE);
@@ -183,7 +186,7 @@ function addLangStrings($strings) {
 }
 
 /**
- * Add strings to the i18n global array.  Accepts an array of language code 
+ * Add strings to the i18n global array.  Accepts an array of language code
  * keys, with the values a key-value array of strings.
  * @param array $strings ['en_us' => ['key' => 'value']]
  */
@@ -417,12 +420,12 @@ function getClientIP() {
 }
 
 /**
- * Check if the client's IP has been doing too many brute-force-friendly 
+ * Check if the client's IP has been doing too many brute-force-friendly
  * requests lately.
- * Kills the script with a "friendly" error and response code 429 
+ * Kills the script with a "friendly" error and response code 429
  * (Too Many Requests) if the last access time in the DB is too near.
- * 
- * Also updates the rate_limit table with the latest data and purges old rows. 
+ *
+ * Also updates the rate_limit table with the latest data and purges old rows.
  * @global type $database
  */
 function engageRateLimit() {

@@ -64,11 +64,10 @@ define("MOBILE_ENABLED", TRUE);
 // Base URL for site links.
 define('URL', 'http://localhost/accounthub');
 
-// Use reCAPTCHA on login screen
-// https://www.google.com/recaptcha/
-define("RECAPTCHA_ENABLED", FALSE);
-define('RECAPTCHA_SITE_KEY', '');
-define('RECAPTCHA_SECRET_KEY', '');
+// Use Captcheck on login screen
+// https://captcheck.netsyms.com
+define("CAPTCHA_ENABLED", FALSE);
+define('CAPTCHA_SERVER', 'https://captcheck.netsyms.com');
 
 // API URL and index URL for TaskFloor
 define('TASKFLOOR_API', 'http://localhost/taskfloor/api.php');
