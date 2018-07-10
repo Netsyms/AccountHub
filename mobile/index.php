@@ -21,7 +21,7 @@ if ($VARS['action'] == "ping") {
 }
 
 if (MOBILE_ENABLED !== TRUE) {
-    exit(json_encode(["status" => "ERROR", "msg" => lang("mobile login disabled", false)]));
+    exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("mobile login disabled", false)]));
 }
 
 // Make sure we have a username and access key
@@ -60,7 +60,7 @@ switch ($VARS['action']) {
         engageRateLimit();
         if (get_account_status($username) != "NORMAL") {
             insertAuthLog(20, null, "Username: " . $username . ", Key: " . $key);
-            exit(json_encode(["status" => "ERROR", "msg" => lang("login failed try on web", false)]));
+            exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("login failed try on web", false)]));
         }
         if (authenticate_user($username, $VARS['password'], $autherror)) {
             $uid = $database->get("accounts", "uid", ["username" => $username]);
@@ -72,14 +72,14 @@ switch ($VARS['action']) {
                 exit(json_encode(["status" => "ERROR", "msg" => $autherror]));
             } else {
                 insertAuthLog(20, null, "Username: " . $username . ", Key: " . $key);
-                exit(json_encode(["status" => "ERROR", "msg" => lang("login incorrect", false)]));
+                exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("login incorrect", false)]));
             }
         }
     case "user_info":
         engageRateLimit();
         if (get_account_status($username) != "NORMAL") {
             insertAuthLog(20, null, "Username: " . $username . ", Key: " . $key);
-            exit(json_encode(["status" => "ERROR", "msg" => lang("login failed try on web", false)]));
+            exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("login failed try on web", false)]));
         }
         if (authenticate_user($username, $VARS['password'], $autherror)) {
             $userinfo = $database->get("accounts", ["uid", "username", "realname", "email"], ["username" => $username]);
@@ -91,7 +91,7 @@ switch ($VARS['action']) {
                 exit(json_encode(["status" => "ERROR", "msg" => $autherror]));
             } else {
                 insertAuthLog(20, null, "Username: " . $username . ", Key: " . $key);
-                exit(json_encode(["status" => "ERROR", "msg" => lang("login incorrect", false)]));
+                exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("login incorrect", false)]));
             }
         }
     case "start_session":
@@ -107,7 +107,7 @@ switch ($VARS['action']) {
             }
         }
         insertAuthLog(20, null, "Username: " . $username . ", Key: " . $key);
-        exit(json_encode(["status" => "ERROR", "msg" => lang("login incorrect", false)]));
+        exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("login incorrect", false)]));
     case "listapps":
         $apps = EXTERNAL_APPS;
         // Format paths as absolute URLs

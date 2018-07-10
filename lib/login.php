@@ -325,8 +325,8 @@ function sendLoginAlertEmail($username, $appname = SITE_TITLE) {
     $mail->setFrom(FROM_EMAIL, 'Account Alerts');
     $mail->addAddress(ADMIN_EMAIL, "System Admin");
     $mail->isHTML(false);
-    $mail->Subject = lang("admin alert email subject", false);
-    $mail->Body = lang2("admin alert email message", ["username" => $username, "datetime" => date("Y-m-d H:i:s"), "ipaddr" => getClientIP(), "appname" => $appname], false);
+    $mail->Subject = $Strings->get("admin alert email subject", false);
+    $mail->Body = $Strings->build("admin alert email message", ["username" => $username, "datetime" => date("Y-m-d H:i:s"), "ipaddr" => getClientIP(), "appname" => $appname], false);
 
     if (!$mail->send()) {
         return $mail->ErrorInfo;

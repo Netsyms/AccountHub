@@ -132,46 +132,6 @@ function is_empty($str) {
 }
 
 /**
- * I18N string getter.  If the key doesn't exist, outputs the key itself.
- * @param string $key I18N string key
- * @param boolean $echo whether to echo the result or return it (default echo)
- */
-function lang($key, $echo = true) {
-    global $Strings;
-    return $Strings->get($key, $echo);
-}
-
-/**
- * I18N string getter (with builder).    If the key doesn't exist, outputs the key itself.
- * @param string $key I18N string key
- * @param array $replace key-value array of replacements.
- * If the string value is "hello {abc}" and you give ["abc" => "123"], the
- * result will be "hello 123".
- * @param boolean $echo whether to echo the result or return it (default echo)
- */
-function lang2($key, $replace, $echo = true) {
-    global $Strings;
-    return $Strings->build($key, $replace, $echo);
-}
-
-/**
- * Add strings to the i18n global array.
- * @param array $strings ['key' => 'value']
- */
-function addLangStrings($strings) {
-    $GLOBALS['STRINGS'] = array_merge($GLOBALS['STRINGS'], $strings);
-}
-
-/**
- * Add strings to the i18n global array.  Accepts an array of language code
- * keys, with the values a key-value array of strings.
- * @param array $strings ['en_us' => ['key' => 'value']]
- */
-function addMultiLangStrings($strings) {
-    throw new Exception("Calling broken function addMultiLangStrings()");
-}
-
-/**
  * Checks if an email address is valid.
  * @param string $email Email to check
  * @return boolean True if email passes validation, else false.

@@ -48,27 +48,27 @@ switch ($VARS['action']) {
         $errmsg = "";
         if (authenticate_user($VARS['username'], $VARS['password'], $errmsg)) {
             insertAuthLog(12, null, "Username: " . strtolower($VARS['username']) . ", Key: " . getCensoredKey());
-            exit(json_encode(["status" => "OK", "msg" => lang("login successful", false)]));
+            exit(json_encode(["status" => "OK", "msg" => $Strings->get("login successful", false)]));
         } else {
             insertAuthLog(13, $uid, "Username: " . strtolower($VARS['username']) . ", Key: " . getCensoredKey());
             if (!is_empty($errmsg)) {
-                exit(json_encode(["status" => "ERROR", "msg" => lang2("ldap error", ['error' => $errmsg], false)]));
+                exit(json_encode(["status" => "ERROR", "msg" => $Strings->build("ldap error", ['error' => $errmsg], false)]));
             }
             if (user_exists($VARS['username'])) {
                 switch (get_account_status($VARS['username'])) {
                     case "LOCKED_OR_DISABLED":
-                        exit(json_encode(["status" => "ERROR", "msg" => lang("account locked", false)]));
+                        exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("account locked", false)]));
                     case "TERMINATED":
-                        exit(json_encode(["status" => "ERROR", "msg" => lang("account terminated", false)]));
+                        exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("account terminated", false)]));
                     case "CHANGE_PASSWORD":
-                        exit(json_encode(["status" => "ERROR", "msg" => lang("password expired", false)]));
+                        exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("password expired", false)]));
                     case "NORMAL":
                         break;
                     default:
-                        exit(json_encode(["status" => "ERROR", "msg" => lang("account state error", false)]));
+                        exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("account state error", false)]));
                 }
             }
-            exit(json_encode(["status" => "ERROR", "msg" => lang("login incorrect", false)]));
+            exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("login incorrect", false)]));
         }
         break;
     case "userinfo":
@@ -78,7 +78,7 @@ switch ($VARS['action']) {
                 $data['pin'] = (is_null($data['pin']) || $data['pin'] == "" ? false : true);
                 exit(json_encode(["status" => "OK", "data" => $data]));
             } else {
-                exit(json_encode(["status" => "ERROR", "msg" => lang("login incorrect", false)]));
+                exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("login incorrect", false)]));
             }
         } else if (!is_empty($VARS['uid'])) {
             if ($database->has('accounts', ['uid' => $VARS['uid']])) {
@@ -86,7 +86,7 @@ switch ($VARS['action']) {
                 $data['pin'] = (is_null($data['pin']) || $data['pin'] == "" ? false : true);
                 exit(json_encode(["status" => "OK", "data" => $data]));
             } else {
-                exit(json_encode(["status" => "ERROR", "msg" => lang("login incorrect", false)]));
+                exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("login incorrect", false)]));
             }
         } else {
             http_response_code(400);
@@ -119,7 +119,7 @@ switch ($VARS['action']) {
             exit(json_encode(["status" => "OK", "valid" => true]));
         } else {
             insertAuthLog(7, null, "Username: " . strtolower($VARS['username']) . ", Key: " . getCensoredKey());
-            exit(json_encode(["status" => "ERROR", "msg" => lang("2fa incorrect", false), "valid" => false]));
+            exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("2fa incorrect", false), "valid" => false]));
         }
         break;
     case "acctstatus":
@@ -133,13 +133,13 @@ switch ($VARS['action']) {
             switch (get_account_status($VARS['username'])) {
                 case "LOCKED_OR_DISABLED":
                     insertAuthLog(5, $uid, "Username: " . strtolower($VARS['username']) . ", Key: " . getCensoredKey());
-                    exit(json_encode(["status" => "ERROR", "msg" => lang("account locked", false)]));
+                    exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("account locked", false)]));
                 case "TERMINATED":
                     insertAuthLog(5, $uid, "Username: " . strtolower($VARS['username']) . ", Key: " . getCensoredKey());
-                    exit(json_encode(["status" => "ERROR", "msg" => lang("account terminated", false)]));
+                    exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("account terminated", false)]));
                 case "CHANGE_PASSWORD":
                     insertAuthLog(5, $uid, "Username: " . strtolower($VARS['username']) . ", Key: " . getCensoredKey());
-                    exit(json_encode(["status" => "ERROR", "msg" => lang("password expired", false)]));
+                    exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("password expired", false)]));
                 case "NORMAL":
                     insertAuthLog(4, $uid, "Username: " . strtolower($VARS['username']) . ", Key: " . getCensoredKey());
                     exit(json_encode(["status" => "OK"]));
@@ -149,14 +149,14 @@ switch ($VARS['action']) {
                     exit(json_encode(["status" => "OK", "alert" => true]));
                 default:
                     insertAuthLog(5, $uid, "Username: " . strtolower($VARS['username']) . ", Key: " . getCensoredKey());
-                    exit(json_encode(["status" => "ERROR", "msg" => lang("account state error", false)]));
+                    exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("account state error", false)]));
             }
         } else {
             insertAuthLog(5, null, "Username: " . strtolower($VARS['username']) . ", Key: " . getCensoredKey());
             if (!is_empty($errmsg)) {
-                exit(json_encode(["status" => "ERROR", "msg" => lang2("ldap error", ['error' => $errmsg], false)]));
+                exit(json_encode(["status" => "ERROR", "msg" => $Strings->build("ldap error", ['error' => $errmsg], false)]));
             }
-            exit(json_encode(["status" => "ERROR", "msg" => lang("login incorrect", false)]));
+            exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("login incorrect", false)]));
         }
         break;
     case "ismanagerof":
@@ -166,10 +166,10 @@ switch ($VARS['action']) {
                     $managerid = $VARS['manager'];
                     $employeeid = $VARS['employee'];
                 } else {
-                    exit(json_encode(["status" => "ERROR", "msg" => lang("user does not exist", false), "user" => $VARS['employee']]));
+                    exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("user does not exist", false), "user" => $VARS['employee']]));
                 }
             } else {
-                exit(json_encode(["status" => "ERROR", "msg" => lang("user does not exist", false), "user" => $VARS['manager']]));
+                exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("user does not exist", false), "user" => $VARS['manager']]));
             }
         } else {
             if (user_exists_local($VARS['manager'])) {
@@ -177,10 +177,10 @@ switch ($VARS['action']) {
                     $managerid = $database->select('accounts', 'uid', ['username' => strtolower($VARS['manager'])]);
                     $employeeid = $database->select('accounts', 'uid', ['username' => strtolower($VARS['employee'])]);
                 } else {
-                    exit(json_encode(["status" => "ERROR", "msg" => lang("user does not exist", false), "user" => strtolower($VARS['employee'])]));
+                    exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("user does not exist", false), "user" => strtolower($VARS['employee'])]));
                 }
             } else {
-                exit(json_encode(["status" => "ERROR", "msg" => lang("user does not exist", false), "user" => strtolower($VARS['manager'])]));
+                exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("user does not exist", false), "user" => strtolower($VARS['manager'])]));
             }
         }
         if ($database->has('managers', ['AND' => ['managerid' => $managerid, 'employeeid' => $employeeid]])) {
@@ -194,13 +194,13 @@ switch ($VARS['action']) {
             if ($database->has("accounts", ['uid' => $VARS['uid']])) {
                 $managerid = $VARS['uid'];
             } else {
-                exit(json_encode(["status" => "ERROR", "msg" => lang("user does not exist", false)]));
+                exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("user does not exist", false)]));
             }
         } else if ($VARS['username']) {
             if ($database->has("accounts", ['username' => strtolower($VARS['username'])])) {
                 $managerid = $database->select('accounts', 'uid', ['username' => strtolower($VARS['username'])]);
             } else {
-                exit(json_encode(["status" => "ERROR", "msg" => lang("user does not exist", false)]));
+                exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("user does not exist", false)]));
             }
         } else {
             http_response_code(400);
@@ -218,13 +218,13 @@ switch ($VARS['action']) {
             if ($database->has("accounts", ['uid' => $VARS['uid']])) {
                 $empid = $VARS['uid'];
             } else {
-                exit(json_encode(["status" => "ERROR", "msg" => lang("user does not exist", false)]));
+                exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("user does not exist", false)]));
             }
         } else if ($VARS['username']) {
             if ($database->has("accounts", ['username' => strtolower($VARS['username'])])) {
                 $empid = $database->select('accounts', 'uid', ['username' => strtolower($VARS['username'])]);
             } else {
-                exit(json_encode(["status" => "ERROR", "msg" => lang("user does not exist", false)]));
+                exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("user does not exist", false)]));
             }
         } else {
             http_response_code(400);
@@ -250,13 +250,13 @@ switch ($VARS['action']) {
             if ($database->has("accounts", ['uid' => $VARS['uid']])) {
                 $user = $database->select('accounts', ['username'], ['uid' => $VARS['uid']])[0]['username'];
             } else {
-                exit(json_encode(["status" => "ERROR", "msg" => lang("user does not exist", false)]));
+                exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("user does not exist", false)]));
             }
         } else if ($VARS['username']) {
             if ($database->has("accounts", ['username' => strtolower($VARS['username'])])) {
                 $user = $VARS['username'];
             } else {
-                exit(json_encode(["status" => "ERROR", "msg" => lang("user does not exist", false)]));
+                exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("user does not exist", false)]));
             }
         } else {
             http_response_code(400);
@@ -296,7 +296,7 @@ switch ($VARS['action']) {
             $user = $database->get("onetimekeys", ["[>]accounts" => ["uid" => "uid"]], ["username", "realname", "accounts.uid"], ["key" => $VARS['code']]);
             exit(json_encode(["status" => "OK", "user" => $user]));
         } else {
-            exit(json_encode(["status" => "ERROR", "msg" => lang("no such code or code expired", false)]));
+            exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("no such code or code expired", false)]));
         }
     case "listapps":
         $apps = EXTERNAL_APPS;
@@ -312,7 +312,7 @@ switch ($VARS['action']) {
             if ($database->has("groups", ['groupid' => $VARS['gid']])) {
                 $groupid = $VARS['gid'];
             } else {
-                exit(json_encode(["status" => "ERROR", "msg" => lang("group does not exist", false)]));
+                exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("group does not exist", false)]));
             }
         } else {
             http_response_code(400);
@@ -339,13 +339,13 @@ switch ($VARS['action']) {
             if ($database->has("accounts", ['uid' => $VARS['uid']])) {
                 $empid = $VARS['uid'];
             } else {
-                exit(json_encode(["status" => "ERROR", "msg" => lang("user does not exist", false)]));
+                exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("user does not exist", false)]));
             }
         } else if ($VARS['username']) {
             if ($database->has("accounts", ['username' => strtolower($VARS['username'])])) {
                 $empid = $database->select('accounts', 'uid', ['username' => strtolower($VARS['username'])]);
             } else {
-                exit(json_encode(["status" => "ERROR", "msg" => lang("user does not exist", false)]));
+                exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("user does not exist", false)]));
             }
         } else {
             http_response_code(400);
@@ -375,13 +375,13 @@ switch ($VARS['action']) {
             if (user_exists_local($VARS['username'])) {
                 $pin = $database->get("accounts", "pin", ["username" => strtolower($VARS['username'])]);
             } else {
-                exit(json_encode(["status" => "ERROR", "msg" => lang("login incorrect", false)]));
+                exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("login incorrect", false)]));
             }
         } else if (!is_empty($VARS['uid'])) {
             if ($database->has('accounts', ['uid' => $VARS['uid']])) {
                 $pin = $database->get("accounts", "pin", ["uid" => strtolower($VARS['uid'])]);
             } else {
-                exit(json_encode(["status" => "ERROR", "msg" => lang("login incorrect", false)]));
+                exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("login incorrect", false)]));
             }
         } else {
             http_response_code(400);

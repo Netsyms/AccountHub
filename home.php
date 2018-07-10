@@ -98,7 +98,7 @@ if (!is_empty($_GET['page'])) {
                                         if (isset($pg['icon'])) {
                                             $item .= '<i class="fa fa-' . $pg['icon'] . ' fa-fw"></i>';
                                         }
-                                        $item .= lang($pg['title'], false) . '</a>';
+                                        $item .= $Strings->get($pg['title'], false) . '</a>';
                                         echo '<li class="hidden-sm hidden-md">' . $item . "</li>";
                                         $more .= '<li>' . $item . "</li>";
                                     } else {
@@ -117,7 +117,7 @@ if (!is_empty($_GET['page'])) {
                                                     ?>
                                                     <i class="fa fa-<?php echo $pg['icon']; ?> fa-fw"></i>
                                                 <?php } ?>
-                                                <?php lang($pg['title']) ?>
+                                                <?php $Strings->get($pg['title']) ?>
                                             </a>
                                         </li>
                                         <?php
@@ -128,14 +128,14 @@ if (!is_empty($_GET['page'])) {
                             if ($counter > 4) {
                                 ?>
                                 <li class="dropdown hidden-lg hidden-xs">
-                                    <a href="" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-ellipsis-v fa-fw"></i> <?php lang("more"); ?></a>
+                                    <a href="" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-ellipsis-v fa-fw"></i> <?php $Strings->get("more"); ?></a>
                                     <ul class="dropdown-menu"><?php echo $more; ?></ul>
                                 </li>
                             <?php } ?>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             <li><a href="home.php"><i class="fa fa-user fa-fw"></i> <span class=""><?php echo $_SESSION['realname'] ?></span></a></li>
-                            <li><a href="action.php?action=signout"><i class="fa fa-sign-out fa-fw"></i> <span class=""><?php lang("sign out") ?></span></a></li>
+                            <li><a href="action.php?action=signout"><i class="fa fa-sign-out fa-fw"></i> <span class=""><?php $Strings->get("sign out") ?></span></a></li>
                         </ul>
                     </div>
             </nav>
@@ -177,9 +177,9 @@ if (!is_empty($_GET['page'])) {
             if (!is_empty($_GET['msg']) && array_key_exists($_GET['msg'], MESSAGES)) {
                 // optional string generation argument
                 if (is_empty($_GET['arg'])) {
-                    $alertmsg = lang(MESSAGES[$_GET['msg']]['string'], false);
+                    $alertmsg = $Strings->get(MESSAGES[$_GET['msg']]['string'], false);
                 } else {
-                    $alertmsg = lang2(MESSAGES[$_GET['msg']]['string'], ["arg" => $_GET['arg']], false);
+                    $alertmsg = $Strings->build(MESSAGES[$_GET['msg']]['string'], ["arg" => $_GET['arg']], false);
                 }
                 $alerttype = MESSAGES[$_GET['msg']]['type'];
                 $alerticon = "square-o";
@@ -242,7 +242,7 @@ END;
                         if (!isset($APPS[$app])) {
                             continue;
                         }
-                        $apptitle = ($APPS[$app]['i18n'] === TRUE ? lang($APPS[$app]['title'], false) : $APPS[$app]['title']);
+                        $apptitle = ($APPS[$app]['i18n'] === TRUE ? $Strings->get($APPS[$app]['title'], false) : $APPS[$app]['title']);
                         $appicon = (is_empty($APPS[$app]['icon']) ? "" : "fa fa-fw fa-" . $APPS[$app]['icon']);
                         $apptype = (is_empty($APPS[$app]['type']) ? "default" : $APPS[$app]['type']);
                         $appcontent = $APPS[$app]['content'];

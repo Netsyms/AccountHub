@@ -6,13 +6,13 @@
 
 dieifnotloggedin();
 
-$newpin = lang("new pin", false);
-$conpin = lang("confirm pin", false);
-$change = lang("change pin", false);
-$pinexp = lang("pin explanation", false);
+$newpin = $Strings->get("new pin", false);
+$conpin = $Strings->get("confirm pin", false);
+$change = $Strings->get("change pin", false);
+$pinexp = $Strings->get("pin explanation", false);
 
 
-$APPS["change_pin"]["title"] = lang("change pin", false);
+$APPS["change_pin"]["title"] = $Strings->get("change pin", false);
 $APPS["change_pin"]["icon"] = "th";
 $APPS["change_pin"]["content"] = <<<CONTENTEND
 <div class="alert alert-info"><i class="fa fa-info-circle"></i> $pinexp</div>

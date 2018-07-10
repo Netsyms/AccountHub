@@ -11,7 +11,7 @@ use Endroid\QrCode\QrCode;
 
 if (MOBILE_ENABLED) {
 
-    $APPS["sync_mobile"]["title"] = lang("sync mobile", false);
+    $APPS["sync_mobile"]["title"] = $Strings->get("sync mobile", false);
     $APPS["sync_mobile"]["icon"] = "mobile";
 
     if (!is_empty($_GET['delsynccode'])) {
@@ -40,9 +40,9 @@ if (MOBILE_ENABLED) {
         $qrCode->setErrorCorrectionLevel(ErrorCorrectionLevel::HIGH);
         $qrcode = $qrCode->writeDataUri();
         $chunk_code = trim(chunk_split($code, 5, ' '));
-        $lang_done = lang("done adding sync code", false);
+        $lang_done = $Strings->get("done adding sync code", false);
         $APPS["sync_mobile"]["content"] = '<div class="alert alert-info"><i class="fa fa-info-circle"></i> '
-                . lang("scan sync qrcode", false)
+                . $Strings->get("scan sync qrcode", false)
                 . '</div>'
                 . <<<END
 <style nonce="$SECURE_NONCE">
@@ -59,13 +59,13 @@ if (MOBILE_ENABLED) {
 <div class="panel panel-default margintop-15px">
 <div class="panel-body">
 END
-                . "<b>" . lang("manual setup", false) . "</b><br /><label>" . lang("username", false) . ":</label>"
+                . "<b>" . $Strings->get("manual setup", false) . "</b><br /><label>" . $Strings->get("username", false) . ":</label>"
                 . '<div class="well well-sm mono-chunk">' . $_SESSION['username'] . '</div>'
-                . "<label>" . lang("sync key", false) . "</label>"
+                . "<label>" . $Strings->get("sync key", false) . "</label>"
                 . <<<END
 <div class="well well-sm mono-chunk">$chunk_code</div>
 END
-                . "<label>" . lang("url", false) . "</label>"
+                . "<label>" . $Strings->get("url", false) . "</label>"
                 . <<<END
 <div class="well well-sm mono-chunk">$url</div>
 </div>
@@ -74,17 +74,17 @@ END
 END;
     } else {
         $activecodes = $database->select("mobile_codes", ["codeid", "code"], ["uid" => $_SESSION['uid']]);
-        $content = '<div class="alert alert-info"><i class="fa fa-info-circle"></i> ' . lang("sync explained", false) . '</div>'
+        $content = '<div class="alert alert-info"><i class="fa fa-info-circle"></i> ' . $Strings->get("sync explained", false) . '</div>'
                 . '<a class="btn btn-success btn-sm btn-block" href="home.php?page=sync&mobilecode=generate">'
-                . lang("generate sync", false) . '</a>';
-        $content .= "<br /><b>" . lang("active sync codes", false) . ":</b><br />";
+                . $Strings->get("generate sync", false) . '</a>';
+        $content .= "<br /><b>" . $Strings->get("active sync codes", false) . ":</b><br />";
         $content .= "<div class='list-group'>";
         if (count($activecodes) > 0) {
             foreach ($activecodes as $c) {
                 $content .= "<div class='list-group-item mobilekey'><span id=\"mobilecode\">" . trim(chunk_split($c['code'], 5, ' ')) . "</span> <span class='tinybuttons'><a class='btn btn-primary btn-sm' href='home.php?page=sync&mobilecode=generate&showsynccode=" . $c['codeid'] . "'><i class='fa fa-qrcode'></i></a> <a class='btn btn-danger btn-sm' href='home.php?page=sync&delsynccode=" . $c['codeid'] . "'><i class='fa fa-trash'></i></a></span></div>";
             }
         } else {
-            $content .= "<div class='list-group-item'>" . lang("no active codes", false) . "</div>";
+            $content .= "<div class='list-group-item'>" . $Strings->get("no active codes", false) . "</div>";
         }
         $content .= "</div>";
         $content .= <<<END

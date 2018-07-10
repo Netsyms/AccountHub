@@ -6,12 +6,12 @@
 
 dieifnotloggedin();
 
-$oldpass = lang("current password", false);
-$newpass = lang("new password", false);
-$conpass = lang("confirm password", false);
-$change = lang("change password", false);
+$oldpass = $Strings->get("current password", false);
+$newpass = $Strings->get("new password", false);
+$conpass = $Strings->get("confirm password", false);
+$change = $Strings->get("change password", false);
 
-$APPS["change_password"]["title"] = lang("change password", false);
+$APPS["change_password"]["title"] = $Strings->get("change password", false);
 $APPS["change_password"]["icon"] = "key";
 $APPS["change_password"]["content"] = <<<CONTENTEND
 <form action="action.php" method="POST">

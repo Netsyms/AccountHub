@@ -13,7 +13,7 @@ if ($_SESSION['loggedin'] && !is_empty($_SESSION['password'])) {
     die();
 // This branch will likely run if the user signed in from a different app.
 } else if ($_SESSION['loggedin'] && is_empty($_SESSION['password'])) {
-    $alert = lang("sign in again", false);
+    $alert = $Strings->get("sign in again", false);
     $alerttype = "info";
 }
 
@@ -29,13 +29,13 @@ if ($VARS['progress'] == "1") {
             $status = get_account_status($VARS['username'], $error);
             switch ($status) {
                 case "LOCKED_OR_DISABLED":
-                    $alert = lang("account locked", false);
+                    $alert = $Strings->get("account locked", false);
                     break;
                 case "TERMINATED":
-                    $alert = lang("account terminated", false);
+                    $alert = $Strings->get("account terminated", false);
                     break;
                 case "CHANGE_PASSWORD":
-                    $alert = lang("password expired", false);
+                    $alert = $Strings->get("password expired", false);
                     $alerttype = "info";
                     $_SESSION['username'] = strtolower($VARS['username']);
                     $_SESSION['uid'] = $database->get('accounts', 'uid', ['username' => strtolower($VARS['username'])]);
@@ -55,7 +55,7 @@ if ($VARS['progress'] == "1") {
                     if (!is_empty($error)) {
                         $alert = $error;
                     } else {
-                        $alert = lang("login error", false);
+                        $alert = $Strings->get("login error", false);
                     }
                     break;
             }
@@ -76,17 +76,17 @@ if ($VARS['progress'] == "1") {
                         $alert = $autherror;
                         insertAuthLog(2, null, "Username: " . $VARS['username']);
                     } else {
-                        $alert = lang("login incorrect", false);
+                        $alert = $Strings->get("login incorrect", false);
                         insertAuthLog(2, null, "Username: " . $VARS['username']);
                     }
                 }
             }
         } else { // User does not exist anywhere
-            $alert = lang("login incorrect", false);
+            $alert = $Strings->get("login incorrect", false);
             insertAuthLog(2, null, "Username: " . $VARS['username']);
         }
     } else {
-        $alert = lang("captcha error", false);
+        $alert = $Strings->get("captcha error", false);
         insertAuthLog(8, null, "Username: " . $VARS['username']);
     }
 } else if ($VARS['progress'] == "2") {
@@ -101,7 +101,7 @@ if ($VARS['progress'] == "1") {
         header('Location: home.php');
         die("Logged in, go to home.php");
     } else {
-        $alert = lang("2fa incorrect", false);
+        $alert = $Strings->get("2fa incorrect", false);
         insertAuthLog(6, null, "Username: " . $VARS['username']);
     }
 } else if ($VARS['progress'] == "chpasswd") {
@@ -110,22 +110,22 @@ if ($VARS['progress'] == "1") {
         $error = [];
         $result = change_password($VARS['oldpass'], $VARS['newpass'], $VARS['conpass'], $error);
         if ($result === TRUE) {
-            $alert = lang(MESSAGES["password_updated"]["string"], false);
+            $alert = $Strings->get(MESSAGES["password_updated"]["string"], false);
             $alerttype = MESSAGES["password_updated"]["type"];
         }
         switch (count($error)) {
             case 0:
                 break;
             case 1:
-                $alert = lang(MESSAGES[$error[0]]["string"], false);
+                $alert = $Strings->get(MESSAGES[$error[0]]["string"], false);
                 $alerttype = MESSAGES[$error[0]]["type"];
                 break;
             case 2:
-                $alert = lang2(MESSAGES[$error[0]]["string"], ["arg" => $error[1]], false);
+                $alert = $Strings->build(MESSAGES[$error[0]]["string"], ["arg" => $error[1]], false);
                 $alerttype = MESSAGES[$error[0]]["type"];
                 break;
             default:
-                $alert = lang(MESSAGES["generic_op_error"]["string"], false);
+                $alert = $Strings->get(MESSAGES["generic_op_error"]["string"], false);
                 $alerttype = MESSAGES["generic_op_error"]["type"];
         }
     } else {
@@ -165,7 +165,7 @@ if ($VARS['progress'] == "1") {
                     </div>
                     <div class="panel panel-orange">
                         <div class="panel-heading">
-                            <h3 class="panel-title"><?php lang("sign in"); ?></h3>
+                            <h3 class="panel-title"><?php $Strings->get("sign in"); ?></h3>
                         </div>
                         <div class="panel-body">
                             <form action="" method="POST">
@@ -199,8 +199,8 @@ if ($VARS['progress'] == "1") {
 
                                 if (!$multiauth && !$change_password) {
                                     ?>
-                                    <input type="text" class="form-control" name="username" placeholder="<?php lang("username"); ?>" required="required" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autofocus /><br />
-                                    <input type="password" class="form-control" name="password" placeholder="<?php lang("password"); ?>" required="required" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" /><br />
+                                    <input type="text" class="form-control" name="username" placeholder="<?php $Strings->get("username"); ?>" required="required" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autofocus /><br />
+                                    <input type="password" class="form-control" name="password" placeholder="<?php $Strings->get("password"); ?>" required="required" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" /><br />
                                     <?php if (CAPTCHA_ENABLED) { ?>
                                         <div class="captcheck_container" data-stylenonce="<?php echo $SECURE_NONCE; ?>"></div>
                                         <br />
@@ -210,9 +210,9 @@ if ($VARS['progress'] == "1") {
                                 } else if ($multiauth) {
                                     ?>
                                     <div class="alert alert-info">
-                                        <?php lang("2fa prompt"); ?>
+                                        <?php $Strings->get("2fa prompt"); ?>
                                     </div>
-                                    <input type="text" class="form-control" name="authcode" placeholder="<?php lang("authcode"); ?>" required="required" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autofocus /><br />
+                                    <input type="text" class="form-control" name="authcode" placeholder="<?php $Strings->get("authcode"); ?>" required="required" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autofocus /><br />
                                     <input type="hidden" name="progress" value="2" />
                                     <input type="hidden" name="username" value="<?php echo $VARS['username']; ?>" />
                                     <?php
@@ -226,7 +226,7 @@ if ($VARS['progress'] == "1") {
                                 }
                                 ?>
                                 <button type="submit" class="btn btn-primary">
-                                    <?php lang("continue"); ?>
+                                    <?php $Strings->get("continue"); ?>
                                 </button>
                             </form>
                         </div>
