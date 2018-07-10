@@ -10,19 +10,6 @@ use Endroid\QrCode\ErrorCorrectionLevel;
 use Endroid\QrCode\QrCode;
 
 if (MOBILE_ENABLED) {
-    addMultiLangStrings(["en_us" => [
-            "sync mobile" => "Sync Mobile App",
-            "scan sync qrcode" => "Scan this code with the mobile app or enter the code manually.",
-            "sync explained" => "Access your account and apps on the go.  Use a sync code to securely connect your phone or tablet to AccountHub with the Netsyms Business mobile app.",
-            "generate sync" => "Create new sync code",
-            "active sync codes" => "Active codes",
-            "no active codes" => "No active codes.",
-            "done adding sync code" => "Done adding code",
-            "manual setup" => "Manual Setup:",
-            "sync key" => "Sync key:",
-            "url" => "URL:",
-        ]
-    ]);
 
     $APPS["sync_mobile"]["title"] = lang("sync mobile", false);
     $APPS["sync_mobile"]["icon"] = "mobile";

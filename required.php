@@ -62,7 +62,8 @@ if ($_SESSION['mobile'] === TRUE) {
 // List of alert messages
 require __DIR__ . '/lang/messages.php';
 // text strings (i18n)
-require __DIR__ . '/lang/' . LANGUAGE . ".php";
+require __DIR__ . '/lib/Strings.php';
+$Strings = new Strings(LANGUAGE);
 
 function sendError($error) {
     global $SECURE_NONCE;
@@ -136,18 +137,8 @@ function is_empty($str) {
  * @param boolean $echo whether to echo the result or return it (default echo)
  */
 function lang($key, $echo = true) {
-    if (array_key_exists($key, $GLOBALS['STRINGS'])) {
-        $str = $GLOBALS['STRINGS'][$key];
-    } else {
-        trigger_error("Language key \"$key\" does not exist in " . LANGUAGE, E_USER_WARNING);
-        $str = $key;
-    }
-
-    if ($echo) {
-        echo $str;
-    } else {
-        return $str;
-    }
+    global $Strings;
+    return $Strings->get($key, $echo);
 }
 
 /**
@@ -159,22 +150,8 @@ function lang($key, $echo = true) {
  * @param boolean $echo whether to echo the result or return it (default echo)
  */
 function lang2($key, $replace, $echo = true) {
-    if (array_key_exists($key, $GLOBALS['STRINGS'])) {
-        $str = $GLOBALS['STRINGS'][$key];
-    } else {
-        trigger_error("Language key \"$key\" does not exist in " . LANGUAGE, E_USER_WARNING);
-        $str = $key;
-    }
-
-    foreach ($replace as $find => $repl) {
-        $str = str_replace("{" . $find . "}", $repl, $str);
-    }
-
-    if ($echo) {
-        echo $str;
-    } else {
-        return $str;
-    }
+    global $Strings;
+    return $Strings->build($key, $replace, $echo);
 }
 
 /**
@@ -191,9 +168,7 @@ function addLangStrings($strings) {
  * @param array $strings ['en_us' => ['key' => 'value']]
  */
 function addMultiLangStrings($strings) {
-    if (!is_empty($strings[LANGUAGE])) {
-        $GLOBALS['STRINGS'] = array_merge($GLOBALS['STRINGS'], $strings[LANGUAGE]);
-    }
+    throw new Exception("Calling broken function addMultiLangStrings()");
 }
 
 /**

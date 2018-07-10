@@ -30,13 +30,7 @@ define("PAGES", [
 
 // Which apps to load on a given page
 define("APPS", [
-    "home" => [
-        "taskfloor_tasks",
-        "qwikclock_inout",
-        "taskfloor_messages",
-        "inventory_link",
-        "account_security"
-    ],
+    "home" => [],
     "security" => [
         "change_password",
         "change_pin",

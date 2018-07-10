@@ -1,0 +1,4 @@
+{
+    "ldap server error": "The LDAP server returned an error: {arg}",
+    "ldap error": "LDAP error: {error}"
+}
