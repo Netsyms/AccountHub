@@ -13,6 +13,27 @@ CREATE TABLE IF NOT EXISTS `onetimekeys` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
+CREATE TABLE IF NOT EXISTS `notifications` (
+  `notificationid` INT(11) NOT NULL AUTO_INCREMENT,
+  `uid` INT(11) NOT NULL,
+  `timestamp` DATETIME NOT NULL,
+  `title` VARCHAR(255) NOT NULL,
+  `content` TINYTEXT NOT NULL,
+  `url` VARCHAR(255) NOT NULL,
+  `seen` TINYINT(1) NOT NULL DEFAULT 0,
+  `sensitive` TINYINT(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`notificationid`, `uid`),
+  UNIQUE INDEX `notificationid_UNIQUE` (`notificationid` ASC),
+  INDEX `fk_notifications_accounts1_idx` (`uid` ASC),
+  CONSTRAINT `fk_notifications_accounts1`
+    FOREIGN KEY (`uid`)
+    REFERENCES `accounthub`.`accounts` (`uid`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+
+
 SET FOREIGN_KEY_CHECKS = 0;
 ALTER TABLE `groups`
 CHANGE COLUMN `groupid` `groupid` INT(11) NOT NULL AUTO_INCREMENT;

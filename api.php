@@ -355,6 +355,91 @@ switch ($VARS['action']) {
         }
         exit(json_encode(["status" => "OK", "pinvalid" => ($pin == $VARS['pin'])]));
         break;
+    case "getnotifications":
+        if (!empty($VARS['username'])) {
+            $user = User::byUsername($VARS['username']);
+        } else if (!empty($VARS['uid'])) {
+            $user = new User($VARS['uid']);
+        } else {
+            http_response_code(400);
+            die("\"400 Bad Request\"");
+        }
+        if ($user->exists()) {
+            $notifications = $database->select('notifications', ['notificationid (id)', 'timestamp', 'title', 'content', 'url', 'seen', 'sensitive'], ['uid' => $user->getUID()]);
+            for ($i = 0; $i < count($notifications); $i++) {
+                $notifications[$i]['id'] = $notifications[$i]['id'] * 1;
+                $notifications[$i]['seen'] = ($notifications[$i]['seen'] == "1" ? true : false);
+                $notifications[$i]['sensitive'] = ($notifications[$i]['sensitive'] == "1" ? true : false);
+            }
+            exit(json_encode(["status" => "OK", "notifications" => $notifications]));
+        }
+        exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("user does not exist", false)]));
+    case "readnotification":
+        if (!empty($VARS['username'])) {
+            $user = User::byUsername($VARS['username']);
+        } else if (!empty($VARS['uid'])) {
+            $user = new User($VARS['uid']);
+        } else {
+            http_response_code(400);
+            die("\"400 Bad Request\"");
+        }
+
+        if ($user->exists()) {
+            if ($database->has('notifications', ['AND' => ['uid' => $user->getUID(), 'notificationid' => $VARS['id']]])) {
+                $database->update('notifications', ['seen' => 1], ['AND' => ['uid' => $user->getUID(), 'notificationid' => $VARS['id']]]);
+                exit(json_encode(["status" => "OK"]));
+            }
+            exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("invalid parameters", false)]));
+        }
+        exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("user does not exist", false)]));
+    case "addnotification":
+        if (!empty($VARS['username'])) {
+            $user = User::byUsername($VARS['username']);
+        } else if (!empty($VARS['uid'])) {
+            $user = new User($VARS['uid']);
+        } else {
+            http_response_code(400);
+            die("\"400 Bad Request\"");
+        }
+
+        if ($user->exists()) {
+            if (empty($VARS['title']) || empty($VARS['content'])) {
+                exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("invalid parameters", false)]));
+            }
+            $timestamp = date("Y-m-d H:i:s");
+            if (!empty($VARS['timestamp'])) {
+                $timestamp = date("Y-m-d H:i:s", strtotime($VARS['timestamp']));
+            }
+            $url = "";
+            if (!empty($VARS['url'])) {
+                $url = $VARS['url'];
+            }
+            $sensitive = 0;
+            if (isset($VARS['sensitive'])) {
+                $sensitive = 1;
+            }
+            $database->insert('notifications', ['uid' => $user->getUID(), 'timestamp' => $timestamp, 'title' => $VARS['title'], 'content' => $VARS['content'], 'url' => $url, 'seen' => 0, 'sensitive' => $sensitive]);
+            exit(json_encode(["status" => "OK", "id" => $database->id() * 1]));
+        }
+        exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("user does not exist", false)]));
+    case "deletenotification":
+        if (!empty($VARS['username'])) {
+            $user = User::byUsername($VARS['username']);
+        } else if (!empty($VARS['uid'])) {
+            $user = new User($VARS['uid']);
+        } else {
+            http_response_code(400);
+            die("\"400 Bad Request\"");
+        }
+
+        if ($user->exists()) {
+            if ($database->has('notifications', ['AND' => ['uid' => $user->getUID(), 'notificationid' => $VARS['id']]])) {
+                $database->delete('notifications', ['AND' => ['uid' => $user->getUID(), 'notificationid' => $VARS['id']]]);
+                exit(json_encode(["status" => "OK"]));
+            }
+            exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("invalid parameters", false)]));
+        }
+        exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("user does not exist", false)]));
     default:
         http_response_code(404);
         die(json_encode("404 Not Found: the requested action is not available."));
