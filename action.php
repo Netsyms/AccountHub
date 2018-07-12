@@ -23,37 +23,39 @@ dieifnotloggedin();
 
 engageRateLimit();
 
-require_once __DIR__ . "/lib/login.php";
-
 function returnToSender($msg, $arg = "") {
     global $VARS;
     if ($arg == "") {
-        header("Location: home.php?page=" . urlencode($VARS['source']) . "&msg=$msg");
+        header("Location: app.php?page=" . urlencode($VARS['source']) . "&msg=$msg");
     } else {
-        header("Location: home.php?page=" . urlencode($VARS['source']) . "&msg=$msg&arg=" . urlencode($arg));
+        header("Location: app.php?page=" . urlencode($VARS['source']) . "&msg=$msg&arg=" . urlencode($arg));
     }
     die();
 }
 
 switch ($VARS['action']) {
     case "signout":
-        insertAuthLog(11, $_SESSION['uid']);
+        Log::insert(LogType::LOGOUT, $_SESSION['uid']);
         session_destroy();
         header('Location: index.php');
         die("Logged out.");
     case "chpasswd":
         $error = [];
-        $result = change_password($VARS['oldpass'], $VARS['newpass'], $VARS['conpass'], $error);
-        if ($result === TRUE) {
-            returnToSender("password_updated");
-        }
-        switch (count($error)) {
-            case 1:
-                returnToSender($error[0]);
-            case 2:
-                returnToSender($error[0], $error[1]);
-            default:
-                returnToSender("generic_op_error");
+        $user = new User($_SESSION['uid']);
+        try {
+            $result = $user->changePassword($VARS['oldpass'], $VARS['newpass'], $VARS['conpass']);
+
+            if ($result === TRUE) {
+                returnToSender("password_updated");
+            }
+        } catch (PasswordMatchException $e) {
+            returnToSender("passwords_same");
+        } catch (PasswordMismatchException $e) {
+            returnToSender("new_password_mismatch");
+        } catch (IncorrectPasswordException $e) {
+            returnToSender("old_password_mismatch");
+        } catch (WeakPasswordException $e) {
+            returnToSender("weak_password");
         }
         break;
     case "chpin":
@@ -71,16 +73,17 @@ switch ($VARS['action']) {
         if (is_empty($VARS['secret'])) {
             returnToSender("invalid_parameters");
         }
+        $user = new User($_SESSION['uid']);
         $totp = new TOTP(null, $VARS['secret']);
         if (!$totp->verify($VARS["totpcode"])) {
             returnToSender("2fa_wrong_code");
         }
-        $database->update('accounts', ['authsecret' => $VARS['secret']], ['uid' => $_SESSION['uid']]);
-        insertAuthLog(9, $_SESSION['uid']);
+        $user->save2fa($VARS['secret']);
+        Log::insert(LogType::ADDED_2FA, $user);
         returnToSender("2fa_enabled");
     case "rm2fa":
-        $database->update('accounts', ['authsecret' => ""], ['uid' => $_SESSION['uid']]);
-        insertAuthLog(10, $_SESSION['uid']);
+        (new User($_SESSION['uid']))->save2fa("");
+        Log::insert(LogType::REMOVED_2FA, $_SESSION['uid']);
         returnToSender("2fa_removed");
         break;
 }

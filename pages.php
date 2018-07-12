@@ -9,37 +9,25 @@ define("PAGES", [
     "home" => [
         "title" => "home",
         "navbar" => true,
-        "icon" => "home"
+        "icon" => "fas fa-home",
+        "styles" => [
+            "static/css/dock.css"
+        ]
     ],
     "security" => [
         "title" => "account security",
         "navbar" => true,
-        "icon" => "lock"
+        "icon" => "fas fa-lock",
+        "styles" => [
+            "static/css/qrcode.css"
+        ]
     ],
     "sync" => [
         "title" => "sync",
         "navbar" => true,
-        "icon" => "mobile"
+        "icon" => "fas fa-sync"
     ],
     "404" => [
-        "title" => "404 error",
-        "navbar" => false
-    ]
-]);
-
-
-// Which apps to load on a given page
-define("APPS", [
-    "home" => [],
-    "security" => [
-        "change_password",
-        "change_pin",
-        "setup_2fa",
-    ],
-    "sync" => [
-        "sync_mobile",
-    ],
-    "404" => [
-        "404_error"
+        "title" => "404 error"
     ]
 ]);

@@ -10,8 +10,6 @@
 
 require __DIR__ . "/../required.php";
 
-require __DIR__ . "/../lib/login.php";
-
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 
@@ -58,55 +56,47 @@ switch ($VARS['action']) {
     case "check_password":
         // Check if the user-supplied password is valid.
         engageRateLimit();
-        if (get_account_status($username) != "NORMAL") {
-            insertAuthLog(20, null, "Username: " . $username . ", Key: " . $key);
+        $user = User::byUsername($username);
+        if ($user->getStatus()->get() != AccountStatus::NORMAL) {
+            Log::insert(LogType::MOBILE_LOGIN_FAILED, null, "Username: " . $username . ", Key: " . $key);
             exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("login failed try on web", false)]));
         }
-        if (authenticate_user($username, $VARS['password'], $autherror)) {
-            $uid = $database->get("accounts", "uid", ["username" => $username]);
-            insertAuthLog(19, $uid, "Key: " . $key);
-            exit(json_encode(["status" => "OK", "uid" => $uid]));
+        if ($user->checkPassword($VARS['password'])) {
+            Log::insert(LogType::MOBILE_LOGIN_OK, $user->getUID(), "Key: " . $key);
+            exit(json_encode(["status" => "OK", "uid" => $user->getUID()]));
         } else {
-            if (!is_empty($autherror)) {
-                insertAuthLog(20, null, "Username: " . $username . ", Key: " . $key);
-                exit(json_encode(["status" => "ERROR", "msg" => $autherror]));
-            } else {
-                insertAuthLog(20, null, "Username: " . $username . ", Key: " . $key);
-                exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("login incorrect", false)]));
-            }
+            Log::insert(LogType::MOBILE_LOGIN_FAILED, null, "Username: " . $username . ", Key: " . $key);
+            exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("login incorrect", false)]));
         }
     case "user_info":
         engageRateLimit();
-        if (get_account_status($username) != "NORMAL") {
-            insertAuthLog(20, null, "Username: " . $username . ", Key: " . $key);
+        $user = User::byUsername($username);
+        if ($user->getStatus()->get() != AccountStatus::NORMAL) {
+            Log::insert(LogType::MOBILE_LOGIN_FAILED, null, "Username: " . $username . ", Key: " . $key);
             exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("login failed try on web", false)]));
         }
-        if (authenticate_user($username, $VARS['password'], $autherror)) {
-            $userinfo = $database->get("accounts", ["uid", "username", "realname", "email"], ["username" => $username]);
-            insertAuthLog(19, $userinfo['uid'], "Key: " . $key);
+        if ($user->checkPassword($VARS['password'])) {
+            $userinfo = ["uid" => $user->getUID(), "username" => $user->getUsername(), "realname" => $user->getName(), "email" => $user->getEmail()];
+            Log::insert(LogType::MOBILE_LOGIN_OK, $user->getUID(), "Key: " . $key);
             exit(json_encode(["status" => "OK", "info" => $userinfo]));
         } else {
-            if (!is_empty($autherror)) {
-                insertAuthLog(20, null, "Username: " . $username . ", Key: " . $key);
-                exit(json_encode(["status" => "ERROR", "msg" => $autherror]));
-            } else {
-                insertAuthLog(20, null, "Username: " . $username . ", Key: " . $key);
-                exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("login incorrect", false)]));
-            }
+            Log::insert(LogType::MOBILE_LOGIN_FAILED, null, "Username: " . $username . ", Key: " . $key);
+            exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("login incorrect", false)]));
         }
     case "start_session":
         // Do a web login.
         engageRateLimit();
-        if (user_exists($username)) {
-            if (get_account_status($username) == "NORMAL") {
-                if (authenticate_user($username, $VARS['password'], $autherror)) {
-                    doLoginUser($username, $VARS['password']);
+        $user = User::byUsername($username);
+        if ($user->exists()) {
+            if ($user->getStatus()->get() == AccountStatus::NORMAL) {
+                if ($user->checkPassword($VARS['password'])) {
+                    Session::start($user);
                     $_SESSION['mobile'] = true;
                     exit(json_encode(["status" => "OK"]));
                 }
             }
         }
-        insertAuthLog(20, null, "Username: " . $username . ", Key: " . $key);
+        Log::insert(LogType::MOBILE_LOGIN_FAILED, null, "Username: " . $username . ", Key: " . $key);
         exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("login incorrect", false)]));
     case "listapps":
         $apps = EXTERNAL_APPS;
@@ -119,14 +109,14 @@ switch ($VARS['action']) {
         exit(json_encode(["status" => "OK", "apps" => $apps]));
     case "gencode":
         engageRateLimit();
-        $uid = $database->get("accounts", "uid", ["username" => $username]);
+        $user = User::byUsername($username);
         $code = "";
         do {
             $code = random_int(100000, 999999);
         } while ($database->has("onetimekeys", ["key" => $code]));
-        
-        $database->insert("onetimekeys", ["key" => $code, "uid" => $uid, "expires" => date("Y-m-d H:i:s", strtotime("+1 minute"))]);
-        
+
+        $database->insert("onetimekeys", ["key" => $code, "uid" => $user->getUID(), "expires" => date("Y-m-d H:i:s", strtotime("+1 minute"))]);
+
         $database->delete("onetimekeys", ["expires[<]" => date("Y-m-d H:i:s")]); // cleanup
         exit(json_encode(["status" => "OK", "code" => $code]));
     default:

@@ -14,7 +14,7 @@ class Strings {
     private $language = "en";
     private $strings = [];
 
-    function __construct($language = "en") {
+    public function __construct($language = "en") {
         if (!preg_match("/[a-zA-Z\_\-]+/", $language)) {
             throw new Exception("Invalid language code $language");
         }
@@ -50,7 +50,7 @@ class Strings {
      * Add language strings dynamically.
      * @param array $strings ["key" => "value", ...]
      */
-    function addStrings(array $strings) {
+    public function addStrings(array $strings) {
         foreach ($strings as $key => $val) {
             $this->strings[$key] = $val;
         }
@@ -62,7 +62,7 @@ class Strings {
      * @param bool $echo True to echo the result, false to return it.  Default is true.
      * @return string
      */
-    function get(string $key, bool $echo = true): string {
+    public function get(string $key, bool $echo = true): string {
         $str = $key;
         if (array_key_exists($key, $this->strings)) {
             $str = $this->strings[$key];
@@ -85,7 +85,7 @@ class Strings {
      * @param bool $echo True to echo the result, false to return it.  Default is true.
      * @return string
      */
-    function build(string $key, array $replace, bool $echo = true): string {
+    public function build(string $key, array $replace, bool $echo = true): string {
         $str = $key;
         if (array_key_exists($key, $this->strings)) {
             $str = $this->strings[$key];
@@ -107,7 +107,7 @@ class Strings {
      * Builds and returns a JSON key:value string for the supplied array of keys.
      * @param array $keys ["key1", "key2", ...]
      */
-    function getJSON(array $keys): string {
+    public function getJSON(array $keys): string {
         $strings = [];
         foreach ($keys as $k) {
             $strings[$k] = $this->get($k, false);

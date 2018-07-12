@@ -2,118 +2,54 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-.banner-image {
-    max-height: 100px;
-    margin: 2em auto;
+body {
+    padding-top: 4rem;
+}
+
+.brand-img {
     border: 1px solid grey;
-    border-radius: 12px;
+    border-radius: 12%;
+    margin-top: -2px;
+    margin-right: 5px;
+    margin-bottom: 3px;
+    height: 25px;
+}
+
+.navbar-toggler {
+    border: none;
+    padding-right: 1.5rem;
+}
+
+.navbar-toggler-icon {
+    padding: 0px;
+    margin: 0px;
 }
 
 .navbar-brand {
-    font-size: 110%;
+    font-size: 120%;
+    padding-right: 1rem;
+    margin-top: 0.2rem;
 }
 
-.navbar-brand img {
-    height: 35px;
-    padding-bottom: 12px;
-    padding-left: 5px;
+#main-content {
+    padding-top: 1rem;
 }
 
-.pad-75px {
-    height: 75px;
+#msg-alert-box {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 4rem;
+    z-index: 999999;
+    padding: 0px 5px;
+    pointer-events: none;
+}
+
+#msg-alert-box .alert {
+    pointer-events: auto;
 }
 
 .footer {
     margin-top: 10em;
     text-align: center;
-}
-
-.navbar-inverse .navbar-toggle .icon-bar {
-    background-color: white;
-}
-
-.qrcode {
-    width: 100%;
-    max-width: 300px;
-    margin: 0 auto;
-    image-rendering: -moz-crisp-edges;         /* Firefox */
-    image-rendering:   -o-crisp-edges;         /* Opera */
-    image-rendering: -webkit-optimize-contrast;/* Webkit (non-standard naming) */
-    image-rendering: crisp-edges;
-    -ms-interpolation-mode: nearest-neighbor;  /* IE (non-standard property) */
-}
-
-.navbar-inverse .navbar-brand {
-    color: white;
-}
-
-.navbar-inverse .navbar-nav > li > a {
-    color: white;
-}
-
-.navbar-inverse .navbar-link {
-    color: white;
-}
-
-.apppanel {
-    min-height: 250px;
-}
-
-.app-dock-container {
-    display: flex;
-}
-
-.app-dock {
-    margin: 0 auto 10px auto;
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-}
-
-.app-icon {
-    border: 1px solid grey;
-    border-radius: 20%;
-}
-
-.app-dock-item {
-    padding: 0px 5px 2px 5px;
-    min-width: 100px;
-}
-
-.app-dock-item p {
-    margin-bottom: 0px;
-}
-
-.app-dock-item p a {
-    font-size: 95%;
-    color: #555;
-}
-
-.app-dock-item p a:hover {
-    text-decoration: none;
-}
-
-.app-dock-item p a img {
-    width: 50px;
-    display: block;
-    margin: 0 auto;
-}
-
-.app-dock-item p a span {
-    display: block;
-    text-align: center;
-}
-
-/* Small Devices, Tablets */
-@media only screen and (min-width: 768px) and (max-width: 991px) {
-    .row.widget-box > .col-sm-6:nth-child(2n+3) {
-        clear: both;
-    }
-}
-
-/* Medium Devices, Desktops */
-@media only screen and (min-width: 992px) {
-    .row.widget-box > .col-md-4:nth-child(3n+4) {
-        clear: both;
-    }
 }

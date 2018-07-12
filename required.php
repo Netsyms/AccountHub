@@ -60,9 +60,13 @@ if ($_SESSION['mobile'] === TRUE) {
 }
 
 // List of alert messages
-require __DIR__ . '/lang/messages.php';
-// text strings (i18n)
-require __DIR__ . '/lib/Strings.php';
+require __DIR__ . '/langs/messages.php';
+
+$libs = glob(__DIR__ . "/lib/*.lib.php");
+foreach ($libs as $lib) {
+    require_once $lib;
+}
+
 $Strings = new Strings(LANGUAGE);
 
 function sendError($error) {

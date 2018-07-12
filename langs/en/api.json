@@ -1,3 +1,5 @@
 {
-    "user does not exist": "User does not exist."
+    "user does not exist": "User does not exist.",
+    "group does not exist": "Group does not exist.",
+    "login successful": "Login successful."
 }

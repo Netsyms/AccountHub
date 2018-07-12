@@ -8,5 +8,6 @@
     "done adding sync code": "Done adding code",
     "manual setup": "Manual Setup:",
     "sync key": "Sync key:",
-    "url": "URL:"
+    "url": "URL:",
+    "sync code name": "Device nickname"
 }
