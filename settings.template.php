@@ -20,15 +20,6 @@ define("DB_CHARSET", "utf8");
 
 define("SITE_TITLE", "AccountHub");
 
-// Which pages to show the app icon on:
-// index, app, both, none
-define("SHOW_ICON", "both");
-// Where to put the icon: top or menu
-// Overridden to 'menu' if MENU_BAR_STYLE is 'fixed'.
-define("ICON_POSITION", "menu");
-// App menu bar style: fixed or static
-define("MENU_BAR_STYLE", "fixed");
-
 // Used to identify the system in OTP and other places
 define("SYSTEM_NAME", "Netsyms SSO Demo");
 
@@ -46,17 +37,8 @@ define('URL', 'http://localhost/accounthub');
 define("CAPTCHA_ENABLED", FALSE);
 define('CAPTCHA_SERVER', 'https://captcheck.netsyms.com');
 
-// API URL and index URL for TaskFloor
-define('TASKFLOOR_API', 'http://localhost/taskfloor/api.php');
-define('TASKFLOOR_HOME', '/taskfloor/app.php');
-
-define('INVENTORY_HOME', '/inventory/app.php');
-
-define('QWIKCLOCK_API', 'http://localhost/qwikclock/api.php');
-define('QWIKCLOCK_HOME', '/qwikclock/app.php');
-
 // See lang folder for language options
-define('LANGUAGE', "en_us");
+define('LANGUAGE', "en");
 
 // List of available applications, icons, and other info.
 // Used in the mobile app and in the "dock" in AccountHub.
