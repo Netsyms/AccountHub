@@ -18,29 +18,6 @@ define("DB_USER", "accounthub");
 define("DB_PASS", "");
 define("DB_CHARSET", "utf8");
 
-define("LDAP_ENABLED", FALSE);
-
-// See https://github.com/ldaptools/ldaptools/blob/master/docs/en/reference/Main-Configuration.md
-// for info on the LDAP config
-/*
- * Begin LDAP Configuration
- */
-use LdapTools\Configuration;
-use LdapTools\DomainConfiguration;
-
-$ldap_config = new Configuration();
-$ldap_config_domain = (new DomainConfiguration('example'))
-        ->setDomainName("example.com")
-        ->setServers(['192.168.25.131'])
-        ->setLazyBind(TRUE)
-        ->setUsername("admin-account")
-        ->setPassword("password")
-        ->setUseTls(TRUE);
-$ldap_config->addDomain($ldap_config_domain);
-/*
- * End LDAP Configuration
- */
-
 define("SITE_TITLE", "AccountHub");
 
 // Which pages to show the app icon on:
