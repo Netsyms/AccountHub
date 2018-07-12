@@ -364,16 +364,13 @@ switch ($VARS['action']) {
             http_response_code(400);
             die("\"400 Bad Request\"");
         }
-        if ($user->exists()) {
-            $notifications = $database->select('notifications', ['notificationid (id)', 'timestamp', 'title', 'content', 'url', 'seen', 'sensitive'], ['uid' => $user->getUID()]);
-            for ($i = 0; $i < count($notifications); $i++) {
-                $notifications[$i]['id'] = $notifications[$i]['id'] * 1;
-                $notifications[$i]['seen'] = ($notifications[$i]['seen'] == "1" ? true : false);
-                $notifications[$i]['sensitive'] = ($notifications[$i]['sensitive'] == "1" ? true : false);
-            }
+        try {
+            $notifications = Notifications::get($user);
             exit(json_encode(["status" => "OK", "notifications" => $notifications]));
+        } catch (Exception $ex) {
+            exit(json_encode(["status" => "ERROR", "msg" => $ex->getMessage()]));
         }
-        exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("user does not exist", false)]));
+        break;
     case "readnotification":
         if (!empty($VARS['username'])) {
             $user = User::byUsername($VARS['username']);
@@ -383,15 +380,16 @@ switch ($VARS['action']) {
             http_response_code(400);
             die("\"400 Bad Request\"");
         }
-
-        if ($user->exists()) {
-            if ($database->has('notifications', ['AND' => ['uid' => $user->getUID(), 'notificationid' => $VARS['id']]])) {
-                $database->update('notifications', ['seen' => 1], ['AND' => ['uid' => $user->getUID(), 'notificationid' => $VARS['id']]]);
-                exit(json_encode(["status" => "OK"]));
-            }
+        if (empty($VARS['id'])) {
             exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("invalid parameters", false)]));
         }
-        exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("user does not exist", false)]));
+        try {
+            Notifications::read($user, $VARS['id']);
+            exit(json_encode(["status" => "OK"]));
+        } catch (Exception $ex) {
+            exit(json_encode(["status" => "ERROR", "msg" => $ex->getMessage()]));
+        }
+        break;
     case "addnotification":
         if (!empty($VARS['username'])) {
             $user = User::byUsername($VARS['username']);
@@ -402,11 +400,8 @@ switch ($VARS['action']) {
             die("\"400 Bad Request\"");
         }
 
-        if ($user->exists()) {
-            if (empty($VARS['title']) || empty($VARS['content'])) {
-                exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("invalid parameters", false)]));
-            }
-            $timestamp = date("Y-m-d H:i:s");
+        try {
+            $timestamp = "";
             if (!empty($VARS['timestamp'])) {
                 $timestamp = date("Y-m-d H:i:s", strtotime($VARS['timestamp']));
             }
@@ -414,14 +409,13 @@ switch ($VARS['action']) {
             if (!empty($VARS['url'])) {
                 $url = $VARS['url'];
             }
-            $sensitive = 0;
-            if (isset($VARS['sensitive'])) {
-                $sensitive = 1;
-            }
-            $database->insert('notifications', ['uid' => $user->getUID(), 'timestamp' => $timestamp, 'title' => $VARS['title'], 'content' => $VARS['content'], 'url' => $url, 'seen' => 0, 'sensitive' => $sensitive]);
-            exit(json_encode(["status" => "OK", "id" => $database->id() * 1]));
+            $nid = Notifications::add($user, $VARS['title'], $VARS['content'], $timestamp, $url, isset($VARS['sensitive']));
+
+            exit(json_encode(["status" => "OK", "id" => $nid]));
+        } catch (Exception $ex) {
+            exit(json_encode(["status" => "ERROR", "msg" => $ex->getMessage()]));
         }
-        exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("user does not exist", false)]));
+        break;
     case "deletenotification":
         if (!empty($VARS['username'])) {
             $user = User::byUsername($VARS['username']);
@@ -432,14 +426,16 @@ switch ($VARS['action']) {
             die("\"400 Bad Request\"");
         }
 
-        if ($user->exists()) {
-            if ($database->has('notifications', ['AND' => ['uid' => $user->getUID(), 'notificationid' => $VARS['id']]])) {
-                $database->delete('notifications', ['AND' => ['uid' => $user->getUID(), 'notificationid' => $VARS['id']]]);
-                exit(json_encode(["status" => "OK"]));
-            }
+        if (empty($VARS['id'])) {
             exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("invalid parameters", false)]));
         }
-        exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("user does not exist", false)]));
+        try {
+            Notifications::delete($user, $VARS['id']);
+            exit(json_encode(["status" => "OK"]));
+        } catch (Exception $ex) {
+            exit(json_encode(["status" => "ERROR", "msg" => $ex->getMessage()]));
+        }
+        break;
     default:
         http_response_code(404);
         die(json_encode("404 Not Found: the requested action is not available."));
