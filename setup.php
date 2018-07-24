@@ -30,13 +30,13 @@ if (is_empty($_POST['username']) || is_empty($_POST['password']) || is_empty($_P
     </form>
     <?php
 } else {
-    require_once __DIR__ . "/lib/login.php";
     header("Content-Type: text/plain");
-    if (user_exists($_POST['username'])) {
-        $userid = $database->get('accounts', 'uid', ['username' => $_POST['username']]);
+    $user = User::byUsername($_POST['username']);
+    if ($user->exists()) {
+        $userid = $user->getID();
         echo "User already exists, skipping creation.\n";
     } else {
-        $userid = adduser($_POST['username'], $_POST['password'], $_POST['realname'], (filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) ? $_POST['email'] : null), "", "", 1);
+        $userid = User::add($_POST['username'], $_POST['password'], $_POST['realname'], (filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) ? $_POST['email'] : null), "", "", 1);
         echo "User account #$userid created.\n";
     }
     $database->insert('assigned_permissions', ['uid' => $userid, 'permid' => 1]);
