@@ -13,7 +13,7 @@ $user = new User($_SESSION['uid']);
 ?>
 <div class="row justify-content-center">
     <div class="col-sm-6 col-lg-4">
-        <div class="card">
+        <div class="card mb-4">
             <div class="card-body">
                 <h5 class="card-title"><i class="fas fa-key"></i> <?php $Strings->get("change password"); ?></h5>
                 <form action="action.php" method="POST">
@@ -29,7 +29,7 @@ $user = new User($_SESSION['uid']);
         </div>
     </div>
     <div class="col-sm-6 col-lg-4">
-        <div class="card">
+        <div class="card mb-4">
             <div class="card-body">
                 <h5 class="card-title"><i class="fas fa-th"></i> <?php $Strings->get("change pin"); ?></h5>
                 <hr />
@@ -47,7 +47,7 @@ $user = new User($_SESSION['uid']);
         </div>
     </div>
     <div class="col-sm-6 col-lg-4">
-        <div class="card">
+        <div class="card mb-4">
             <div class="card-body">
                 <h5 class="card-title"><i class="fas fa-mobile-alt"></i> <?php $Strings->get("setup 2fa"); ?></h5>
                 <?php
