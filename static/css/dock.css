@@ -2,33 +2,13 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-.apppanel {
-    min-height: 250px;
-}
-
-.app-dock-container {
-    display: flex;
-}
-
-.app-dock {
-    margin: 0 auto 10px auto;
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-}
-
 .app-icon {
     border: 1px solid grey;
     border-radius: 20%;
 }
 
 .app-dock-item {
-    padding: 0px 5px 2px 5px;
     min-width: 100px;
-}
-
-.app-dock-item p {
-    margin-bottom: 0px;
 }
 
 .app-dock-item p a {
@@ -44,23 +24,4 @@
     width: 50px;
     display: block;
     margin: 0 auto;
-}
-
-.app-dock-item p a span {
-    display: block;
-    text-align: center;
-}
-
-/* Small Devices, Tablets */
-@media only screen and (min-width: 768px) and (max-width: 991px) {
-    .row.widget-box > .col-sm-6:nth-child(2n+3) {
-        clear: both;
-    }
-}
-
-/* Medium Devices, Desktops */
-@media only screen and (min-width: 992px) {
-    .row.widget-box > .col-md-4:nth-child(3n+4) {
-        clear: both;
-    }
 }
