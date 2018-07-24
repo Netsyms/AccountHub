@@ -6,11 +6,11 @@
  */
 ?>
 
-<div class="mobile-app-hide d-flex justify-content-center flex-wrap">
+<div class="d-flex justify-content-center flex-wrap">
     <?php
     foreach (EXTERNAL_APPS as $a) {
         ?>
-        <div class="app-dock-item m-2">
+        <div class="app-dock-item m-2 mobile-app-hide">
             <p class="mb-0">
                 <a href="<?php echo $a['url']; ?>">
                     <img class="img-responsive app-icon" src="<?php
@@ -29,7 +29,7 @@
     ?>
 </div>
 
-<div class="row mt-4">
+<div class="row mt-2">
     <?php
     foreach (EXTERNAL_APPS as $a) {
         if (!isset($a['card'])) {
