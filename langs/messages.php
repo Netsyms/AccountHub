@@ -45,10 +45,6 @@ define("MESSAGES", [
         "string" => "account state error",
         "type" => "danger"
     ],
-    "ldap_error" => [
-        "string" => "ldap server error",
-        "type" => "danger"
-    ],
     "passwords_same" => [
         "string" => "old and new passwords match",
         "type" => "danger"
@@ -72,6 +68,9 @@ define("MESSAGES", [
     "invalid_pin_format" => [
         "string" => "invalid pin format",
         "type" => "danger"
+    ],
+    "notification_deleted" => [
+        "string" => "Notification deleted.",
+        "type" => "success"
     ]
-    
 ]);

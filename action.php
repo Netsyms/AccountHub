@@ -21,8 +21,6 @@ if ($VARS['action'] == 'signout' && $_SESSION['loggedin'] != true) {
 
 dieifnotloggedin();
 
-engageRateLimit();
-
 function returnToSender($msg, $arg = "") {
     global $VARS;
     if ($arg == "") {
@@ -40,6 +38,7 @@ switch ($VARS['action']) {
         header('Location: index.php');
         die("Logged out.");
     case "chpasswd":
+        engageRateLimit();
         $error = [];
         $user = new User($_SESSION['uid']);
         try {
@@ -59,6 +58,7 @@ switch ($VARS['action']) {
         }
         break;
     case "chpin":
+        engageRateLimit();
         $error = [];
         if (!($VARS['newpin'] == "" || (is_numeric($VARS['newpin']) && strlen($VARS['newpin']) >= 1 && strlen($VARS['newpin']) <= 8))) {
             returnToSender("invalid_pin_format");
@@ -82,8 +82,35 @@ switch ($VARS['action']) {
         Log::insert(LogType::ADDED_2FA, $user);
         returnToSender("2fa_enabled");
     case "rm2fa":
+        engageRateLimit();
         (new User($_SESSION['uid']))->save2fa("");
         Log::insert(LogType::REMOVED_2FA, $_SESSION['uid']);
         returnToSender("2fa_removed");
+        break;
+    case "readnotification":
+        $user = new User($_SESSION['uid']);
+
+        if (empty($VARS['id'])) {
+            returnToSender("invalid_parameters#notifications");
+        }
+        try {
+            Notifications::read($user, $VARS['id']);
+            returnToSender("#notifications");
+        } catch (Exception $ex) {
+            returnToSender("invalid_parameters#notifications");
+        }
+        break;
+    case "deletenotification":
+        $user = new User($_SESSION['uid']);
+
+        if (empty($VARS['id'])) {
+            returnToSender("invalid_parameters#notifications");
+        }
+        try {
+            Notifications::delete($user, $VARS['id']);
+            returnToSender("notification_deleted#notifications");
+        } catch (Exception $ex) {
+            returnToSender("invalid_parameters#notifications");
+        }
         break;
 }

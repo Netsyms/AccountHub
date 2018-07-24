@@ -131,6 +131,11 @@ define('EXTERNAL_APPS', [
     ],
 ]);
 
+// Used for notification timestamp display.
+define("DATETIME_FORMAT", "M j, g:i a");
+define("TIME_FORMAT", "g:i");
+
+
 // Email settings for receiving admin alerts.
 define("USE_SMTP", TRUE); // if FALSE, will use PHP's mail() instead
 define("ADMIN_EMAIL", "");
