@@ -44,29 +44,13 @@ define('LANGUAGE', "en");
 // Used in the mobile app and in the "dock" in AccountHub.
 define('EXTERNAL_APPS', [
     "accounthub" => [
-        "url" => "http://localhost/accounthub",
+        "url" => "/accounthub",
         "mobileapi" => "/mobile/index.php",
         "icon" => "/static/img/logo.svg",
         "title" => SITE_TITLE
     ],
-    "binstack" => [
-        "url" => "http://localhost/inventory",
-        "mobileapi" => "/mobile/index.php",
-        "icon" => "/static/img/logo.svg",
-        "title" => "BinStack"
-    ],
-    "taskfloor" => [
-        "url" => "http://localhost/taskfloor",
-        "mobileapi" => "/mobile/index.php",
-        "icon" => "/static/img/logo.svg",
-        "title" => "TaskFloor",
-        "station_features" => [
-            "taskfloor_viewtasks",
-            "taskfloor_viewmessages"
-        ]
-    ],
     "qwikclock" => [
-        "url" => "http://localhost/qwikclock",
+        "url" => "/qwikclock",
         "mobileapi" => "/mobile/index.php",
         "icon" => "/static/img/logo.svg",
         "title" => "QwikClock",
@@ -74,14 +58,77 @@ define('EXTERNAL_APPS', [
             "qwikclock_punchinout",
             "qwikclock_myshifts",
             "qwikclock_jobs"
+        ],
+        "card" => [
+            "color" => "blue",
+            "string" => "Punch in and check work schedule"
+        ]
+    ],
+    "binstack" => [
+        "url" => "/binstack",
+        "mobileapi" => "/mobile/index.php",
+        "icon" => "/static/img/logo.svg",
+        "title" => "BinStack",
+        "card" => [
+            "color" => "green",
+            "string" => "Manage physical items"
+        ]
+    ],
+    "newspen" => [
+        "url" => "/newspen",
+        "mobileapi" => "/mobile/index.php",
+        "icon" => "/static/img/logo.svg",
+        "title" => "NewsPen",
+        "card" => [
+            "color" => "purple",
+            "string" => "Create and publish e-newsletters"
         ]
     ],
     "managepanel" => [
-        "url" => "http://localhost/managepanel",
+        "url" => "/managepanel",
         "mobileapi" => "/mobile/index.php",
         "icon" => "/static/img/logo.svg",
-        "title" => "ManagePanel"
-    ]
+        "title" => "ManagePanel",
+        "card" => [
+            "color" => "brown",
+            "string" => "Manage users, permissions, and security"
+        ]
+    ],
+    "nickelbox" => [
+        "url" => "/nickelbox",
+        "mobileapi" => "/mobile/index.php",
+        "icon" => "/static/img/logo.svg",
+        "title" => "NickelBox",
+        "card" => [
+            "color" => "light-green",
+            "text" => "dark",
+            "string" => "Checkout customers and manage online orders"
+        ]
+    ],
+    "sitewriter" => [
+        "url" => "/sitewriter",
+        "mobileapi" => "/mobile/index.php",
+        "icon" => "/static/img/logo.svg",
+        "title" => "SiteWriter",
+        "card" => [
+            "color" => "light-blue",
+            "string" => "Build websites and manage contact form messages"
+        ]
+    ],
+    "taskfloor" => [
+        "url" => "/taskfloor",
+        "mobileapi" => "/mobile/index.php",
+        "icon" => "/static/img/logo.svg",
+        "title" => "TaskFloor",
+        "station_features" => [
+            "taskfloor_viewtasks",
+            "taskfloor_viewmessages"
+        ],
+        "card" => [
+            "color" => "blue-grey",
+            "string" => "Track jobs and assigned tasks"
+        ]
+    ],
 ]);
 
 // Email settings for receiving admin alerts.
