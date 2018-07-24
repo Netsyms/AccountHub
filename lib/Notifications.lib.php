@@ -48,7 +48,7 @@ class Notifications {
     public static function get(User $user) {
         global $database, $Strings;
         if ($user->exists()) {
-            $notifications = $database->select('notifications', ['notificationid (id)', 'timestamp', 'title', 'content', 'url', 'seen', 'sensitive'], ['uid' => $user->getUID()]);
+            $notifications = $database->select('notifications', ['notificationid (id)', 'timestamp', 'title', 'content', 'url', 'seen', 'sensitive'], ['uid' => $user->getUID(), 'ORDER' => ['seen', 'timestamp' => 'DESC']]);
             for ($i = 0; $i < count($notifications); $i++) {
                 $notifications[$i]['id'] = $notifications[$i]['id'] * 1;
                 $notifications[$i]['seen'] = ($notifications[$i]['seen'] == "1" ? true : false);
