@@ -96,6 +96,15 @@
 <div class="row">
     <?php
     $notifications = Notifications::get(User::byUsername($_SESSION['username']));
+    if (count($notifications) == 0) {
+        ?>
+        <div class="col-12 col-sm-6 col-md-4 col-xl-3">
+            <div class="alert alert-light">
+                <i class="fas fa-check"></i> <?php $Strings->get("All caught up!"); ?>
+            </div>
+        </div>
+        <?php
+    }
     foreach ($notifications as $n) {
         ?>
         <div class="col-12 col-sm-6 col-md-4 col-xl-3">
