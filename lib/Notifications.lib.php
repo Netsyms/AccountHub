@@ -42,13 +42,18 @@ class Notifications {
      * Fetch all notifications for a user.
      * @global $database
      * @param User $user
+     * @param bool $all If false, only returns unseen notifications.
      * @return array
      * @throws Exception
      */
-    public static function get(User $user) {
+    public static function get(User $user, bool $all = true) {
         global $database, $Strings;
         if ($user->exists()) {
-            $notifications = $database->select('notifications', ['notificationid (id)', 'timestamp', 'title', 'content', 'url', 'seen', 'sensitive'], ['uid' => $user->getUID(), 'ORDER' => ['seen', 'timestamp' => 'DESC']]);
+            if ($all) {
+                $notifications = $database->select('notifications', ['notificationid (id)', 'timestamp', 'title', 'content', 'url', 'seen', 'sensitive'], ['uid' => $user->getUID(), 'ORDER' => ['seen', 'timestamp' => 'DESC']]);
+            } else {
+                $notifications = $database->select('notifications', ['notificationid (id)', 'timestamp', 'title', 'content', 'url', 'seen', 'sensitive'], ["AND" => ['uid' => $user->getUID(), 'seen' => 0], 'ORDER' => ['timestamp' => 'DESC']]);
+            }
             for ($i = 0; $i < count($notifications); $i++) {
                 $notifications[$i]['id'] = $notifications[$i]['id'] * 1;
                 $notifications[$i]['seen'] = ($notifications[$i]['seen'] == "1" ? true : false);
@@ -90,4 +95,5 @@ class Notifications {
         }
         throw new Exception($Strings->get("user does not exist", false));
     }
+
 }

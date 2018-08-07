@@ -36,7 +36,7 @@ $user_key_valid = $database->has('mobile_codes', ['[>]accounts' => ['uid' => 'ui
 if ($user_key_valid !== TRUE) {
     engageRateLimit();
     //http_response_code(401);
-    insertAuthLog(21, null, "Username: " . $username . ", Key: " . $key);
+    Log::insert(LogType::MOBILE_BAD_KEY, null, "Username: " . $username . ", Key: " . $key);
     die(json_encode(["status" => "ERROR", "msg" => "Invalid username and/or access key."]));
 }
 
@@ -119,6 +119,87 @@ switch ($VARS['action']) {
 
         $database->delete("onetimekeys", ["expires[<]" => date("Y-m-d H:i:s")]); // cleanup
         exit(json_encode(["status" => "OK", "code" => $code]));
+    case "checknotifications":
+        if (!empty($VARS['username'])) {
+            $user = User::byUsername($VARS['username']);
+        } else if (!empty($VARS['uid'])) {
+            $user = new User($VARS['uid']);
+        } else {
+            http_response_code(400);
+            die("\"400 Bad Request\"");
+        }
+        try {
+            $notifications = Notifications::get($user, false);
+            exit(json_encode(["status" => "OK", "notifications" => $notifications]));
+        } catch (Exception $ex) {
+            exit(json_encode(["status" => "ERROR", "msg" => $ex->getMessage()]));
+        }
+        break;
+    case "readnotification":
+        if (!empty($VARS['username'])) {
+            $user = User::byUsername($VARS['username']);
+        } else if (!empty($VARS['uid'])) {
+            $user = new User($VARS['uid']);
+        } else {
+            http_response_code(400);
+            die("\"400 Bad Request\"");
+        }
+        if (empty($VARS['id'])) {
+            exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("invalid parameters", false)]));
+        }
+        try {
+            Notifications::read($user, $VARS['id']);
+            exit(json_encode(["status" => "OK"]));
+        } catch (Exception $ex) {
+            exit(json_encode(["status" => "ERROR", "msg" => $ex->getMessage()]));
+        }
+        break;
+    case "addnotification":
+        if (!empty($VARS['username'])) {
+            $user = User::byUsername($VARS['username']);
+        } else if (!empty($VARS['uid'])) {
+            $user = new User($VARS['uid']);
+        } else {
+            http_response_code(400);
+            die("\"400 Bad Request\"");
+        }
+
+        try {
+            $timestamp = "";
+            if (!empty($VARS['timestamp'])) {
+                $timestamp = date("Y-m-d H:i:s", strtotime($VARS['timestamp']));
+            }
+            $url = "";
+            if (!empty($VARS['url'])) {
+                $url = $VARS['url'];
+            }
+            $nid = Notifications::add($user, $VARS['title'], $VARS['content'], $timestamp, $url, isset($VARS['sensitive']));
+
+            exit(json_encode(["status" => "OK", "id" => $nid]));
+        } catch (Exception $ex) {
+            exit(json_encode(["status" => "ERROR", "msg" => $ex->getMessage()]));
+        }
+        break;
+    case "deletenotification":
+        if (!empty($VARS['username'])) {
+            $user = User::byUsername($VARS['username']);
+        } else if (!empty($VARS['uid'])) {
+            $user = new User($VARS['uid']);
+        } else {
+            http_response_code(400);
+            die("\"400 Bad Request\"");
+        }
+
+        if (empty($VARS['id'])) {
+            exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("invalid parameters", false)]));
+        }
+        try {
+            Notifications::delete($user, $VARS['id']);
+            exit(json_encode(["status" => "OK"]));
+        } catch (Exception $ex) {
+            exit(json_encode(["status" => "ERROR", "msg" => $ex->getMessage()]));
+        }
+        break;
     default:
         http_response_code(404);
         die(json_encode(["status" => "ERROR", "msg" => "The requested action is not available."]));
