@@ -16,7 +16,7 @@ if (!empty($_GET['delsynccode'])) {
 ?>
 <div class="row justify-content-center">
     <div class="col-sm-10 col-md-6 col-lg-4 col-xl-4">
-        <div class="card">
+        <div class="card mb-4">
             <div class="card-body">
                 <h5 class="card-title"><i class="fas fa-mobile-alt"></i> <?php $Strings->get("sync mobile"); ?></h5>
                 <hr />
