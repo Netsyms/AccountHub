@@ -16,6 +16,7 @@ $user = new User($_SESSION['uid']);
         <div class="card mb-4">
             <div class="card-body">
                 <h5 class="card-title"><i class="fas fa-key"></i> <?php $Strings->get("change password"); ?></h5>
+                <hr />
                 <form action="action.php" method="POST">
                     <input type="password" class="form-control" name="oldpass" placeholder="<?php $Strings->get("current password"); ?>" />
                     <input type="password" class="form-control" name="newpass" placeholder="<?php $Strings->get("new password"); ?>" />
@@ -75,7 +76,7 @@ $user = new User($_SESSION['uid']);
                     $codesecret = $totp->getSecret();
                     $chunk_secret = trim(chunk_split($codesecret, 4, ' '));
                     ?>
-
+                    <hr />
                     <div class="card-text">
                         <?php $Strings->get("scan 2fa qrcode") ?>
                     </div>
