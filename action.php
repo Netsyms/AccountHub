@@ -113,4 +113,8 @@ switch ($VARS['action']) {
             returnToSender("invalid_parameters#notifications");
         }
         break;
+    case "resetfeedkey":
+        $database->delete('userkeys', ['AND' => ['uid' => $_SESSION['uid'], 'typeid' => 1]]);
+        returnToSender("feed_key_reset");
+        break;
 }

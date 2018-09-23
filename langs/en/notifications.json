@@ -3,5 +3,7 @@
     "Notification deleted.": "Notification deleted.",
     "Mark as read": "Mark as read",
     "Delete": "Delete",
-    "All caught up!": "All caught up!"
+    "All caught up!": "All caught up!",
+    "Notifications from server for user": "Notifications from {server} for {user}",
+    "Sensitive content hidden": "Sensitive content hidden"
 }

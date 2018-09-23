@@ -29,7 +29,7 @@ if (!empty($_GET['delsynccode'])) {
                         $desc = htmlspecialchars($_POST['desc']);
                         $database->insert('mobile_codes', ['uid' => $_SESSION['uid'], 'code' => $code, 'description' => $desc]);
                     }
-                    if (strpos(URL, "http") !== FALSE) {
+                    if (strpos(URL, "http") === 0) {
                         $url = URL . "mobile/index.php";
                     } else {
                         $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'] . (($_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443) ? ":" . $_SERVER['SERVER_PORT'] : "") . URL . "mobile/index.php";
@@ -121,6 +121,51 @@ if (!empty($_GET['delsynccode'])) {
             <?php
         }
         ?>
+    </div>
+</div>
+
+<div class="col-sm-10 col-md-6 col-lg-4 col-xl-4">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title"><i class="fas fa-rss-square"></i> <?php $Strings->get("Notifications"); ?></h5>
+            <hr />
+            <p class="card-text">
+                <?php $Strings->get("notification feed explained"); ?>
+            </p>
+            <?php
+            if ($database->has('userkeys', ['AND' => ['uid' => $_SESSION['uid'], 'typeid' => 1]])) {
+                $key = $database->get('userkeys', 'key', ['AND' => ['uid' => $_SESSION['uid'], 'typeid' => 1]]);
+            } else {
+                $key = RandomString::generate(50);
+                while ($database->has('userkeys', ['key' => $key])) {
+                    $key = RandomString::generate(50);
+                }
+                $database->insert('userkeys', ['uid' => $_SESSION['uid'], 'typeid' => 1, 'created' => date('Y-m-d H:i:s'), 'key' => $key]);
+            }
+
+            if (strpos(URL, "http") === 0) {
+                $url = URL;
+            } else {
+                $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'] . (($_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443) ? ":" . $_SERVER['SERVER_PORT'] : "") . URL;
+            }
+            $url = $url . "feed.php?key=$key";
+            ?>
+            <a href="<?php echo $url; ?>&type=rss2" target="_BLANK" class="btn btn-orange mr-2"><i class="fas fa-rss"></i> RSS 2.0</a>
+            <a href="<?php echo $url; ?>&type=rss1" target="_BLANK" class="btn btn-orange mr-2"><i class="fas fa-rss"></i> RSS 1.0</a>
+            <a href="<?php echo $url; ?>&type=atom" target="_BLANK" class="btn btn-blue"><i class="fas fa-atom"></i> ATOM</a>
+            <hr />
+            RSS 2.0: <input type="text" readonly class="form-control" value="<?php echo $url; ?>&type=rss2" />
+            <br />
+            RSS 1.0: <input type="text" readonly class="form-control" value="<?php echo $url; ?>&type=rss1" />
+            <br />
+            ATOM: <input type="text" readonly class="form-control" value="<?php echo $url; ?>&type=atom" />
+            <hr />
+            <form action="action.php" method="POST">
+                <input type="hidden" name="source" value="sync" />
+                <input type="hidden" name="action" value="resetfeedkey" />
+                <button type="submit" class="btn btn-danger"><i class="fas fa-sync"></i> <?php $Strings->get('Reset'); ?></button>
+            </form>
+        </div>
     </div>
 </div>
 

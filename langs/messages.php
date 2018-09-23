@@ -72,5 +72,9 @@ define("MESSAGES", [
     "notification_deleted" => [
         "string" => "Notification deleted.",
         "type" => "success"
+    ],
+    "feed_key_reset" => [
+        "string" => "Feed key reset.",
+        "type" => "success"
     ]
 ]);
