@@ -12,5 +12,6 @@
     "secret key": "Secret key",
     "label": "Label",
     "issuer": "Issuer",
-    "no such code or code expired": "That code is incorrect or expired."
+    "no such code or code expired": "That code is incorrect or expired.",
+    "2-factor is enabled, you need to use the QR code or manual setup for security reasons": "2-factor is enabled, you need to use the QR code or manual setup for security reasons."
 }

@@ -32,12 +32,19 @@ $username = strtolower($VARS['username']);
 $key = strtoupper($VARS['key']);
 
 // Make sure the username and key are actually legit
-$user_key_valid = $database->has('mobile_codes', ['[>]accounts' => ['uid' => 'uid']], ["AND" => ['mobile_codes.code' => $key, 'accounts.username' => $username]]);
-if ($user_key_valid !== TRUE) {
-    engageRateLimit();
-    //http_response_code(401);
-    Log::insert(LogType::MOBILE_BAD_KEY, null, "Username: " . $username . ", Key: " . $key);
-    die(json_encode(["status" => "ERROR", "msg" => "Invalid username and/or access key."]));
+// Don't check key if we're trying to generate one
+if ($VARS['action'] == "generatesynccode") {
+    if (!User::byUsername($username)->exists()) {
+        Log::insert(LogType::MOBILE_LOGIN_FAILED, null, "Username: " . $username . ", Key: " . $key);
+        die(json_encode(["status" => "ERROR", "msg" => "Invalid username and/or access key."]));
+    }
+} else {
+    $user_key_valid = $database->has('mobile_codes', ['[>]accounts' => ['uid' => 'uid']], ["AND" => ['mobile_codes.code' => $key, 'accounts.username' => $username]]);
+    if ($user_key_valid !== TRUE) {
+        engageRateLimit();
+        Log::insert(LogType::MOBILE_BAD_KEY, null, "Username: " . $username . ", Key: " . $key);
+        die(json_encode(["status" => "ERROR", "msg" => "Invalid username and/or access key."]));
+    }
 }
 
 // Obscure key
@@ -200,6 +207,37 @@ switch ($VARS['action']) {
             exit(json_encode(["status" => "ERROR", "msg" => $ex->getMessage()]));
         }
         break;
+    case "hasotp":
+        if (!empty($VARS['username'])) {
+            $user = User::byUsername($VARS['username']);
+        } else if (!empty($VARS['uid'])) {
+            $user = new User($VARS['uid']);
+        } else {
+            http_response_code(400);
+            die("\"400 Bad Request\"");
+        }
+
+        exit(json_encode(["status" => "OK", "otp" => $user->has2fa()]));
+        break;
+    case "generatesynccode":
+        $user = User::byUsername($username);
+        if ($user->has2fa()) {
+            exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("2-factor is enabled, you need to use the QR code or manual setup for security reasons", false)]));
+        }
+        if ($user->getStatus()->get() != AccountStatus::NORMAL) {
+            Log::insert(LogType::MOBILE_LOGIN_FAILED, null, "Username: " . $username . ", Key: " . $key);
+            exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("login failed try on web", false)]));
+        }
+        if ($user->checkPassword($VARS['password'])) {
+            Log::insert(LogType::MOBILE_LOGIN_OK, $user->getUID(), "Key: " . $key);
+            $code = strtoupper(substr(md5(mt_rand() . uniqid("", true)), 0, 20));
+            $desc = htmlspecialchars($VARS['desc']);
+            $database->insert('mobile_codes', ['uid' => $user->getUID(), 'code' => $code, 'description' => $desc]);
+            exit(json_encode(["status" => "OK", "code" => $code]));
+        } else {
+            Log::insert(LogType::MOBILE_LOGIN_FAILED, null, "Username: " . $username . ", Key: " . $key);
+            exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("login incorrect", false)]));
+        }
     default:
         http_response_code(404);
         die(json_encode(["status" => "ERROR", "msg" => "The requested action is not available."]));
