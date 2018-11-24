@@ -62,6 +62,8 @@ $(document).ready(function () {
             window.clearInterval(msgticker);
         });
     }
+
+    $('[data-toggle="tooltip"]').tooltip();
 });
 
 

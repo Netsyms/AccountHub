@@ -22,13 +22,9 @@ if (!empty($_GET['delsynccode'])) {
                 <hr />
                 <?php
                 if (!empty($_GET['mobilecode']) && $_GET['mobilecode'] == "generate") {
-                    if (!empty($_GET['showsynccode']) && $database->has("mobile_codes", ["AND" => ["uid" => $_SESSION['uid'], "codeid" => $_GET['showsynccode']]])) {
-                        $code = $database->get("mobile_codes", 'code', ["AND" => ["uid" => $_SESSION['uid'], "codeid" => $_GET['showsynccode']]]);
-                    } else {
-                        $code = strtoupper(substr(md5(mt_rand() . uniqid("", true)), 0, 20));
-                        $desc = htmlspecialchars($_POST['desc']);
-                        $database->insert('mobile_codes', ['uid' => $_SESSION['uid'], 'code' => $code, 'description' => $desc]);
-                    }
+                    $code = strtoupper(substr(md5(mt_rand() . uniqid("", true)), 0, 20));
+                    $desc = htmlspecialchars($_POST['desc']);
+                    $database->insert('mobile_codes', ['uid' => $_SESSION['uid'], 'code' => $code, 'description' => $desc]);
                     if (strpos(URL, "http") === 0) {
                         $url = URL . "mobile/index.php";
                     } else {
@@ -88,21 +84,24 @@ if (!empty($_GET['delsynccode'])) {
                 <?php
                 if (count($activecodes) > 0) {
                     foreach ($activecodes as $c) {
+                        // Obscure characters
+                        if (strlen($c['code']) > 7) {
+                            for ($i = 3; $i < strlen($c['code']) - 3; $i++) {
+                                $c['code'][$i] = "*";
+                            }
+                        }
                         ?>
                         <div class="list-group-item d-flex justify-content-between align-items-center">
                             <div>
-                                <div class="text-monospace">
-                                    <?php echo trim(chunk_split($c['code'], 5, ' ')); ?>
+                                <div class="">
+                                    <?php echo $c['description']; ?>
                                 </div>
-                                <div class="text-muted">
-                                    <i class="fas fa-mobile-alt"></i> <?php echo $c['description']; ?>
+                                <div class="text-muted text-monospace">
+                                    <?php echo $c['code']; ?>
                                 </div>
                             </div>
                             <div>
-                                <a class="btn btn-primary btn-sm m-1" href="app.php?page=sync&mobilecode=generate&showsynccode=<?php echo $c['codeid']; ?>">
-                                    <i class="fas fa-qrcode"></i>
-                                </a>
-                                <a class="btn btn-danger btn-sm m-1" href="app.php?page=sync&delsynccode=<?php echo $c['codeid']; ?>">
+                                <a class="btn btn-danger btn-sm m-1" href="app.php?page=sync&delsynccode=<?php echo $c['codeid']; ?>" data-toggle="tooltip" data-placement="bottom" title="<?php $Strings->get("Revoke key"); ?>">
                                     <i class='fas fa-trash'></i>
                                 </a>
                             </div>

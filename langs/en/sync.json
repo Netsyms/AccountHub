@@ -12,5 +12,6 @@
     "sync code name": "Device nickname",
     "notification feed explained": "You can receive notifications via a RSS or ATOM news reader by clicking one of the buttons or manually adding a URL.  Click the Reset button if you think someone else might know your feed URL (you'll need to delete and re-add the feed on all your devices).",
     "Reset": "Reset",
-    "Feed key reset.": "Feed key reset."
+    "Feed key reset.": "Feed key reset.",
+    "Revoke key": "Revoke key"
 }
