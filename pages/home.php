@@ -6,6 +6,8 @@
  */
 ?>
 
+<?php
+/*
 <div class="d-flex justify-content-center flex-wrap">
     <?php
     foreach (EXTERNAL_APPS as $a) {
@@ -28,6 +30,8 @@
     }
     ?>
 </div>
+ */
+?>
 
 <div class="row mt-2">
     <?php
