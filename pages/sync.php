@@ -102,7 +102,7 @@ if (!empty($_GET['delsynccode'])) {
                             </div>
                             <div>
                                 <a class="btn btn-danger btn-sm m-1" href="app.php?page=sync&delsynccode=<?php echo $c['codeid']; ?>" data-toggle="tooltip" data-placement="bottom" title="<?php $Strings->get("Revoke key"); ?>">
-                                    <i class='fas fa-trash'></i>
+                                    <i class='fas fa-trash'></i><noscript> <?php $Strings->get("Revoke key"); ?></noscript>
                                 </a>
                             </div>
                         </div>
