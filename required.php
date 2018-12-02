@@ -8,31 +8,30 @@
  * This file contains global settings and utility functions.
  */
 ob_start(); // allow sending headers after content
-//
-// Composer
-require __DIR__ . '/vendor/autoload.php';
-
 // Settings file
 require __DIR__ . '/settings.php';
 
 // Unicode, solves almost all stupid encoding problems
 header('Content-Type: text/html; charset=utf-8');
 
-// l33t $ecurity h4x
+// Strip PHP version
+header('X-Powered-By: PHP');
+
+// Security
 header('X-Content-Type-Options: nosniff');
 header('X-XSS-Protection: 1; mode=block');
-header('X-Powered-By: PHP'); // no versions makes it harder to find vulns
 header('X-Frame-Options: "DENY"');
 header('Referrer-Policy: "no-referrer, strict-origin-when-cross-origin"');
 $SECURE_NONCE = base64_encode(random_bytes(8));
 
 
-$session_length = 60 * 60; // 1 hour
+$session_length = 60 * 60 * 1; // 1 hour
+ini_set('session.gc_maxlifetime', $session_length);
 session_set_cookie_params($session_length, "/", null, false, false);
 
 session_start(); // stick some cookies in it
-//// renew session cookie
-setcookie(session_name(), session_id(), time() + $session_length);
+// renew session cookie
+setcookie(session_name(), session_id(), time() + $session_length, "/", false, false);
 
 $captcha_server = (CAPTCHA_ENABLED === true ? preg_replace("/http(s)?:\/\//", "", CAPTCHA_SERVER) : "");
 if ($_SESSION['mobile'] === TRUE) {
@@ -44,7 +43,7 @@ if ($_SESSION['mobile'] === TRUE) {
             . "frame-src 'none'; "
             . "font-src 'self'; "
             . "connect-src *; "
-            . "style-src 'self' 'unsafe-inline'; "
+            . "style-src 'self' 'unsafe-inline' $captcha_server; "
             . "script-src 'self' 'unsafe-inline' $captcha_server");
 } else {
     header("Content-Security-Policy: "
@@ -55,9 +54,13 @@ if ($_SESSION['mobile'] === TRUE) {
             . "frame-src 'none'; "
             . "font-src 'self'; "
             . "connect-src *; "
-            . "style-src 'self' 'nonce-$SECURE_NONCE'; "
+            . "style-src 'self' 'nonce-$SECURE_NONCE' $captcha_server; "
             . "script-src 'self' 'nonce-$SECURE_NONCE' $captcha_server");
 }
+
+//
+// Composer
+require __DIR__ . '/vendor/autoload.php';
 
 // List of alert messages
 require __DIR__ . '/langs/messages.php';
@@ -69,6 +72,10 @@ foreach ($libs as $lib) {
 
 $Strings = new Strings(LANGUAGE);
 
+/**
+ * Kill off the running process and spit out an error message
+ * @param string $error error message
+ */
 function sendError($error) {
     global $SECURE_NONCE;
     die("<!DOCTYPE html>"
