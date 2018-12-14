@@ -29,24 +29,30 @@ $user = new User($_SESSION['uid']);
             </div>
         </div>
     </div>
-    <div class="col-sm-6 col-lg-4">
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title"><i class="fas fa-th"></i> <?php $Strings->get("change pin"); ?></h5>
-                <hr />
-                <?php $Strings->get("pin explanation"); ?>
-                <hr />
-                <form action="action.php" method="POST">
-                    <input type="password" class="form-control" name="newpin" placeholder="<?php $Strings->get("new pin"); ?>" maxlength="8" pattern="[0-9]*" inputmode="numeric" />
-                    <input type="password" class="form-control" name="conpin" placeholder="<?php $Strings->get("confirm pin"); ?>" maxlength="8" pattern="[0-9]*" inputmode="numeric" />
-                    <input type="hidden" name="action" value="chpin" />
-                    <input type="hidden" name="source" value="security" />
-                    <br />
-                    <button type="submit" class="btn btn-success btn-block"><?php $Strings->get("change pin"); ?></button>
-                </form>
+    <?php
+    if (STATION_KIOSK) {
+        ?>
+        <div class="col-sm-6 col-lg-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-th"></i> <?php $Strings->get("change pin"); ?></h5>
+                    <hr />
+                    <?php $Strings->get("pin explanation"); ?>
+                    <hr />
+                    <form action="action.php" method="POST">
+                        <input type="password" class="form-control" name="newpin" placeholder="<?php $Strings->get("new pin"); ?>" maxlength="8" pattern="[0-9]*" inputmode="numeric" />
+                        <input type="password" class="form-control" name="conpin" placeholder="<?php $Strings->get("confirm pin"); ?>" maxlength="8" pattern="[0-9]*" inputmode="numeric" />
+                        <input type="hidden" name="action" value="chpin" />
+                        <input type="hidden" name="source" value="security" />
+                        <br />
+                        <button type="submit" class="btn btn-success btn-block"><?php $Strings->get("change pin"); ?></button>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
+        <?php
+    }
+    ?>
     <div class="col-sm-6 col-lg-4">
         <div class="card mb-4">
             <div class="card-body">

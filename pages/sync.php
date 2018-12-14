@@ -68,7 +68,7 @@ if (!empty($_GET['delsynccode'])) {
                 $activecodes = $database->select("mobile_codes", ["codeid", "code", "description"], ["uid" => $_SESSION['uid']]);
                 ?>
                 <p class="card-text">
-                    <?php $Strings->get("sync explained"); ?>
+                    <?php $Strings->build("sync explained", ["site_name" => SITE_TITLE]); ?>
                 </p>
                 <form action="app.php?page=sync&mobilecode=generate" method="POST">
                     <input type="text" name="desc" class="form-control" placeholder="<?php $Strings->get("sync code name"); ?>" required />

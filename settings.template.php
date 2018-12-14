@@ -131,6 +131,9 @@ define('EXTERNAL_APPS', [
     ],
 ]);
 
+// Show or hide the Station PIN setup option.
+define("STATION_KIOSK", true);
+
 // Used for notification timestamp display.
 define("DATETIME_FORMAT", "M j, g:i a");
 define("TIME_FORMAT", "g:i");
