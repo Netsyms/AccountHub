@@ -14,7 +14,7 @@ if ($database->has('accounts', ["[>]assigned_permissions" => ["uid" => "uid"]], 
     die("An admin account already exists, exiting.");
 }
 
-if (is_empty($_POST['username']) || is_empty($_POST['password']) || is_empty($_POST['realname'])) {
+if (empty($_POST['username']) || empty($_POST['password']) || empty($_POST['realname'])) {
     ?>
     <!DOCTYPE html>
     <title>Admin Account Creation</title>

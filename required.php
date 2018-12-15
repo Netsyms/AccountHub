@@ -133,42 +133,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     define("GET", true);
 }
 
-/**
- * Checks if a string or whatever is empty.
- * @param $str The thingy to check
- * @return boolean True if it's empty or whatever.
- */
-function is_empty($str) {
-    return (is_null($str) || !isset($str) || $str == '');
-}
-
-/**
- * Checks if an email address is valid.
- * @param string $email Email to check
- * @return boolean True if email passes validation, else false.
- */
-function isValidEmail($email) {
-    return filter_var($email, FILTER_VALIDATE_EMAIL);
-}
-
-/**
- * Hashes the given plaintext password
- * @param String $password
- * @return String the hash, using bcrypt
- */
-function encryptPassword($password) {
-    return password_hash($password, PASSWORD_BCRYPT);
-}
-
-/**
- * Securely verify a password and its hash
- * @param String $password
- * @param String $hash the hash to compare to
- * @return boolean True if password OK, else false
- */
-function comparePassword($password, $hash) {
-    return password_verify($password, $hash);
-}
 
 function dieifnotloggedin() {
     if ($_SESSION['loggedin'] != true) {
@@ -193,176 +157,12 @@ function checkDBError($specials = []) {
     }
 }
 
-/*
- * http://stackoverflow.com/a/20075147
- */
-if (!function_exists('base_url')) {
-
-    function base_url($atRoot = FALSE, $atCore = FALSE, $parse = FALSE) {
-        if (isset($_SERVER['HTTP_HOST'])) {
-            $http = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off' ? 'https' : 'http';
-            $hostname = $_SERVER['HTTP_HOST'];
-            $dir = str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
-
-            $core = preg_split('@/@', str_replace($_SERVER['DOCUMENT_ROOT'], '', realpath(dirname(__FILE__))), NULL, PREG_SPLIT_NO_EMPTY);
-            $core = $core[0];
-
-            $tmplt = $atRoot ? ($atCore ? "%s://%s/%s/" : "%s://%s/") : ($atCore ? "%s://%s/%s/" : "%s://%s%s");
-            $end = $atRoot ? ($atCore ? $core : $hostname) : ($atCore ? $core : $dir);
-            $base_url = sprintf($tmplt, $http, $hostname, $end);
-        } else
-            $base_url = 'http://localhost/';
-
-        if ($parse) {
-            $base_url = parse_url($base_url);
-            if (isset($base_url['path']))
-                if ($base_url['path'] == '/')
-                    $base_url['path'] = '';
-        }
-
-        return $base_url;
-    }
-
-}
-
-function redirectToPageId($id, $args, $dontdie) {
-    header('Location: ' . URL . '?id=' . $id . $args);
-    if (is_null($dontdie)) {
-        die("Please go to " . URL . '?id=' . $id . $args);
-    }
-}
 
 function redirectIfNotLoggedIn() {
     if ($_SESSION['loggedin'] !== TRUE) {
         header('Location: ' . URL . '/login.php');
         die();
     }
-}
-
-/**
- * Check if a given ipv4 address is in a given cidr
- * @param  string $ip    IP to check in IPV4 format eg. 127.0.0.1
- * @param  string $range IP/CIDR netmask eg. 127.0.0.0/24, also 127.0.0.1 is accepted and /32 assumed
- * @return boolean true if the ip is in this range / false if not.
- * @author Thorsten Ott <https://gist.github.com/tott/7684443>
- */
-function ip4_in_cidr($ip, $cidr) {
-    if (strpos($cidr, '/') == false) {
-        $cidr .= '/32';
-    }
-    // $range is in IP/CIDR format eg 127.0.0.1/24
-    list( $cidr, $netmask ) = explode('/', $cidr, 2);
-    $range_decimal = ip2long($cidr);
-    $ip_decimal = ip2long($ip);
-    $wildcard_decimal = pow(2, ( 32 - $netmask)) - 1;
-    $netmask_decimal = ~ $wildcard_decimal;
-    return ( ( $ip_decimal & $netmask_decimal ) == ( $range_decimal & $netmask_decimal ) );
-}
-
-/**
- * Check if a given ipv6 address is in a given cidr
- * @param string $ip IP to check in IPV6 format
- * @param string $cidr CIDR netmask
- * @return boolean true if the IP is in this range, false otherwise.
- * @author MW. <https://stackoverflow.com/a/7952169>
- */
-function ip6_in_cidr($ip, $cidr) {
-    $address = inet_pton($ip);
-    $subnetAddress = inet_pton(explode("/", $cidr)[0]);
-    $subnetMask = explode("/", $cidr)[1];
-
-    $addr = str_repeat("f", $subnetMask / 4);
-    switch ($subnetMask % 4) {
-        case 0:
-            break;
-        case 1:
-            $addr .= "8";
-            break;
-        case 2:
-            $addr .= "c";
-            break;
-        case 3:
-            $addr .= "e";
-            break;
-    }
-    $addr = str_pad($addr, 32, '0');
-    $addr = pack("H*", $addr);
-
-    $binMask = $addr;
-    return ($address & $binMask) == $subnetAddress;
-}
-
-/**
- * Check if the REMOTE_ADDR is on Cloudflare's network.
- * @return boolean true if it is, otherwise false
- */
-function validateCloudflare() {
-    if (filter_var($_SERVER["REMOTE_ADDR"], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-        // Using IPv6
-        $cloudflare_ips_v6 = [
-            "2400:cb00::/32",
-            "2405:8100::/32",
-            "2405:b500::/32",
-            "2606:4700::/32",
-            "2803:f800::/32",
-            "2c0f:f248::/32",
-            "2a06:98c0::/29"
-        ];
-        $valid = false;
-        foreach ($cloudflare_ips_v6 as $cidr) {
-            if (ip6_in_cidr($_SERVER["REMOTE_ADDR"], $cidr)) {
-                $valid = true;
-                break;
-            }
-        }
-    } else {
-        // Using IPv4
-        $cloudflare_ips_v4 = [
-            "103.21.244.0/22",
-            "103.22.200.0/22",
-            "103.31.4.0/22",
-            "104.16.0.0/12",
-            "108.162.192.0/18",
-            "131.0.72.0/22",
-            "141.101.64.0/18",
-            "162.158.0.0/15",
-            "172.64.0.0/13",
-            "173.245.48.0/20",
-            "188.114.96.0/20",
-            "190.93.240.0/20",
-            "197.234.240.0/22",
-            "198.41.128.0/17"
-        ];
-        $valid = false;
-        foreach ($cloudflare_ips_v4 as $cidr) {
-            if (ip4_in_cidr($_SERVER["REMOTE_ADDR"], $cidr)) {
-                $valid = true;
-                break;
-            }
-        }
-    }
-    return $valid;
-}
-
-/**
- * Makes a good guess at the client's real IP address.
- *
- * @return string Client IP or `0.0.0.0` if we can't find anything
- */
-function getClientIP() {
-    // If CloudFlare is in the mix, we should use it.
-    // Check if the request is actually from CloudFlare before trusting it.
-    if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) {
-        if (validateCloudflare()) {
-            return $_SERVER["HTTP_CF_CONNECTING_IP"];
-        }
-    }
-
-    if (isset($_SERVER["REMOTE_ADDR"])) {
-        return $_SERVER["REMOTE_ADDR"];
-    }
-
-    return "0.0.0.0"; // This will not happen unless we aren't a web server
 }
 
 /**
@@ -378,12 +178,12 @@ function engageRateLimit() {
     global $database;
     $delay = date("Y-m-d H:i:s", strtotime("-2 seconds"));
     $database->delete('rate_limit', ["lastaction[<]" => $delay]);
-    if ($database->has('rate_limit', ["AND" => ["ipaddr" => getClientIP()]])) {
+    if ($database->has('rate_limit', ["AND" => ["ipaddr" => IPUtils::getClientIP()]])) {
         http_response_code(429);
         // JSONify it so API clients don't scream too loud
         die(json_encode(["status" => "ERROR", "msg" => "You're going too fast.  Slow down, mkay?"]));
     } else {
         // Add a record for the IP address
-        $database->insert('rate_limit', ["ipaddr" => getClientIP(), "lastaction" => date("Y-m-d H:i:s")]);
+        $database->insert('rate_limit', ["ipaddr" => IPUtils::getClientIP(), "lastaction" => date("Y-m-d H:i:s")]);
     }
 }

@@ -70,7 +70,7 @@ switch ($VARS['action']) {
         returnToSender("new_pin_mismatch");
         break;
     case "add2fa":
-        if (is_empty($VARS['secret'])) {
+        if (empty($VARS['secret'])) {
             returnToSender("invalid_parameters");
         }
         $user = new User($_SESSION['uid']);

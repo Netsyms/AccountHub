@@ -206,7 +206,7 @@ switch ($VARS['action']) {
         exit(json_encode(["status" => "OK", "managers" => $managers]));
         break;
     case "usersearch":
-        if (is_empty($VARS['search']) || strlen($VARS['search']) < 3) {
+        if (empty($VARS['search']) || strlen($VARS['search']) < 3) {
             exit(json_encode(["status" => "OK", "result" => []]));
         }
         $data = $database->select('accounts', ['uid', 'username', 'realname (name)'], ["OR" => ['username[~]' => $VARS['search'], 'realname[~]' => $VARS['search']], "LIMIT" => 10]);
@@ -234,7 +234,7 @@ switch ($VARS['action']) {
     case "mobileenabled":
         exit(json_encode(["status" => "OK", "mobile" => MOBILE_ENABLED]));
     case "mobilevalid":
-        if (is_empty($VARS['username']) || is_empty($VARS['code'])) {
+        if (empty($VARS['username']) || empty($VARS['code'])) {
             http_response_code(400);
             die("\"400 Bad Request\"");
         }
@@ -243,12 +243,12 @@ switch ($VARS['action']) {
         exit(json_encode(["status" => "OK", "valid" => $user_key_valid]));
     case "alertemail":
         engageRateLimit();
-        if (is_empty($VARS['username']) || !User::byUsername($VARS['username'])->exists()) {
+        if (empty($VARS['username']) || !User::byUsername($VARS['username'])->exists()) {
             http_response_code(400);
             die("\"400 Bad Request\"");
         }
         $appname = "???";
-        if (!is_empty($VARS['appname'])) {
+        if (!empty($VARS['appname'])) {
             $appname = $VARS['appname'];
         }
         $result = User::byUsername($VARS['username'])->sendAlertEmail($appname);
@@ -325,7 +325,7 @@ switch ($VARS['action']) {
         exit(json_encode(["status" => "OK", "groups" => $groups]));
         break;
     case "groupsearch":
-        if (is_empty($VARS['search']) || strlen($VARS['search']) < 2) {
+        if (empty($VARS['search']) || strlen($VARS['search']) < 2) {
             exit(json_encode(["status" => "OK", "result" => []]));
         }
         $data = $database->select('groups', ['groupid (id)', 'groupname (name)'], ['groupname[~]' => $VARS['search'], "LIMIT" => 10]);
@@ -333,7 +333,7 @@ switch ($VARS['action']) {
         break;
     case "checkpin":
         $pin = "";
-        if (is_empty($VARS['pin'])) {
+        if (empty($VARS['pin'])) {
             http_response_code(400);
             die("\"400 Bad Request\"");
         }

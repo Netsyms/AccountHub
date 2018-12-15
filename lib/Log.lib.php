@@ -18,7 +18,7 @@ class Log {
     public static function insert($type, $user, string $data = "") {
         global $database;
         // find IP address
-        $ip = getClientIP();
+        $ip = IPUtils::getClientIP();
         if (gettype($type) == "object" && is_a($type, "LogType")) {
             $type = $type->getType();
         }

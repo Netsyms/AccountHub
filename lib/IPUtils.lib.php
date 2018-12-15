@@ -77,7 +77,7 @@ class IPUtils {
             ];
             $valid = false;
             foreach ($cloudflare_ips_v6 as $cidr) {
-                if (ip6_in_cidr($_SERVER["REMOTE_ADDR"], $cidr)) {
+                if ($this::ip6_in_cidr($_SERVER["REMOTE_ADDR"], $cidr)) {
                     $valid = true;
                     break;
                 }
@@ -102,7 +102,7 @@ class IPUtils {
             ];
             $valid = false;
             foreach ($cloudflare_ips_v4 as $cidr) {
-                if (ip4_in_cidr($_SERVER["REMOTE_ADDR"], $cidr)) {
+                if ($this::ip4_in_cidr($_SERVER["REMOTE_ADDR"], $cidr)) {
                     $valid = true;
                     break;
                 }
@@ -120,7 +120,7 @@ class IPUtils {
         // If CloudFlare is in the mix, we should use it.
         // Check if the request is actually from CloudFlare before trusting it.
         if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) {
-            if (validateCloudflare()) {
+            if ($this::validateCloudflare()) {
                 return $_SERVER["HTTP_CF_CONNECTING_IP"];
             }
         }

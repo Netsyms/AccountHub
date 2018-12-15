@@ -50,7 +50,7 @@ if (empty($VARS['progress'])) {
                     $username_ok = true;
                     break;
                 default:
-                    if (!is_empty($error)) {
+                    if (!empty($error)) {
                         $alert = $error;
                     } else {
                         $alert = $Strings->get("login error", false);
@@ -99,7 +99,7 @@ if (empty($VARS['progress'])) {
     }
 } else if ($VARS['progress'] == "chpasswd") {
     engageRateLimit();
-    if (!is_empty($_SESSION['username'])) {
+    if (!empty($_SESSION['username'])) {
         $user = User::byUsername($_SESSION['username']);
 
         try {

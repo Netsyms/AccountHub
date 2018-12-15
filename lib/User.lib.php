@@ -63,7 +63,7 @@ class User {
         global $database;
         $database->insert('accounts', [
             'username' => strtolower($username),
-            'password' => (is_null($password) ? null : encryptPassword($password)),
+            'password' => (is_null($password) ? null : password_hash($password, PASSWORD_BCRYPT)),
             'realname' => $realname,
             'email' => $email,
             'phone1' => $phone1,
@@ -215,10 +215,10 @@ class User {
     }
 
     function sendAlertEmail(string $appname = SITE_TITLE) {
-        if (is_empty(ADMIN_EMAIL) || filter_var(ADMIN_EMAIL, FILTER_VALIDATE_EMAIL) === FALSE) {
+        if (empty(ADMIN_EMAIL) || filter_var(ADMIN_EMAIL, FILTER_VALIDATE_EMAIL) === FALSE) {
             return "invalid_to_email";
         }
-        if (is_empty(FROM_EMAIL) || filter_var(FROM_EMAIL, FILTER_VALIDATE_EMAIL) === FALSE) {
+        if (empty(FROM_EMAIL) || filter_var(FROM_EMAIL, FILTER_VALIDATE_EMAIL) === FALSE) {
             return "invalid_from_email";
         }
 
@@ -251,7 +251,7 @@ class User {
         $mail->addAddress(ADMIN_EMAIL, "System Admin");
         $mail->isHTML(false);
         $mail->Subject = $Strings->get("admin alert email subject", false);
-        $mail->Body = $Strings->build("admin alert email message", ["username" => $this->username, "datetime" => date("Y-m-d H:i:s"), "ipaddr" => getClientIP(), "appname" => $appname], false);
+        $mail->Body = $Strings->build("admin alert email message", ["username" => $this->username, "datetime" => date("Y-m-d H:i:s"), "ipaddr" => IPUtils::getClientIP(), "appname" => $appname], false);
 
         if (!$mail->send()) {
             return $mail->ErrorInfo;
