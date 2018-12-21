@@ -6,4 +6,4 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-exitWithJson(["status" => "OK", "mobile" => MOBILE_ENABLED]);
+exitWithJson(["status" => "OK", "mobile" => $SETTINGS['mobile_enabled']]);

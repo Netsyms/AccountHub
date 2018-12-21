@@ -18,7 +18,7 @@ if ($VARS['action'] == "ping") {
     exit(json_encode(["status" => "OK"]));
 }
 
-if (MOBILE_ENABLED !== TRUE) {
+if ($SETTINGS['mobile_enabled'] !== TRUE) {
     exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("mobile login disabled", false)]));
 }
 
@@ -106,7 +106,7 @@ switch ($VARS['action']) {
         Log::insert(LogType::MOBILE_LOGIN_FAILED, null, "Username: " . $username . ", Key: " . $key);
         exit(json_encode(["status" => "ERROR", "msg" => $Strings->get("login incorrect", false)]));
     case "listapps":
-        $apps = EXTERNAL_APPS;
+        $apps = $SETTINGS['apps'];
         // Format paths as absolute URLs
         foreach ($apps as $k => $v) {
             if (strpos($apps[$k]['url'], "http") === FALSE) {

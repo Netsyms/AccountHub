@@ -54,12 +54,12 @@ switch ($_GET['type']) {
         die("400 Bad Request: feed parameter must have a value of \"rss\", \"rss1\", \"rss2\" or \"atom\".");
 }
 
-$feed->setTitle($Strings->build("Notifications from server for user", ['server' => SITE_TITLE, 'user' => $user->getName()], false));
+$feed->setTitle($Strings->build("Notifications from server for user", ['server' => $SETTINGS['site_title'], 'user' => $user->getName()], false));
 
-if (strpos(URL, "http") === 0) {
-    $url = URL;
+if (strpos($SETTINGS['url'], "http") === 0) {
+    $url = $SETTINGS['url'];
 } else {
-    $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'] . (($_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443) ? ":" . $_SERVER['SERVER_PORT'] : "") . URL;
+    $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'] . (($_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443) ? ":" . $_SERVER['SERVER_PORT'] : "") . $SETTINGS['url'];
 }
 
 $feed->setLink($url);

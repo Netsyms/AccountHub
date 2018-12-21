@@ -25,10 +25,10 @@ if (!empty($_GET['delsynccode'])) {
                     $code = strtoupper(substr(md5(mt_rand() . uniqid("", true)), 0, 20));
                     $desc = htmlspecialchars($_POST['desc']);
                     $database->insert('mobile_codes', ['uid' => $_SESSION['uid'], 'code' => $code, 'description' => $desc]);
-                    if (strpos(URL, "http") === 0) {
-                        $url = URL . "mobile/index.php";
+                    if (strpos($SETTINGS['url'], "http") === 0) {
+                        $url = $SETTINGS['url'] . "mobile/index.php";
                     } else {
-                        $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'] . (($_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443) ? ":" . $_SERVER['SERVER_PORT'] : "") . URL . "mobile/index.php";
+                        $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'] . (($_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443) ? ":" . $_SERVER['SERVER_PORT'] : "") . $SETTINGS['url'] . "mobile/index.php";
                     }
                     $encodedurl = str_replace("/", "\\", $url);
                     $codeuri = "bizsync://" . $encodedurl . "/" . $_SESSION['username'] . "/" . $code;
@@ -68,7 +68,7 @@ if (!empty($_GET['delsynccode'])) {
                 $activecodes = $database->select("mobile_codes", ["codeid", "code", "description"], ["uid" => $_SESSION['uid']]);
                 ?>
                 <p class="card-text">
-                    <?php $Strings->build("sync explained", ["site_name" => SITE_TITLE]); ?>
+                    <?php $Strings->build("sync explained", ["site_name" => $SETTINGS['site_title']]); ?>
                 </p>
                 <form action="app.php?page=sync&mobilecode=generate" method="POST">
                     <input type="text" name="desc" class="form-control" placeholder="<?php $Strings->get("sync code name"); ?>" required />
@@ -142,10 +142,10 @@ if (!empty($_GET['delsynccode'])) {
                 $database->insert('userkeys', ['uid' => $_SESSION['uid'], 'typeid' => 1, 'created' => date('Y-m-d H:i:s'), 'key' => $key]);
             }
 
-            if (strpos(URL, "http") === 0) {
-                $url = URL;
+            if (strpos($SETTINGS['url'], "http") === 0) {
+                $url = $SETTINGS['url'];
             } else {
-                $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'] . (($_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443) ? ":" . $_SERVER['SERVER_PORT'] : "") . URL;
+                $url = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'] . (($_SERVER['SERVER_PORT'] != 80 && $_SERVER['SERVER_PORT'] != 443) ? ":" . $_SERVER['SERVER_PORT'] : "") . $SETTINGS['url'];
             }
             $url = $url . "feed.php?key=$key";
             ?>

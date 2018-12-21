@@ -6,7 +6,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-$apps = EXTERNAL_APPS;
+$apps = $SETTINGS['apps'];
 // Format paths as absolute URLs
 foreach ($apps as $k => $v) {
     if (strpos($apps[$k]['url'], "http") === FALSE) {

@@ -1,172 +1,164 @@
 <?php
 
-/* This Source Code Form is subject to the terms of the Mozilla Public
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
 
+// Settings for the app.
+// Copy to settings.php and customize.
 
-// Whether to show debugging data in output.
-// DO NOT SET TO TRUE IN PRODUCTION!!!
-define("DEBUG", false);
-
-// Database connection settings
-// See http://medoo.in/api/new for info
-define("DB_TYPE", "mysql");
-define("DB_NAME", "accounthub");
-define("DB_SERVER", "localhost");
-define("DB_USER", "accounthub");
-define("DB_PASS", "");
-define("DB_CHARSET", "utf8");
-
-define("SITE_TITLE", "AccountHub");
-
-// Used to identify the system in OTP and other places
-define("SYSTEM_NAME", "Netsyms SSO Demo");
-
-// For supported values, see http://php.net/manual/en/timezones.php
-define("TIMEZONE", "America/Denver");
-
-// Allow or prevent users from logging in via the mobile app.
-define("MOBILE_ENABLED", TRUE);
-
-// Base URL for site links.
-define('URL', 'http://localhost/accounthub');
-
-// Use Captcheck on login screen
-// https://captcheck.netsyms.com
-define("CAPTCHA_ENABLED", FALSE);
-define('CAPTCHA_SERVER', 'https://captcheck.netsyms.com');
-
-// See lang folder for language options
-define('LANGUAGE', "en");
-
-// List of available applications, icons, and other info.
-// Used in the mobile app and in the "dock" in AccountHub.
-define('EXTERNAL_APPS', [
-    "accounthub" => [
-        "url" => "/accounthub",
-        "mobileapi" => "/mobile/index.php",
-        "icon" => "/static/img/logo.svg",
-        "title" => SITE_TITLE
+$SETTINGS = [
+    // Whether to output debugging info like PHP notices, warnings,
+    // and stacktraces.
+    // Turning this on in production is a security risk and can sometimes break
+    // things, such as JSON output where extra content is not expected.
+    "debug" => false,
+    // Database connection settings
+    // See http://medoo.in/api/new for info
+    "database" => [
+        "type" => "mysql",
+        "name" => "accounthub",
+        "server" => "localhost",
+        "user" => "accounthub",
+        "password" => "",
+        "charset" => "utf8"
     ],
-    "qwikclock" => [
-        "url" => "/qwikclock",
-        "mobileapi" => "/mobile/index.php",
-        "icon" => "/static/img/logo.svg",
-        "title" => "QwikClock",
-        "station_features" => [
-            "qwikclock_punchinout",
-            "qwikclock_myshifts",
-            "qwikclock_jobs"
+    // Name of the app.
+    "site_title" => "AccountHub",
+    // Used to identify the system in OTP and other places
+    "system_name" => "Netsyms AccountHub",
+    // Allow login from the Netsyms mobile app
+    "mobile_enabled" => true,
+    // For supported values, see http://php.net/manual/en/timezones.php
+    "timezone" => "America/Denver",
+    // List of external apps connected to this system.
+    // This list is used for generating the dashboard cards and in the
+    // mobile app.
+    "apps" => [
+        "accounthub" => [
+            "url" => "/accounthub",
+            "mobileapi" => "/mobile/index.php",
+            "icon" => "/static/img/logo.svg",
+            "title" => $SETTINGS['site_title']
         ],
-        "card" => [
-            "color" => "blue",
-            "string" => "Punch in and check work schedule"
-        ]
-    ],
-    "binstack" => [
-        "url" => "/binstack",
-        "mobileapi" => "/mobile/index.php",
-        "icon" => "/static/img/logo.svg",
-        "title" => "BinStack",
-        "card" => [
-            "color" => "green",
-            "string" => "Manage physical items"
-        ]
-    ],
-    "newspen" => [
-        "url" => "/newspen",
-        "mobileapi" => "/mobile/index.php",
-        "icon" => "/static/img/logo.svg",
-        "title" => "NewsPen",
-        "card" => [
-            "color" => "purple",
-            "string" => "Create and publish e-newsletters"
-        ]
-    ],
-    "managepanel" => [
-        "url" => "/managepanel",
-        "mobileapi" => "/mobile/index.php",
-        "icon" => "/static/img/logo.svg",
-        "title" => "ManagePanel",
-        "card" => [
-            "color" => "brown",
-            "string" => "Manage users, permissions, and security"
-        ]
-    ],
-    "nickelbox" => [
-        "url" => "/nickelbox",
-        "mobileapi" => "/mobile/index.php",
-        "icon" => "/static/img/logo.svg",
-        "title" => "NickelBox",
-        "card" => [
-            "color" => "light-green",
-            "text" => "dark",
-            "string" => "Checkout customers and manage online orders"
-        ]
-    ],
-    "sitewriter" => [
-        "url" => "/sitewriter",
-        "mobileapi" => "/mobile/index.php",
-        "icon" => "/static/img/logo.svg",
-        "title" => "SiteWriter",
-        "card" => [
-            "color" => "light-blue",
-            "string" => "Build websites and manage contact form messages"
-        ]
-    ],
-    "taskfloor" => [
-        "url" => "/taskfloor",
-        "mobileapi" => "/mobile/index.php",
-        "icon" => "/static/img/logo.svg",
-        "title" => "TaskFloor",
-        "station_features" => [
-            "taskfloor_viewtasks",
-            "taskfloor_viewmessages"
+        "qwikclock" => [
+            "url" => "/qwikclock",
+            "mobileapi" => "/mobile/index.php",
+            "icon" => "/static/img/logo.svg",
+            "title" => "QwikClock",
+            "station_features" => [
+                "qwikclock_punchinout",
+                "qwikclock_myshifts",
+                "qwikclock_jobs"
+            ],
+            "card" => [
+                "color" => "blue",
+                "string" => "Punch in and check work schedule"
+            ]
         ],
-        "card" => [
-            "color" => "blue-grey",
-            "string" => "Track jobs and assigned tasks"
+        "binstack" => [
+            "url" => "/binstack",
+            "mobileapi" => "/mobile/index.php",
+            "icon" => "/static/img/logo.svg",
+            "title" => "BinStack",
+            "card" => [
+                "color" => "green",
+                "string" => "Manage physical items"
+            ]
+        ],
+        "newspen" => [
+            "url" => "/newspen",
+            "mobileapi" => "/mobile/index.php",
+            "icon" => "/static/img/logo.svg",
+            "title" => "NewsPen",
+            "card" => [
+                "color" => "purple",
+                "string" => "Create and publish e-newsletters"
+            ]
+        ],
+        "managepanel" => [
+            "url" => "/managepanel",
+            "mobileapi" => "/mobile/index.php",
+            "icon" => "/static/img/logo.svg",
+            "title" => "ManagePanel",
+            "card" => [
+                "color" => "brown",
+                "string" => "Manage users, permissions, and security"
+            ]
+        ],
+        "nickelbox" => [
+            "url" => "/nickelbox",
+            "mobileapi" => "/mobile/index.php",
+            "icon" => "/static/img/logo.svg",
+            "title" => "NickelBox",
+            "card" => [
+                "color" => "light-green",
+                "text" => "dark",
+                "string" => "Checkout customers and manage online orders"
+            ]
+        ],
+        "sitewriter" => [
+            "url" => "/sitewriter",
+            "mobileapi" => "/mobile/index.php",
+            "icon" => "/static/img/logo.svg",
+            "title" => "SiteWriter",
+            "card" => [
+                "color" => "light-blue",
+                "string" => "Build websites and manage contact form messages"
+            ]
+        ],
+        "taskfloor" => [
+            "url" => "/taskfloor",
+            "mobileapi" => "/mobile/index.php",
+            "icon" => "/static/img/logo.svg",
+            "title" => "TaskFloor",
+            "station_features" => [
+                "taskfloor_viewtasks",
+                "taskfloor_viewmessages"
+            ],
+            "card" => [
+                "color" => "blue-grey",
+                "string" => "Track jobs and assigned tasks"
+            ]
         ]
     ],
-]);
-
-// Show or hide the Station PIN setup option.
-define("STATION_KIOSK", true);
-
-// Used for notification timestamp display.
-define("DATETIME_FORMAT", "M j, g:i a");
-define("TIME_FORMAT", "g:i");
-
-
-// Email settings for receiving admin alerts.
-define("USE_SMTP", TRUE); // if FALSE, will use PHP's mail() instead
-define("ADMIN_EMAIL", "");
-define("FROM_EMAIL", "alert-noreply@apps.biz.netsyms.com");
-define("SMTP_HOST", "");
-define("SMTP_AUTH", true);
-define("SMTP_PORT", 587);
-define("SMTP_SECURE", 'tls');
-define("SMTP_USER", "");
-define("SMTP_PASS", "");
-define("SMTP_ALLOW_INVALID_CERTIFICATE", TRUE);
-
-// Minimum length for new passwords
-// The system checks new passwords against the 500 worst passwords and rejects
-// any matches.
-// If you want to have additional password requirements, go edit action.php.
-// However, all that does is encourage people to use the infamous
-// "post-it password manager".  See also https://xkcd.com/936/ and
-// http://stackoverflow.com/a/34166252 for reasons why forcing passwords
-// like CaPs45$% is not actually a great idea.
-// Encourage users to use 2-factor auth whenever possible.
-define("MIN_PASSWORD_LENGTH", 8);
-
-// Maximum number of rows to get in a query.
-define("QUERY_LIMIT", 1000);
-
-
-
-define("FOOTER_TEXT", "");
-define("COPYRIGHT_NAME", "Netsyms Technologies");
-//////////////////////////////////////////////////////////////
+    // Settings for sending emails.
+    "email" => [
+        // If false, will use PHP mail() instead of a server
+        "use_smtp" => true,
+        // Admin email for alerts
+        "admin_email" => "",
+        "from" => "alert-noreply@example.com",
+        "host" => "",
+        "auth" => true,
+        "port" => 587,
+        "secure" => "tls",
+        "user" => "",
+        "password" => "",
+        "allow_invalid_certificate" => true
+    ],
+    "min_password_length" => 8,
+    // Show or hide the Station PIN setup option.
+    "station_kiosk" => true,
+    // Used for notification timestamp display.
+    "datetime_format" => "M j, g:i a",
+    "time_format" => "g:i",
+    // Use Captcheck on login screen to slow down bots
+    // https://captcheck.netsyms.com
+    "captcha" => [
+        "enabled" => false,
+        "server" => "https://captcheck.netsyms.com"
+    ],
+    // Language to use for localization. See langs folder to add a language.
+    "language" => "en",
+    // Shown in the footer of all the pages.
+    "footer_text" => "",
+    // Also shown in the footer, but with "Copyright <current_year>" in front.
+    "copyright" => "Netsyms Technologies",
+    // Base URL for building links relative to the location of the app.
+    // Only used when there's no good context for the path.
+    // The default is almost definitely fine.
+    "url" => "."
+];

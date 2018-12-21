@@ -7,7 +7,7 @@
 // List of pages and metadata
 define("PAGES", [
     "home" => [
-        "title" => "home",
+        "title" => "Home",
         "navbar" => true,
         "icon" => "fas fa-home",
         "styles" => [

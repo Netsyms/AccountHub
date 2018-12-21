@@ -119,7 +119,7 @@ class User {
      * @throws WeakPasswordException
      */
     function changePassword(string $old, string $new, string $new2) {
-        global $database;
+        global $database, $SETTINGS;
         if ($old == $new) {
             throw new PasswordMatchException();
         }
@@ -137,7 +137,7 @@ class User {
         if ($passrank !== FALSE) {
             throw new WeakPasswordException();
         }
-        if (strlen($new) < MIN_PASSWORD_LENGTH) {
+        if (strlen($new) < $SETTINGS['min_password_length']) {
             throw new WeakPasswordException();
         }
 
@@ -171,10 +171,11 @@ class User {
      * @return string OTP provisioning URI (for generating a QR code)
      */
     function generate2fa(): string {
+        global $SETTINGS;
         $secret = random_bytes(20);
         $encoded_secret = Base32::encode($secret);
         $totp = new TOTP((empty($this->email) ? $this->realname : $this->email), $encoded_secret);
-        $totp->setIssuer(SYSTEM_NAME);
+        $totp->setIssuer($SETTINGS['system_name']);
         return $totp->getProvisioningUri();
     }
 
@@ -214,7 +215,11 @@ class User {
         return new AccountStatus($statuscode);
     }
 
-    function sendAlertEmail(string $appname = SITE_TITLE) {
+    function sendAlertEmail(string $appname = null) {
+        global $SETTINGS;
+        if (is_null($appname)) {
+            $appname = $SETTINGS['site_title'];
+        }
         if (empty(ADMIN_EMAIL) || filter_var(ADMIN_EMAIL, FILTER_VALIDATE_EMAIL) === FALSE) {
             return "invalid_to_email";
         }
@@ -224,19 +229,19 @@ class User {
 
         $mail = new PHPMailer;
 
-        if (DEBUG) {
+        if ($SETTINGS['debug']) {
             $mail->SMTPDebug = 2;
         }
 
-        if (USE_SMTP) {
+        if ($SETTINGS['email']['use_smtp']) {
             $mail->isSMTP();
-            $mail->Host = SMTP_HOST;
-            $mail->SMTPAuth = SMTP_AUTH;
-            $mail->Username = SMTP_USER;
-            $mail->Password = SMTP_PASS;
-            $mail->SMTPSecure = SMTP_SECURE;
-            $mail->Port = SMTP_PORT;
-            if (SMTP_ALLOW_INVALID_CERTIFICATE) {
+            $mail->Host = $SETTINGS['email']['host'];
+            $mail->SMTPAuth = $SETTINGS['email']['auth'];
+            $mail->Username = $SETTINGS['email']['user'];
+            $mail->Password = $SETTINGS['email']['password'];
+            $mail->SMTPSecure = $SETTINGS['email']['secure'];
+            $mail->Port = $SETTINGS['email']['port'];
+            if ($SETTINGS['email']['allow_invalid_certificate']) {
                 $mail->SMTPOptions = array(
                     'ssl' => array(
                         'verify_peer' => false,

@@ -30,7 +30,7 @@ $user = new User($_SESSION['uid']);
         </div>
     </div>
     <?php
-    if (STATION_KIOSK) {
+    if ($SETTINGS['station_kiosk']) {
         ?>
         <div class="col-sm-6 col-lg-4">
             <div class="card mb-4">
@@ -71,8 +71,8 @@ $user = new User($_SESSION['uid']);
                     <?php
                 } else if (!empty($_GET['2fa']) && $_GET['2fa'] == "generate") {
                     $codeuri = $user->generate2fa();
-                    $label = SYSTEM_NAME . ":" . is_null($user->getEmail()) ? $user->getName() : $user->getEmail();
-                    $issuer = SYSTEM_NAME;
+                    $label = $SETTINGS['system_name'] . ":" . is_null($user->getEmail()) ? $user->getName() : $user->getEmail();
+                    $issuer = $SETTINGS['system_name'];
                     $qrCode = new QrCode($codeuri);
                     $qrCode->setWriterByName('svg');
                     $qrCode->setSize(550);

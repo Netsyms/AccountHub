@@ -6,36 +6,9 @@
  */
 ?>
 
-<?php
-/*
-<div class="d-flex justify-content-center flex-wrap">
-    <?php
-    foreach (EXTERNAL_APPS as $a) {
-        ?>
-        <div class="app-dock-item m-2 mobile-app-hide">
-            <p class="mb-0">
-                <a href="<?php echo $a['url']; ?>">
-                    <img class="img-responsive app-icon" src="<?php
-                    if (strpos($a['icon'], "http") !== 0) {
-                        echo $a['url'] . $a['icon'];
-                    } else {
-                        echo $a['icon'];
-                    }
-                    ?>"/>
-                    <span class="d-block text-center"><?php echo $a['title']; ?></span>
-                </a>
-            </p>
-        </div>
-        <?php
-    }
-    ?>
-</div>
- */
-?>
-
 <div class="row mt-2">
     <?php
-    foreach (EXTERNAL_APPS as $a) {
+    foreach ($SETTINGS['apps'] as $a) {
         if (!isset($a['card'])) {
             continue;
         }
@@ -141,9 +114,9 @@
                         <?php
                         $ts = strtotime($n['timestamp']);
                         if (time() - $ts < 60 * 60 * 12) {
-                            echo date(TIME_FORMAT, $ts);
+                            echo date($SETTINGS['time_format'], $ts);
                         } else {
-                            echo date(DATETIME_FORMAT, $ts);
+                            echo date($SETTINGS['datetime_format'], $ts);
                         }
                         ?>
                     </div>
