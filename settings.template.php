@@ -158,7 +158,5 @@ $SETTINGS = [
     // Also shown in the footer, but with "Copyright <current_year>" in front.
     "copyright" => "Netsyms Technologies",
     // Base URL for building links relative to the location of the app.
-    // Only used when there's no good context for the path.
-    // The default is almost definitely fine.
-    "url" => "."
+    "url" => "/accounthub/"
 ];
