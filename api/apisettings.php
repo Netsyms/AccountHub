@@ -212,4 +212,16 @@ $APIS = [
             "id" => "numeric"
         ]
     ],
+    "getloginkey" => [
+        "load" => "getloginkey.php",
+        "vars" => [
+            "appname" => "string"
+        ]
+    ],
+    "checkloginkey" => [
+        "load" => "checkloginkey.php",
+        "vars" => [
+            "code" => "string"
+        ]
+    ]
 ];

@@ -1,0 +1,12 @@
+{
+    "Login to {app}": "Login to {app}",
+    "Username not found.": "Username not found.",
+    "Password for {user}": "Password for {user}",
+    "Password incorrect.": "Password incorrect.",
+    "Two-factor code": "Two-factor code",
+    "Code incorrect.": "Code incorrect.",
+    "Current password for {user}": "Current password for {user}",
+    "New password": "New password",
+    "New password (again)": "New password (again)",
+    "Fill in all three boxes.": "Fill in all three boxes."
+}
