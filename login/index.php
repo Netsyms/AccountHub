@@ -36,7 +36,6 @@ function sendUserBack($code, $url, $uid) {
     $_SESSION['check'] = null;
     $_SESSION['thisstep'] = null;
     $_SESSION['login_uid'] = null;
-    $_SESSION['login_code'] = null;
     $_SESSION['login_pwd'] = null;
     $database->update("userloginkeys", ["uid" => $uid], ["key" => $code]);
     header("Location: $url");
