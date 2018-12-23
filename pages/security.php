@@ -12,6 +12,7 @@ use Endroid\QrCode\QrCode;
 $user = new User($_SESSION['uid']);
 ?>
 <div class="row justify-content-center">
+
     <div class="col-sm-6 col-lg-4">
         <div class="card mb-4">
             <div class="card-body">
@@ -29,6 +30,7 @@ $user = new User($_SESSION['uid']);
             </div>
         </div>
     </div>
+
     <?php
     if ($SETTINGS['station_kiosk']) {
         ?>
@@ -53,14 +55,17 @@ $user = new User($_SESSION['uid']);
         <?php
     }
     ?>
+
     <div class="col-sm-6 col-lg-4">
         <div class="card mb-4">
-            <div class="card-body">
+            <div class="card-body pb-0">
                 <h5 class="card-title"><i class="fas fa-mobile-alt"></i> <?php $Strings->get("setup 2fa"); ?></h5>
-                <?php
-                if ($user->has2fa()) {
-                    ?>
-                    <hr />
+                <hr />
+            </div>
+            <?php
+            if ($user->has2fa()) {
+                ?>
+                <div class="card-body pt-0">
                     <?php $Strings->get("2fa active") ?>
                     <hr />
                     <form action="action.php" method="POST">
@@ -68,21 +73,22 @@ $user = new User($_SESSION['uid']);
                         <input type="hidden" name="source" value="security" />
                         <button type="submit" class="btn btn-info btn-block"><?php $Strings->get("remove 2fa") ?></button>
                     </form>
-                    <?php
-                } else if (!empty($_GET['2fa']) && $_GET['2fa'] == "generate") {
-                    $codeuri = $user->generate2fa();
-                    $label = $SETTINGS['system_name'] . ":" . is_null($user->getEmail()) ? $user->getName() : $user->getEmail();
-                    $issuer = $SETTINGS['system_name'];
-                    $qrCode = new QrCode($codeuri);
-                    $qrCode->setWriterByName('svg');
-                    $qrCode->setSize(550);
-                    $qrCode->setErrorCorrectionLevel(ErrorCorrectionLevel::HIGH);
-                    $qrcode = $qrCode->writeDataUri();
-                    $totp = Factory::loadFromProvisioningUri($codeuri);
-                    $codesecret = $totp->getSecret();
-                    $chunk_secret = trim(chunk_split($codesecret, 4, ' '));
-                    ?>
-                    <hr />
+                </div>
+                <?php
+            } else if (!empty($_GET['2fa']) && $_GET['2fa'] == "generate") {
+                $codeuri = $user->generate2fa();
+                $label = $SETTINGS['system_name'] . ":" . is_null($user->getEmail()) ? $user->getName() : $user->getEmail();
+                $issuer = $SETTINGS['system_name'];
+                $qrCode = new QrCode($codeuri);
+                $qrCode->setWriterByName('svg');
+                $qrCode->setSize(550);
+                $qrCode->setErrorCorrectionLevel(ErrorCorrectionLevel::HIGH);
+                $qrcode = $qrCode->writeDataUri();
+                $totp = Factory::loadFromProvisioningUri($codeuri);
+                $codesecret = $totp->getSecret();
+                $chunk_secret = trim(chunk_split($codesecret, 4, ' '));
+                ?>
+                <div class="card-body pt-0">
                     <div class="card-text">
                         <?php $Strings->get("scan 2fa qrcode") ?>
                     </div>
@@ -120,15 +126,17 @@ $user = new User($_SESSION['uid']);
                 <?php
             } else {
                 ?>
-                <hr />
-                <?php $Strings->get("2fa explained"); ?>
-                <hr />
-                <a class="btn btn-success btn-block" href="app.php?page=security&2fa=generate">
-                    <?php $Strings->get("enable 2fa"); ?>
-                </a>
+                <div class="card-body pt-0">
+                    <?php $Strings->get("2fa explained"); ?>
+                    <hr />
+                    <a class="btn btn-success btn-block" href="app.php?page=security&2fa=generate">
+                        <?php $Strings->get("enable 2fa"); ?>
+                    </a>
+                </div>
                 <?php
             }
             ?>
         </div>
     </div>
+    
 </div>
