@@ -35,7 +35,7 @@ switch ($VARS['action']) {
     case "signout":
         Log::insert(LogType::LOGOUT, $_SESSION['uid']);
         session_destroy();
-        header('Location: index.php');
+        header('Location: index.php?logout=1');
         die("Logged out.");
     case "chpasswd":
         engageRateLimit();
