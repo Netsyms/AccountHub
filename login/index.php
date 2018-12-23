@@ -33,6 +33,11 @@ $error = "";
 
 function sendUserBack($code, $url, $uid) {
     global $database;
+    $_SESSION['check'] = null;
+    $_SESSION['thisstep'] = null;
+    $_SESSION['login_uid'] = null;
+    $_SESSION['login_code'] = null;
+    $_SESSION['login_pwd'] = null;
     $database->update("userloginkeys", ["uid" => $uid], ["key" => $code]);
     header("Location: $url");
     die("<a href=\"" . htmlspecialchars($url) . "\">Click here</a>");
