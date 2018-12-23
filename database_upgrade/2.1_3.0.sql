@@ -26,4 +26,5 @@ DEFAULT CHARACTER SET = utf8;
 
 ALTER TABLE `userloginkeys`
 ADD COLUMN `appname` VARCHAR(255) NOT NULL AFTER `uid`;
+ALTER TABLE `userloginkeys`
 ADD COLUMN `appicon` TINYTEXT NULL DEFAULT NULL AFTER `appname`;

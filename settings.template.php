@@ -41,7 +41,7 @@ $SETTINGS = [
             "url" => "/accounthub",
             "mobileapi" => "/mobile/index.php",
             "icon" => "/static/img/logo.svg",
-            "title" => $SETTINGS['site_title']
+            "title" => "AccountHub"
         ],
         "qwikclock" => [
             "url" => "/qwikclock",
