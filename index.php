@@ -26,16 +26,14 @@ if (!empty($_GET['logout'])) {
 
     <link href="static/css/bootstrap.min.css" rel="stylesheet">
     <link href="static/css/svg-with-js.min.css" rel="stylesheet">
-    <style nonce="<?php echo $SECURE_NONCE; ?>">
-        .display-5 {
-            font-size: 3rem;
-            font-weight: 300;
-            line-height: 1.2;
-        }
-    </style>
+    <link href="static/css/login.css" rel="stylesheet">
 
     <div class="container mt-4">
         <div class="row justify-content-center">
+            <div class="col-12 text-center">
+                <img class="banner-image" src="./static/img/logo.svg" />
+            </div>
+
             <div class="col-12 text-center">
                 <h1 class="display-5 mb-4"><?php $Strings->get("You have been logged out.") ?></h1>
             </div>
@@ -73,7 +71,7 @@ if (empty($_SESSION["login_code"])) {
 
 if ($redirecttologin) {
     try {
-        $code = LoginKey::generate($SETTINGS["site_title"]);
+        $code = LoginKey::generate($SETTINGS["site_title"], "../static/img/logo.svg");
 
         $_SESSION["login_code"] = $code;
 

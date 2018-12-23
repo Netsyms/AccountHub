@@ -215,7 +215,8 @@ $APIS = [
     "getloginkey" => [
         "load" => "getloginkey.php",
         "vars" => [
-            "appname" => "string"
+            "appname" => "string",
+            "appicon (optional)" => "string"
         ]
     ],
     "checkloginkey" => [

@@ -8,13 +8,13 @@
 
 class LoginKey {
 
-    public static function generate(string $appname): string {
+    public static function generate(string $appname, $appicon = null): string {
         global $database;
         do {
             $code = base64_encode(random_bytes(32));
         } while ($database->has('userloginkeys', ['key' => $code]));
 
-        $database->insert('userloginkeys', ['key' => $code, 'expires' => date("Y-m-d H:i:s", time() + 600), 'appname' => $appname]);
+        $database->insert('userloginkeys', ['key' => $code, 'expires' => date("Y-m-d H:i:s", time() + 600), 'appname' => $appname, 'appicon' => $appicon]);
 
         return $code;
     }

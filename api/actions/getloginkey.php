@@ -6,7 +6,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-$code = LoginKey::generate($VARS['appname']);
+$appicon = null;
+if (!empty($VARS['appicon'])) {
+    $appicon = $VARS['appicon'];
+}
+
+$code = LoginKey::generate($VARS['appname'], $appicon);
 
 if (strpos($SETTINGS['url'], "http") === 0) {
     $url = $SETTINGS['url'] . "login/";

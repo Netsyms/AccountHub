@@ -21,7 +21,9 @@ if (!$database->has("userloginkeys", ["AND" => ["key" => $_GET["code"]], "expire
     die("Invalid auth code.");
 }
 
-$APPNAME = $database->get("userloginkeys", "appname", ["key" => $_GET["code"]]);
+$APPINFO = $database->get("userloginkeys", ["appname", "appicon"], ["key" => $_GET["code"]]);
+$APPNAME = $APPINFO["appname"];
+$APPICON = $APPINFO["appicon"];
 
 if (empty($_SESSION['thisstep'])) {
     $_SESSION['thisstep'] = "username";

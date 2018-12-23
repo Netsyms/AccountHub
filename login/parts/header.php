@@ -26,6 +26,21 @@ header("Link: <../static/js/fontawesome-all.min.js>; rel=preload; as=script", fa
 
 <div class="container mt-4">
     <div class="row justify-content-center">
+        <?php
+        if (!empty($APPICON)) {
+            ?>
+            <div class="col-12 text-center">
+                <img class="banner-image" src="<?php echo $APPICON; ?>" />
+            </div>
+            <?php
+        } else {
+            ?>
+        <div class="col-12">
+            <div class="blank-image"></div>
+        </div>
+        <?php
+        }
+        ?>
         <div class="col-12 text-center">
             <h1 class="display-5 mb-4"><?php $Strings->build("Login to {app}", ["app" => htmlentities($APPNAME)]); ?></h1>
         </div>
