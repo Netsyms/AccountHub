@@ -38,6 +38,7 @@ function sendUserBack($code, $url, $uid) {
     $_SESSION['login_uid'] = null;
     $_SESSION['login_pwd'] = null;
     $database->update("userloginkeys", ["uid" => $uid], ["key" => $code]);
+    Log::insert(LogType::LOGIN_OK, $uid);
     header("Location: $url");
     die("<a href=\"" . htmlspecialchars($url) . "\">Click here</a>");
 }
@@ -70,6 +71,7 @@ if (!empty($_SESSION['check'])) {
                 }
             } else {
                 $error = $Strings->get("Username not found.", false);
+                Log::insert(LogType::LOGIN_FAILED, null, "Username: " . $user->getUsername());
             }
             break;
         case "password":
@@ -91,6 +93,7 @@ if (!empty($_SESSION['check'])) {
                 }
             } else {
                 $error = $Strings->get("Password incorrect.", false);
+                Log::insert(LogType::LOGIN_FAILED, $user);
             }
             break;
         case "change_password":
@@ -131,6 +134,7 @@ if (!empty($_SESSION['check'])) {
                 sendUserBack($_GET['code'], $_GET['redirect'], $_SESSION['login_uid']);
             } else {
                 $error = $Strings->get("Code incorrect.", false);
+                Log::insert(LogType::BAD_2FA, null, "Username: " . $user->getUsername());
             }
             break;
     }
