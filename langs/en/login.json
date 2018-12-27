@@ -8,5 +8,18 @@
     "Current password for {user}": "Current password for {user}",
     "New password": "New password",
     "New password (again)": "New password (again)",
-    "Fill in all three boxes.": "Fill in all three boxes."
+    "Fill in all three boxes.": "Fill in all three boxes.",
+    "sign in": "Sign In",
+    "username": "Username",
+    "password": "Password",
+    "continue": "Continue",
+    "authcode": "Authentication code",
+    "2fa prompt": "Enter the six-digit code from your mobile authenticator app.",
+    "2fa incorrect": "Authentication code incorrect.",
+    "login incorrect": "Login incorrect.",
+    "login server unavailable": "Login server unavailable.  Try again later or contact technical support.",
+    "account locked": "This account has been disabled. Contact technical support.",
+    "password expired": "You must change your password before continuing.",
+    "account terminated": "Account terminated.  Access denied.",
+    "account state error": "Your account state is not stable.  Log out, restart your browser, and try again."
 }

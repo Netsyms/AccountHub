@@ -13,8 +13,20 @@ if (!empty($_SESSION['loggedin']) && $_SESSION['loggedin'] === true && !isset($_
     die();
 }
 
-if (!empty($_GET['logout'])) {
-    // Show a logout message instead of immediately redirecting to login flow
+
+/**
+ * Show a simple HTML page with a line of text and a button.  Matches the UI of
+ * the AccountHub login flow.
+ *
+ * @global type $SETTINGS
+ * @global type $SECURE_NONCE
+ * @global type $Strings
+ * @param string $title Text to show, passed through i18n
+ * @param string $button Button text, passed through i18n
+ * @param string $url URL for the button
+ */
+function showHTML(string $title, string $button, string $url) {
+    global $SETTINGS, $SECURE_NONCE, $Strings;
     ?>
     <!DOCTYPE html>
     <meta charset="UTF-8">
@@ -26,8 +38,20 @@ if (!empty($_GET['logout'])) {
     <link rel="icon" href="static/img/logo.svg">
 
     <link href="static/css/bootstrap.min.css" rel="stylesheet">
-    <link href="static/css/svg-with-js.min.css" rel="stylesheet">
-    <link href="static/css/login.css" rel="stylesheet">
+    <style nonce="<?php echo $SECURE_NONCE; ?>">
+        .display-5 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            line-height: 1.2;
+        }
+
+        .banner-image {
+            max-height: 100px;
+            margin: 2em auto;
+            border: 1px solid grey;
+            border-radius: 15%;
+        }
+    </style>
 
     <div class="container mt-4">
         <div class="row justify-content-center">
@@ -36,24 +60,25 @@ if (!empty($_GET['logout'])) {
             </div>
 
             <div class="col-12 text-center">
-                <h1 class="display-5 mb-4"><?php $Strings->get("You have been logged out.") ?></h1>
+                <h1 class="display-5 mb-4"><?php $Strings->get($title); ?></h1>
             </div>
 
             <div class="col-12 col-sm-8 col-lg-6">
                 <div class="card mt-4">
                     <div class="card-body">
-                        <a href="./index.php" class="btn btn-primary btn-block"><?php $Strings->get("Log in again"); ?></a>
+                        <a href="<?php echo $url; ?>" class="btn btn-primary btn-block"><?php $Strings->get($button); ?></a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <script src="static/js/fontawesome-all.min.js"></script>
     <?php
-    die();
 }
 
+if (!empty($_GET['logout'])) {
+    showHTML("You have been logged out.", "Log in again", "./index.php");
+    die();
+}
 if (empty($_SESSION["login_code"])) {
     $redirecttologin = true;
 } else {
@@ -64,7 +89,8 @@ if (empty($_SESSION["login_code"])) {
         Session::start($user);
         $_SESSION["login_code"] = null;
         header('Location: app.php');
-        die("Logged in, go to app.php");
+        showHTML("Logged in", "Continue", "./app.php");
+        die();
     } catch (Exception $ex) {
         $redirecttologin = true;
     }
@@ -76,7 +102,11 @@ if ($redirecttologin) {
 
         $_SESSION["login_code"] = $code;
 
-        header("Location: ./login/?code=" . htmlentities($code) . "&redirect=" . htmlentities($_SERVER["REQUEST_URI"]));
+        $loginurl = "./login/?code=" . htmlentities($code) . "&redirect=" . htmlentities($_SERVER["REQUEST_URI"]);
+
+        header("Location: $loginurl");
+        showHTML("Continue", "Continue", $loginurl);
+        die();
     } catch (Exception $ex) {
         sendError($ex->getMessage());
     }
