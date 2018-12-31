@@ -31,6 +31,8 @@ $SETTINGS = [
     "system_name" => "Netsyms AccountHub",
     // Allow login from the Netsyms mobile app
     "mobile_enabled" => true,
+    // Allow users to signup for new accounts
+    "signups_enabled" => false,
     // For supported values, see http://php.net/manual/en/timezones.php
     "timezone" => "America/Denver",
     // List of external apps connected to this system.

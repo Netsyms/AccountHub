@@ -1,0 +1,13 @@
+{
+    "Create Account": "Create Account",
+    "Account Created": "Account Created",
+    "Choose a username.": "Choose a username.",
+    "Choose a password.": "Choose a password.",
+    "Enter your name.": "Enter your name.",
+    "Username already taken, pick another.": "Username already taken, pick another.",
+    "Your password must be at least {n} characters long.": "Your password must be at least {n} characters long.",
+    "That email address doesn't look right.": "That email address doesn't look right.",
+    "Please enter your username (4-100 characters, alphanumeric).": "Please enter your username (4-100 characters, alphanumeric).",
+    "That password is one of the most popular and insecure ever, make a better one.": "That password is one of the most popular and insecure ever, make a better one.",
+    "Account creation not allowed.  Contact the site administrator for an account.": "Account creation not allowed.  Contact the site administrator for an account."
+}
