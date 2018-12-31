@@ -21,8 +21,17 @@ $_SESSION['check'] = "username";
     </div>
 
     <div class="d-flex">
-        <button type="submit" class="btn btn-primary ml-auto">
-            <i class="fas fa-chevron-right"></i> <?php $Strings->get("continue"); ?>
-        </button>
+        <div class="ml-auto">
+            <?php
+            if ($SETTINGS['signups_enabled'] === true) {
+                ?>
+                <a href="../signup/" class="btn btn-link mr-2"><?php $Strings->get("Create Account"); ?></a>
+                <?php
+            }
+            ?>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-chevron-right"></i> <?php $Strings->get("continue"); ?>
+            </button>
+        </div>
     </div>
 </form>
