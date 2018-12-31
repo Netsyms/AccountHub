@@ -22,6 +22,10 @@ function showHTML($errormsg = null, $genform = true, $noformcontent = "", $title
     $form->addInput("email", "", "email", false, null, null, "Email", "fas fa-envelope", 6, 5, 255, "", $Strings->get("That email address doesn't look right.", false));
     $form->addInput("name", "", "text", true, null, null, "Name", "fas fa-user", 6, 2, 200, "", $Strings->get("Enter your name.", false));
 
+    if (!empty($SETTINGS['tos_url'])) {
+        $form->addInput("agree_tos", "1", "checkbox", true, null, null, "I agree to the <a href=\"$SETTINGS[tos_url]\" target=\"_BLANK\">terms of service</a>");
+    }
+
     $form->addHiddenInput("submit", "1");
 
     $form->addButton($Strings->get("Create Account", false), "fas fa-user-plus", null, "submit", "savebtn");
@@ -134,7 +138,7 @@ if (strlen($_POST['password']) < $SETTINGS['min_password_length']) {
     showHTML($Strings->build("Your password must be at least {n} characters long.", ["n" => $SETTINGS[min_password_length]], false));
 }
 require_once __DIR__ . "/../lib/worst_passwords.php";
-$passrank = checkWorst500List($new);
+$passrank = checkWorst500List($_POST['password']);
 if ($passrank !== FALSE) {
     showHTML($Strings->get("That password is one of the most popular and insecure ever, make a better one.", false));
 }

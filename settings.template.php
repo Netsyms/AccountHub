@@ -33,6 +33,8 @@ $SETTINGS = [
     "mobile_enabled" => true,
     // Allow users to signup for new accounts
     "signups_enabled" => false,
+    // Terms of Service URL for user signup
+    "tos_url" => "",
     // For supported values, see http://php.net/manual/en/timezones.php
     "timezone" => "America/Denver",
     // List of external apps connected to this system.
