@@ -24,7 +24,7 @@ function showHTML($errormsg = null, $genform = true, $noformcontent = "", $title
 
     $form->addHiddenInput("submit", "1");
 
-    $form->addButton("Create Account", "fas fa-save", null, "submit", "savebtn");
+    $form->addButton("Create Account", "fas fa-user-plus", null, "submit", "savebtn");
     ?>
     <!DOCTYPE html>
     <meta charset="UTF-8">
