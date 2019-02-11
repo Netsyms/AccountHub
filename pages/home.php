@@ -67,7 +67,7 @@
                     </div>
                     <div class="col-8">
                         <span class="h5 font-weight-normal"><?php $Strings->get("sync"); ?></span><br />
-<?php $Strings->get("Connect mobile devices to AccountHub"); ?>
+                        <?php $Strings->build("Connect mobile devices to {name} and get notifications", ["name" => $SETTINGS['site_title']]); ?>
                     </div>
                 </a>
             </div>
