@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `apppasswords` (
   INDEX `fk_apppasswords_accounts1_idx` (`uid` ASC),
   CONSTRAINT `fk_apppasswords_accounts1`
     FOREIGN KEY (`uid`)
-    REFERENCES `accounthub`.`accounts` (`uid`)
+    REFERENCES `accounts` (`uid`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
