@@ -12,14 +12,16 @@ $APIS = [
         "vars" => [
         ],
         "permission" => [
-        ]
+        ],
+        "keytype" => "NONE"
     ],
     "auth" => [
         "load" => "auth.php",
         "vars" => [
             "username" => "string",
             "password" => "string"
-        ]
+        ],
+        "keytype" => "AUTH"
     ],
     "userinfo" => [
         "load" => "userinfo.php",
@@ -28,7 +30,8 @@ $APIS = [
                 "username" => "string",
                 "uid" => "numeric"
             ]
-        ]
+        ],
+        "keytype" => "READ"
     ],
     "userexists" => [
         "load" => "userexists.php",
@@ -37,33 +40,38 @@ $APIS = [
                 "username" => "string",
                 "uid" => "numeric"
             ]
-        ]
+        ],
+        "keytype" => "AUTH"
     ],
     "hastotp" => [
         "load" => "hastotp.php",
         "vars" => [
             "username" => "string"
-        ]
+        ],
+        "keytype" => "AUTH"
     ],
     "verifytotp" => [
         "load" => "verifytotp.php",
         "vars" => [
             "username" => "string",
             "code" => "string"
-        ]
+        ],
+        "keytype" => "AUTH"
     ],
     "acctstatus" => [
         "load" => "acctstatus.php",
         "vars" => [
             "username" => "string"
-        ]
+        ],
+        "keytype" => "AUTH"
     ],
     "login" => [
         "load" => "login.php",
         "vars" => [
             "username" => "string",
             "password" => "string"
-        ]
+        ],
+        "keytype" => "AUTH"
     ],
     "ismanagerof" => [
         "load" => "ismanagerof.php",
@@ -71,7 +79,8 @@ $APIS = [
             "manager" => "string",
             "employee" => "string",
             "uid (optional)" => "numeric"
-        ]
+        ],
+        "keytype" => "READ"
     ],
     "getmanaged" => [
         "load" => "getmanaged.php",
@@ -81,7 +90,8 @@ $APIS = [
                 "uid" => "numeric"
             ],
             "get (optional)" => "string"
-        ]
+        ],
+        "keytype" => "READ"
     ],
     "getmanagers" => [
         "load" => "getmanagers.php",
@@ -90,13 +100,15 @@ $APIS = [
                 "username" => "string",
                 "uid" => "numeric"
             ]
-        ]
+        ],
+        "keytype" => "READ"
     ],
     "usersearch" => [
         "load" => "usersearch.php",
         "vars" => [
             "search" => "string"
-        ]
+        ],
+        "keytype" => "READ"
     ],
     "permission" => [
         "load" => "permission.php",
@@ -106,40 +118,47 @@ $APIS = [
                 "uid" => "numeric"
             ],
             "code" => "string"
-        ]
+        ],
+        "keytype" => "READ"
     ],
     "mobileenabled" => [
-        "load" => "mobileenabled.php"
+        "load" => "mobileenabled.php",
+        "keytype" => "NONE"
     ],
     "mobilevalid" => [
         "load" => "mobilevalid.php",
         "vars" => [
             "username" => "string",
             "code" => "string"
-        ]
+        ],
+        "keytype" => "AUTH"
     ],
     "alertemail" => [
         "load" => "alertemail.php",
         "vars" => [
             "username" => "string",
             "appname (optional)" => "string"
-        ]
+        ],
+        "keytype" => "FULL"
     ],
     "codelogin" => [
         "load" => "codelogin.php",
         "vars" => [
             "code" => "string"
-        ]
+        ],
+        "keytype" => "AUTH"
     ],
     "listapps" => [
-        "load" => "listapps.php"
+        "load" => "listapps.php",
+        "keytype" => "NONE"
     ],
     "getusersbygroup" => [
         "load" => "getusersbygroup.php",
         "vars" => [
             "gid" => "numeric",
             "get (optional)" => "string"
-        ]
+        ],
+        "keytype" => "READ"
     ],
     "getgroupsbyuser" => [
         "load" => "getgroupsbyuser.php",
@@ -148,16 +167,19 @@ $APIS = [
                 "uid" => "numeric",
                 "username" => "string"
             ]
-        ]
+        ],
+        "keytype" => "READ"
     ],
     "getgroups" => [
-        "load" => "getgroups.php"
+        "load" => "getgroups.php",
+        "keytype" => "READ"
     ],
     "groupsearch" => [
         "load" => "groupsearch.php",
         "vars" => [
             "search" => "string"
-        ]
+        ],
+        "keytype" => "READ"
     ],
     "checkpin" => [
         "load" => "checkpin.php",
@@ -167,7 +189,8 @@ $APIS = [
                 "uid" => "numeric",
                 "username" => "string"
             ]
-        ]
+        ],
+        "keytype" => "AUTH"
     ],
     "getnotifications" => [
         "load" => "getnotifications.php",
@@ -176,7 +199,8 @@ $APIS = [
                 "uid" => "numeric",
                 "username" => "string"
             ]
-        ]
+        ],
+        "keytype" => "READ"
     ],
     "readnotification" => [
         "load" => "readnotification.php",
@@ -186,7 +210,8 @@ $APIS = [
                 "username" => "string"
             ],
             "id" => "numeric"
-        ]
+        ],
+        "keytype" => "FULL"
     ],
     "addnotification" => [
         "load" => "addnotification.php",
@@ -200,7 +225,8 @@ $APIS = [
             "timestamp (optional)" => "string",
             "url (optional)" => "string",
             "sensitive (optional)" => "string"
-        ]
+        ],
+        "keytype" => "FULL"
     ],
     "deletenotification" => [
         "load" => "deletenotification.php",
@@ -210,19 +236,22 @@ $APIS = [
                 "username" => "string"
             ],
             "id" => "numeric"
-        ]
+        ],
+        "keytype" => "FULL"
     ],
     "getloginkey" => [
         "load" => "getloginkey.php",
         "vars" => [
             "appname" => "string",
             "appicon (optional)" => "string"
-        ]
+        ],
+        "keytype" => "AUTH"
     ],
     "checkloginkey" => [
         "load" => "checkloginkey.php",
         "vars" => [
             "code" => "string"
-        ]
+        ],
+        "keytype" => "AUTH"
     ]
 ];

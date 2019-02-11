@@ -74,4 +74,13 @@ if (!empty($APIACTION["vars"])) {
     checkVars($APIACTION["vars"]);
 }
 
+// Assume we need full API access
+if (empty($APIACTION["keytype"])) {
+    $APIACTION["keytype"] = "FULL";
+}
+
+if (!checkkeytype($APIACTION["keytype"])) {
+    die("403 Unauthorized");
+}
+
 require_once __DIR__ . "/actions/" . $APIACTION["load"];

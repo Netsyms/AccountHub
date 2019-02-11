@@ -121,3 +121,41 @@ function checkVars($vars, $or = false) {
         }
     }
 }
+
+/**
+ * Check if the client API key is allowed to access API functions that require the
+ * specified API key type.
+ * @global type $VARS
+ * @global type $database
+ * @param string $type The required key type: "NONE", "AUTH", "READ", or "FULL"
+ * @return bool
+ */
+function checkkeytype(string $type): bool {
+    global $VARS, $database;
+    if (empty($VARS['key'])) {
+        return false;
+    } else {
+        $key = $VARS['key'];
+        $keytype = $database->get('apikeys', 'type', ['key' => $key]);
+        $allowedtypes = [];
+        switch ($type) {
+            case "NONE":
+                $allowedtypes = ["NONE", "AUTH", "READ", "FULL"];
+                break;
+            case "AUTH":
+                $allowedtypes = ["AUTH", "READ", "FULL"];
+                break;
+            case "READ":
+                $allowedtypes = ["READ", "FULL"];
+                break;
+            case "FULL":
+                $allowedtypes = ["FULL"];
+        }
+        if (!in_array($type, $allowedtypes)) {
+            http_response_code(403);
+            Log::insert(LogType::API_BAD_KEY, null, "Key: " . $key);
+            return false;
+        }
+    }
+    return true;
+}
