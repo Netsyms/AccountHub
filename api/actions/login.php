@@ -8,7 +8,7 @@
 
 engageRateLimit();
 $user = User::byUsername($VARS['username']);
-if ($user->checkPassword($VARS['password'])) {
+if ((!$user->has2fa() && $user->checkPassword($VARS['password'])) || $user->checkAppPassword($VARS['password'])) {
     switch ($user->getStatus()->getString()) {
         case "LOCKED_OR_DISABLED":
             Log::insert(LogType::API_LOGIN_FAILED, $uid, "Username: " . strtolower($VARS['username']) . ", Key: " . getCensoredKey());

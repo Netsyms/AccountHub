@@ -30,3 +30,19 @@ ALTER TABLE `userloginkeys`
 ADD COLUMN `appicon` TINYTEXT NULL DEFAULT NULL AFTER `appname`;
 ALTER TABLE `apikeys`
 ADD COLUMN `type` VARCHAR(45) NOT NULL DEFAULT 'FULL' AFTER `notes`;
+
+CREATE TABLE IF NOT EXISTS `apppasswords` (
+  `passid` INT(11) NOT NULL AUTO_INCREMENT,
+  `hash` VARCHAR(255) NOT NULL,
+  `uid` INT(11) NOT NULL,
+  `description` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`passid`, `uid`),
+  UNIQUE INDEX `passid_UNIQUE` (`passid` ASC),
+  INDEX `fk_apppasswords_accounts1_idx` (`uid` ASC),
+  CONSTRAINT `fk_apppasswords_accounts1`
+    FOREIGN KEY (`uid`)
+    REFERENCES `accounthub`.`accounts` (`uid`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;

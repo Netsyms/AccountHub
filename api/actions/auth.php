@@ -7,7 +7,16 @@
  */
 
 $user = User::byUsername($VARS['username']);
-if ($user->checkPassword($VARS['password'])) {
+
+$ok = false;
+if (empty($VARS['apppass']) && ($user->checkPassword($VARS['password']) || $user->checkAppPassword($VARS['password']))) {
+    $ok = true;
+} else {
+    if ((!$user->has2fa() && $user->checkPassword($VARS['password'])) || $user->checkAppPassword($VARS['password'])) {
+        $ok = true;
+    }
+}
+if ($ok) {
     Log::insert(LogType::API_AUTH_OK, null, "Username: " . strtolower($VARS['username']) . ", Key: " . getCensoredKey());
     sendJsonResp($Strings->get("login successful", false), "OK");
 } else {

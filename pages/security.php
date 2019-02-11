@@ -10,6 +10,12 @@ use Endroid\QrCode\ErrorCorrectionLevel;
 use Endroid\QrCode\QrCode;
 
 $user = new User($_SESSION['uid']);
+
+if (!empty($_GET['delpass'])) {
+    if ($database->has("apppasswords", ["AND" => ["uid" => $_SESSION['uid'], "passid" => $_GET['delpass']]])) {
+        $database->delete("apppasswords", ["AND" => ["uid" => $_SESSION['uid'], "passid" => $_GET['delpass']]]);
+    }
+}
 ?>
 <div class="row justify-content-center">
 
@@ -138,5 +144,87 @@ $user = new User($_SESSION['uid']);
             ?>
         </div>
     </div>
-    
+
+    <div class="col-sm-10 col-md-6 col-lg-4 col-xl-4">
+        <div class="card mb-4">
+            <?php
+            if (!empty($_GET['apppassword']) && $_GET['apppassword'] == "generate" && !empty($_POST['desc'])) {
+                $code = strtoupper(substr(md5(mt_rand() . uniqid("", true)), 0, 20));
+                $desc = htmlspecialchars($_POST['desc']);
+                $chunk_code = str_replace(" ", "-", trim(chunk_split($code, 5, ' ')));
+                $database->insert('apppasswords', ['uid' => $_SESSION['uid'], 'hash' => password_hash($chunk_code, PASSWORD_DEFAULT), 'description' => $desc]);
+                ?>
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-shield-alt"></i> <?php $Strings->get("App Passwords"); ?></h5>
+                    <hr />
+
+                    <?php $Strings->build("app password setup instructions", ["app_name" => $desc]); ?>
+                </div>
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item d-flex justify-content-between align-items-baseline">
+                        <div><?php $Strings->get("username"); ?>:</div>
+                        <div class="text-monospace text-right"><?php echo $_SESSION['username']; ?></div>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between align-items-baseline">
+                        <div><?php $Strings->get("password"); ?></div>
+                        <div class="text-monospace text-right"><?php echo $chunk_code; ?></div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <a class="btn btn-success btn-block" href="app.php?page=security"><?php $Strings->get("Done"); ?></a>
+                </div>
+                <?php
+            } else {
+                $activecodes = $database->select("apppasswords", ["passid", "description"], ["uid" => $_SESSION['uid']]);
+                ?>
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fas fa-shield-alt"></i> <?php $Strings->get("App Passwords"); ?></h5>
+                    <hr />
+                    <p class="card-text">
+                        <?php $Strings->build("app passwords explained", ["site_name" => $SETTINGS['site_title']]); ?>
+                    </p>
+                    <form action="app.php?page=security&apppassword=generate" method="POST">
+                        <input type="text" name="desc" class="form-control" placeholder="<?php $Strings->get("App name"); ?>" required />
+                        <button class="btn btn-success btn-block mt-2" type="submit">
+                            <?php $Strings->get("Generate password"); ?>
+                        </button>
+                    </form>
+                </div>
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item">
+                        <b><?php $Strings->get("App Passwords"); ?></b>
+                    </div>
+                    <?php
+                    if (count($activecodes) > 0) {
+                        foreach ($activecodes as $c) {
+                            ?>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="">
+                                        <?php echo $c['description']; ?>
+                                    </div>
+                                </div>
+                                <div>
+                                    <a class="btn btn-danger btn-sm m-1" href="app.php?page=security&delpass=<?php echo $c['passid']; ?>" data-toggle="tooltip" data-placement="bottom" title="<?php $Strings->get("Revoke password"); ?>">
+                                        <i class='fas fa-trash'></i><noscript> <?php $Strings->get("Revoke password"); ?></noscript>
+                                    </a>
+                                </div>
+                            </div>
+                            <?php
+                        }
+                    } else {
+                        ?>
+                        <div class="list-group-item">
+                            <?php $Strings->get("You don't have any app passwords."); ?>
+                        </div>
+                        <?php
+                    }
+                    ?>
+                </div>
+                <?php
+            }
+            ?>
+        </div>
+
+    </div>
 </div>

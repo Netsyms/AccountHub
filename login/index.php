@@ -93,6 +93,9 @@ if (!empty($_SESSION['check'])) {
                 }
             } else {
                 $error = $Strings->get("Password incorrect.", false);
+                if ($user->checkAppPassword($_POST['password'])) {
+                    $error = $Strings->get("App passwords are not allowed here.", false);
+                }
                 Log::insert(LogType::LOGIN_FAILED, $user);
             }
             break;

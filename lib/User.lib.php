@@ -19,6 +19,7 @@ class User {
     private $authsecret;
     private $has2fa = false;
     private $exists = false;
+    private $apppasswords = [];
 
     public function __construct(int $uid, string $username = "") {
         global $database;
@@ -32,6 +33,7 @@ class User {
             $this->authsecret = $user['authsecret'];
             $this->has2fa = !empty($user['authsecret']);
             $this->exists = true;
+            $this->apppasswords = $database->select('apppasswords', 'hash', ['uid' => $this->uid]);
         } else {
             $this->uid = $uid;
             $this->username = $username;
@@ -105,6 +107,20 @@ class User {
      */
     function checkPassword(string $password): bool {
         return password_verify($password, $this->passhash);
+    }
+
+    /**
+     * Check the given password against the user's app passwords.
+     * @param string $apppassword
+     * @return bool
+     */
+    function checkAppPassword(string $apppassword): bool {
+        foreach ($this->apppasswords as $hash) {
+            if (password_verify($apppassword, $hash)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
