@@ -70,7 +70,8 @@ $APIS = [
         "load" => "login.php",
         "vars" => [
             "username" => "string",
-            "password" => "string"
+            "password" => "string",
+            "apppass (optional)" => "/[0-1]/"
         ],
         "keytype" => "AUTH"
     ],
