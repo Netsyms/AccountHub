@@ -46,7 +46,13 @@
                     </div>
                     <div class="col-8">
                         <span class="h5 font-weight-normal"><?php $Strings->get("account security"); ?></span><br />
-                        <?php $Strings->get("Change password, setup 2-factor, and change Station PIN"); ?>
+                        <?php
+                        if ($SETTINGS['station_kiosk']) {
+                            $Strings->get("Change password, setup 2-factor, add app passwords, and change PIN");
+                        } else {
+                            $Strings->get("Change password, setup 2-factor, and add app passwords");
+                        }
+                        ?>
                     </div>
                 </a>
             </div>
@@ -61,7 +67,7 @@
                     </div>
                     <div class="col-8">
                         <span class="h5 font-weight-normal"><?php $Strings->get("sync"); ?></span><br />
-                        <?php $Strings->get("Connect mobile devices to AccountHub"); ?>
+<?php $Strings->get("Connect mobile devices to AccountHub"); ?>
                     </div>
                 </a>
             </div>
