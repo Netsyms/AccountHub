@@ -64,8 +64,9 @@ function authenticate(): bool {
             Log::insert(LogType::API_BAD_KEY, null, "Key: " . $key);
             return false;
         }
+        return true;
     }
-    return true;
+    return false;
 }
 
 function checkVars($vars, $or = false) {
