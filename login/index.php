@@ -29,6 +29,12 @@ if (empty($_SESSION['thisstep'])) {
     $_SESSION['thisstep'] = "username";
 }
 
+if (!empty($_GET['reset'])) {
+    $_SESSION['thisstep'] = "username";
+    $_SESSION['check'] = "";
+    header("Location: ./?code=$_GET[code]&redirect=$_GET[redirect]");
+}
+
 $error = "";
 
 function sendUserBack($code, $url, $uid) {

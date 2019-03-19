@@ -21,5 +21,6 @@
     "account locked": "This account has been disabled. Contact technical support.",
     "password expired": "You must change your password before continuing.",
     "account terminated": "Account terminated.  Access denied.",
-    "account state error": "Your account state is not stable.  Log out, restart your browser, and try again."
+    "account state error": "Your account state is not stable.  Log out, restart your browser, and try again.",
+    "Back": "Back"
 }

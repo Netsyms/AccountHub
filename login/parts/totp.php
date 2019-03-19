@@ -21,6 +21,9 @@ $_SESSION['check'] = "totp";
     </div>
 
     <div class="d-flex">
+        <a href="./?code=<?php echo htmlentities($_GET['code']); ?>&amp;redirect=<?php echo htmlentities($_GET['redirect']); ?>&amp;reset=1" class="btn btn-link mr-2">
+            <i class="fas fa-chevron-left"></i> <?php $Strings->get("Back"); ?>
+        </a>
         <button type="submit" class="btn btn-primary ml-auto">
             <i class="fas fa-chevron-right"></i> <?php $Strings->get("continue"); ?>
         </button>
