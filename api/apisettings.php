@@ -255,5 +255,13 @@ $APIS = [
             "code" => "string"
         ],
         "keytype" => "AUTH"
-    ]
+    ],
+     "addapppassword" => [
+        "load" => "addapppassword.php",
+        "vars" => [
+            "desc" => "string",
+            "username" => "string"
+        ],
+        "keytype" => "FULL"
+    ],
 ];
