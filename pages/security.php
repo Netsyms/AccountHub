@@ -88,7 +88,7 @@ if (!empty($_GET['delpass'])) {
                 $qrCode = new QrCode($codeuri);
                 $qrCode->setWriterByName('svg');
                 $qrCode->setSize(550);
-                $qrCode->setErrorCorrectionLevel(ErrorCorrectionLevel::HIGH);
+                $qrCode->setErrorCorrectionLevel(ErrorCorrectionLevel::HIGH());
                 $qrcode = $qrCode->writeDataUri();
                 $totp = Factory::loadFromProvisioningUri($codeuri);
                 $codesecret = $totp->getSecret();
