@@ -25,7 +25,7 @@ $_SESSION['check'] = "username";
             <?php
             if ($SETTINGS['signups_enabled'] === true) {
                 ?>
-                <a href="../signup/" class="btn btn-link mr-2"><?php $Strings->get("Create Account"); ?></a>
+                <a href="../signup/?code=<?php echo urlencode($_GET["code"]); ?>&amp;redirect=<?php echo urlencode($_GET["redirect"]); ?>" class="btn btn-link mr-2"><?php $Strings->get("Create Account"); ?></a>
                 <?php
             }
             ?>
