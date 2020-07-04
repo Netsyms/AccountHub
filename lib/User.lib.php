@@ -233,7 +233,7 @@ class User {
     }
 
     function sendAlertEmail(string $appname = null) {
-        global $SETTINGS;
+        global $SETTINGS, $Strings;
         if (is_null($appname)) {
             $appname = $SETTINGS['site_title'];
         }
