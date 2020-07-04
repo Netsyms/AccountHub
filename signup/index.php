@@ -21,8 +21,8 @@ function showHTML($errormsg = null, $genform = true, $noformcontent = "", $title
     $form->addInput("password", "", "password", true, null, null, "Password", "fas fa-lock", 6, $SETTINGS['min_password_length'], 255, "", $Strings->build("Your password must be at least {n} characters long.", ["n" => $SETTINGS['min_password_length']], false));
     $form->addInput("email", "", "email", false, null, null, "Email", "fas fa-envelope", 6, 5, 255, "", $Strings->get("That email address doesn't look right.", false));
     $form->addInput("name", "", "text", true, null, null, "Name", "fas fa-user", 6, 2, 200, "", $Strings->get("Enter your name.", false));
-    $form->addHiddenInput("code", $_GET["code"]);
-    $form->addHiddenInput("redirect", $_GET["redirect"]);
+    $form->addHiddenInput("code", empty($_GET["code"]) ? "" : $_GET["code"]);
+    $form->addHiddenInput("redirect", empty($_GET["redirect"]) ? "" : $_GET["code"]);
 
     if (!empty($SETTINGS['tos_url'])) {
         $form->addInput("agree_tos", "1", "checkbox", true, null, null, "I agree to the <a href=\"$SETTINGS[tos_url]\" target=\"_BLANK\">terms of service</a>");
@@ -157,11 +157,22 @@ $userid = User::add($_POST['username'], $_POST['password'], $_POST['name'], (fil
 $signinstr = $Strings->get("sign in", false);
 $redirect = urlencode($_POST["redirect"]);
 $code = urlencode($_POST["code"]);
-showHTML(null, false, <<<END
+if (!empty($code)) {
+    showHTML(null, false, <<<END
 <div class="card mt-4">
     <div class="card-body">
         <a href="../login/?code=$code&amp;redirect=$redirect" class="btn btn-primary btn-block">$signinstr</a>
     </div>
 </div>
 END
-        , $Strings->get("Account Created", false));
+            , $Strings->get("Account Created", false));
+} else {
+        showHTML(null, false, <<<END
+<div class="card mt-4">
+    <div class="card-body">
+        <a href="../" class="btn btn-primary btn-block">$signinstr</a>
+    </div>
+</div>
+END
+            , $Strings->get("Account Created", false));
+}
