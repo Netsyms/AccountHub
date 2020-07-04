@@ -162,7 +162,7 @@ class User {
         return true;
     }
 
-    
+
     function check2fa(string $code): bool {
         if (!$this->has2fa) {
             return true;
@@ -237,10 +237,10 @@ class User {
         if (is_null($appname)) {
             $appname = $SETTINGS['site_title'];
         }
-        if (empty(ADMIN_EMAIL) || filter_var(ADMIN_EMAIL, FILTER_VALIDATE_EMAIL) === FALSE) {
+        if (empty($SETTINGS["email"]["admin_email"]) || filter_var($SETTINGS["email"]["admin_email"], FILTER_VALIDATE_EMAIL) === FALSE) {
             return "invalid_to_email";
         }
-        if (empty(FROM_EMAIL) || filter_var(FROM_EMAIL, FILTER_VALIDATE_EMAIL) === FALSE) {
+        if (empty($SETTINGS["email"]["from"]) || filter_var($SETTINGS["email"]["from"], FILTER_VALIDATE_EMAIL) === FALSE) {
             return "invalid_from_email";
         }
 
@@ -269,8 +269,8 @@ class User {
             }
         }
 
-        $mail->setFrom(FROM_EMAIL, 'Account Alerts');
-        $mail->addAddress(ADMIN_EMAIL, "System Admin");
+        $mail->setFrom($SETTINGS["email"]["from"], 'Account Alerts');
+        $mail->addAddress($SETTINGS["email"]["admin_email"], "System Admin");
         $mail->isHTML(false);
         $mail->Subject = $Strings->get("admin alert email subject", false);
         $mail->Body = $Strings->build("admin alert email message", ["username" => $this->username, "datetime" => date("Y-m-d H:i:s"), "ipaddr" => IPUtils::getClientIP(), "appname" => $appname], false);
