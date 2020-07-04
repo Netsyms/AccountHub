@@ -161,6 +161,9 @@ if ($passrank !== FALSE) {
 if (!empty($_POST['email']) && !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
     showHTML($Strings->get("That email address doesn't look right.", false));
 }
+if (!empty($_POST['email']) && $database->has("accounts", ["email" => strtolower($_POST['email'])])) {
+    showHTML($Strings->get("That email address is already in use.", false));
+}
 if (empty($_POST['name'])) {
     showHTML($Strings->get("Enter your name.", false));
 }
@@ -179,7 +182,7 @@ if ($_POST["textcaptcha"] != "DISABLE" . hash("sha1", hash("md5", date("Ymd"))))
 
 // Create account
 
-$userid = User::add($_POST['username'], $_POST['password'], $_POST['name'], (filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) ? $_POST['email'] : null));
+$userid = User::add($_POST['username'], $_POST['password'], $_POST['name'], (filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) ? strtolower($_POST['email']) : null));
 $signinstr = $Strings->get("sign in", false);
 $redirect = urlencode($_POST["redirect"]);
 $code = urlencode($_POST["code"]);

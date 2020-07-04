@@ -10,5 +10,6 @@
     "Please enter your username (4-100 characters, alphanumeric).": "Please enter your username (4-100 characters, alphanumeric).",
     "That password is one of the most popular and insecure ever, make a better one.": "That password is one of the most popular and insecure ever, make a better one.",
     "Account creation not allowed.  Contact the site administrator for an account.": "Account creation not allowed.  Contact the site administrator for an account.",
-    "CAPTCHA answer incorrect.": "CAPTCHA answer incorrect."
+    "CAPTCHA answer incorrect.": "CAPTCHA answer incorrect.",
+    "That email address is already in use.": "That email address is already in use."
 }
