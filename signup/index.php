@@ -13,6 +13,15 @@ if ($SETTINGS['signups_enabled'] !== true) {
 
 function showHTML($errormsg = null, $genform = true, $noformcontent = "", $title = null) {
     global $SETTINGS, $SECURE_NONCE, $Strings;
+
+    try {
+        $textcaptcha = json_decode(file_get_contents("https://api.textcaptcha.com/netsyms.com.json"));
+        $captchaquestion = $textcaptcha->q;
+        $_SESSION["textcaptchaanswers"] = $textcaptcha->a;
+    } catch (Exception $ex) {
+        $captchaquestion = "";
+    }
+
     $form = new FormBuilder("", "", "", "POST");
 
     $form->setID("signupform");
@@ -21,6 +30,11 @@ function showHTML($errormsg = null, $genform = true, $noformcontent = "", $title
     $form->addInput("password", "", "password", true, null, null, "Password", "fas fa-lock", 6, $SETTINGS['min_password_length'], 255, "", $Strings->build("Your password must be at least {n} characters long.", ["n" => $SETTINGS['min_password_length']], false));
     $form->addInput("email", "", "email", false, null, null, "Email", "fas fa-envelope", 6, 5, 255, "", $Strings->get("That email address doesn't look right.", false));
     $form->addInput("name", "", "text", true, null, null, "Name", "fas fa-user", 6, 2, 200, "", $Strings->get("Enter your name.", false));
+    if (!empty($captchaquestion)) {
+        $form->addInput("textcaptcha", "", "text", true, null, null, "$captchaquestion", "fas fa-robot", 12, 1, 200, "", "");
+    } else {
+        $form->addHiddenInput("textcaptcha", "DISABLE" . hash("sha1", hash("md5", date("Ymd"))));
+    }
     $form->addHiddenInput("code", empty($_GET["code"]) ? "" : $_GET["code"]);
     $form->addHiddenInput("redirect", empty($_GET["redirect"]) ? "" : $_GET["code"]);
 
@@ -150,6 +164,18 @@ if (!empty($_POST['email']) && !filter_var($_POST['email'], FILTER_VALIDATE_EMAI
 if (empty($_POST['name'])) {
     showHTML($Strings->get("Enter your name.", false));
 }
+if ($_POST["textcaptcha"] != "DISABLE" . hash("sha1", hash("md5", date("Ymd")))) {
+    $answer = hash("md5", strtolower($_POST["textcaptcha"]));
+    $ok = false;
+    foreach ($_SESSION["textcaptchaanswers"] as $ans) {
+        if ($ans == $answer) {
+            $ok = true;
+        }
+    }
+    if (!$ok) {
+        showHTML($Strings->get("CAPTCHA answer incorrect.", false));
+    }
+}
 
 // Create account
 
@@ -167,7 +193,7 @@ if (!empty($code)) {
 END
             , $Strings->get("Account Created", false));
 } else {
-        showHTML(null, false, <<<END
+    showHTML(null, false, <<<END
 <div class="card mt-4">
     <div class="card-body">
         <a href="../" class="btn btn-primary btn-block">$signinstr</a>
